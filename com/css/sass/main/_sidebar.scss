@@ -1,0 +1,51 @@
+
+body #sidebar {
+	background-color: transparent;
+	float: left;
+	width: var(--sidebar-width);
+
+	h1 {
+		background-color: var(--accent);
+		color: var(--fg-light);
+		display: block;
+		font-size: 120%;
+		font-weight: normal;
+		margin: 0;
+		margin-right: 0.3em;
+		padding: 0.2em;
+	}
+	h1.current {
+		border-top: 0.1em solid var(--accent-dark);
+		font-size: 150%;
+		margin-right: 0;
+	}
+
+	h2 {
+		background-color: var(--bg);
+		border-right: 0.1em solid var(--accent);
+		color: var(--accent);
+		font-size: 110%;
+		font-weight: normal;
+		margin: 0;
+		margin-right: 1em;
+		padding: 0.2em;
+		text-indent: 1em;
+	}
+	h2.parent {
+		border-bottom: 0.2em solid var(--accent);
+	}
+
+	h3 {
+		background-color: var(--bg-shade);
+		border-right: 0.1em solid var(--accent);
+		font-size: 90%;
+		font-weight: normal;
+		margin: 0;
+		margin-right: 2em;
+		padding: 0.2em;
+		text-indent: 2em;
+	}
+	h3.last {
+		border-bottom: 0.1em solid var(--accent);
+	}
+}

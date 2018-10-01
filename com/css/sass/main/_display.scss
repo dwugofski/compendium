@@ -1,0 +1,7 @@
+
+body #main #display {
+	flex-grow: 1;
+	float: right;
+	position: relative;
+	width: calc(100% - var(--sidebar-width));
+}

@@ -1,0 +1,21 @@
+
+html {
+	height: 100%;
+}
+
+body {
+	color: var(--fg);
+	display: flex;
+	flex-direction: column;
+	font-family: var(--sans-font);
+	height: 100%;
+	margin: 0;
+
+	.fr { float: right; }
+	.fl { float: left; }
+	.clearer {clear: both; }
+}
+
+body > * {
+	flex-shrink: 0;
+}

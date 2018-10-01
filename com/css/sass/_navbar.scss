@@ -1,0 +1,35 @@
+
+body #navbar {
+	background-color: var(--accent);
+	box-shadow: 0px 2px 5px var(--accent-dark);
+	font-size: 120%;
+	height: 3em;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	width: 100%;
+	z-index: 4;
+
+	table {
+		border-collapse: collapse;
+		height: 100%;
+
+		.navopt {
+			color: var(--fg-light);
+			cursor: pointer;
+			height: 100%;
+			padding: 0 0.5em 0 0.5em;
+			vertical-align: middle;
+
+			@include transition(background-color, 0.4s);
+		}
+		.navopt:hover {
+			background-color: var(--accent-dark);
+		}
+	}
+	table.right {
+		float: right;
+	}
+	table.left {
+		float: left;
+	}
+}

@@ -1,0 +1,10 @@
+
+@import url('https://fonts.googleapis.com/css?family=Fondamento|Metamorphous|Noto+Sans|Stoke|Ubuntu+Mono');
+
+:root {
+	--title-font: "Metamorphous", serif;
+	--serif-font: "Stoke", "Constantia", serif;
+	--sans-font: "Noto Sans", "Calibri", sans-serif;
+	--code-font: "Ubuntu Mono", monospace;
+	--note-font: "Fondamento", serif;
+}

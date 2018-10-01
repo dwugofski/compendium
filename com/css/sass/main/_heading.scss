@@ -1,0 +1,39 @@
+
+body #main #display #heading {
+	/*background-color: black;
+	background-image: url("../../res/backgrounds/imperial_city.png");
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: 50% 0;*/
+	height: var(--heading-height);
+	min-width: var(--min-width);
+	width: 100%;
+	//box-shadow: inset 0 0 10px #000000;
+
+	h1, h2 {
+		background-color:rgba(0,0,0,0.5);
+		color: white;
+		cursor: default;
+		display: inline-block;
+		font-family: var(--sans-font);
+		font-weight: normal;
+		left: 50px;
+		margin: 0;
+		overflow: hidden;
+		padding: 0 5px 0 5px;
+		position: absolute;
+		-webkit-user-select: none;
+	}
+	h1 {
+		font-size: 300%;
+		height: 60px;
+		line-height: 60px;
+		top: 100px;
+	}
+	h2 {
+		font-size: 150%;
+		height: 30px;
+		line-height: 30px;
+		top: 70px;
+	}
+}

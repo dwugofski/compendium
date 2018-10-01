@@ -1,0 +1,10 @@
+
+:root {
+	--min-width: 800px;
+	--min-width-delta: 816px;
+
+	--heading-height: 400px;
+	--sidebar-width: 300px;
+	--content-width: 1000px;
+	--content-adjust: -200px;
+}

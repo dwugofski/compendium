@@ -1,0 +1,12 @@
+
+body #header{
+	//background-color: var(--bg-dark);
+
+	h1 {
+		color: var(--accent);
+		font-family: var(--note-font);
+		font-size: 3em;
+		font-variant: small-caps;
+		margin: 0.2em 0 0 0.4em;
+	}
+}
