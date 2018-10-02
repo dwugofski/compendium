@@ -48,7 +48,7 @@ class MySQLConn {
 		else throw(MySQLError("Attempted to execute with no statement prepared"));
 	}
 
-	public function run_query($sql, &$inputs) {
+	public function run_query($sql, &$inputs=NULL) {
 		$this->prepare($sql, $inputs);
 		return $this->execute();
 	}
