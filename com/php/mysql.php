@@ -1,6 +1,6 @@
 <?php
 
-include_once(dirname(__DIR__)."\ERRORS.php");
+include_once(dirname(__DIR__)."\errors.php");
 
 class MYSQL {
 	static private $conn;
@@ -52,6 +52,12 @@ class MYSQL {
 		self::prepare($sql, $inputs, $types);
 		return self::execute();
 	}
+
+	static public function get_index() {
+		return self::conn->insert_id;
+	}
 }
+
+MYSQL::init();
 
 ?>

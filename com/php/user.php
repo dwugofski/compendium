@@ -1,6 +1,6 @@
 <?php
 
-include_once(dirname(__DIR__)."\ERRORS.php");
+include_once(dirname(__DIR__)."\errors.php");
 include_once(dirname(__DIR__)."\mysql.php");
 
 class User {
@@ -114,7 +114,7 @@ class User {
 	 * 
 	 * @return array As described above
 	 */
-	static public function create_new_user($username, $password, $email, $remember_me) {
+	static public function create_new_user($username, $password, $email=NULL, $remember_me=FALSE) {
 		$sql = "SELECT id FROM users WHERE username = ?";
 		$existing_users = MYSQL::run_query($sql, 's', [$username]);
 		if (count($existing_users) > 0) {
@@ -326,6 +326,17 @@ class User {
 			ERRORS::log(ERRORS::USER_ERROR, 'Unused login token not found after finite tries');
 			return ERRORS::USER_ERROR;
 		}
+	}
+
+	/**
+	 * Check the user has permission for a given action
+	 * 
+	 * @return boolean TRUE when user has permission for an action, otherwise FALSE
+	 */
+	public function has_permission($action) {
+		$permission_level = (MYSQL::run_query("SELECT permission_level FROM user_roles WHERE user_id = ?", 'i', [$this->id]))[0]['permission_level'];
+		if (MYSQL::run_query("SELECT id FROM permission_actions WHERE description = ? AND permission_level = ?", 'si', [$action, $permission_level])) return TRUE;
+		else return FALSE;
 	}
 }
 
