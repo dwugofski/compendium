@@ -1,0 +1,13 @@
+
+users:
+	id
+	username
+	password
+	email
+
+login_token:
+	id
+	selector
+	valhash
+	userid
+	expires

@@ -4,7 +4,7 @@ include_once(dirname(__DIR__)."..\mysql.php");
 
 function display_usage(){
 	echo("\nUsage:\n");
-	echo("    php user_table.php <username> <password> [<db = 'compendium'> [<address='127.0.0.1'>]] [-x]\n");
+	echo("    php login_tokens_table.php <username> <password> [<db = 'compendium'> [<address='127.0.0.1'>]] [-x]\n");
 }
 
 if ($argc){
@@ -21,23 +21,29 @@ if ($argc){
 
 		try{
 			echo(sprintf("Making a connection with username='%s', password='%s' to '%s' :: '%s' with deletion set to %s\n", $username, $password, $address, $db, $overwrite ? "true" : "false"));
-			$conn = new MySQLConn($db, $address, $username, $password);
+			MYSQL::init($db, $address, $username, $password);
 
 			if ($overwrite){
-				$conn->run_query("DROP TABLE IF EXISTS users CASCADE");
+				MYSQL::run_query("DROP TABLE IF EXISTS user_tokens CASCADE");
 			}
 
 			$sql = "
-			CREATE TABLE users (
-			id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-			username VARCHAR(75) NOT NULL, 
-			password VARCHAR(100) NOT NULL,
-			email VARCHAR(255) NULL DEFAULT NULL,
+			CREATE TABLE login_tokens (
+			id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			selector char(12) NOT NULL,
+			valhash char(128) NOT NULL,
+			userid integer(11) UNSIGNED NOT NULL,
+			expires datetime NOT NULL,
 			PRIMARY KEY (id),
-			INDEX USER (username))
+			INDEX sel (selector),
+			INDEX user (userid),
+			CONSTRAINT fk_user FOREIGN KEY (userid)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE)
 			ENGINE = INNODB";
 
-			$conn->run_query($sql);
+			MYSQL::run_query($sql);
 
 			echo("SQL query run successfully!\n");
 

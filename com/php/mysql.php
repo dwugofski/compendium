@@ -1,56 +1,56 @@
 <?php
 
-class MySQLError extends Exception {
-	public function __construct($message="", $code=0, $previous = NULL) {
-		parent::__construct("MySQLError: " . $message, $code, $previous);
-	}
-}
+include_once(dirname(__DIR__)."\ERRORS.php");
 
-class MySQLConn {
-	private var $conn;
-	private var $db;
-	private var $address;
-	private var $username;
-	private var $password;
-	private var $prep_stmt;
+class MYSQL {
+	static private $conn;
+	static private $prep_stmt;
 
-	public function __construct($db, $address, $username, $password) {
-		$this->conn = new mysqli($address, $username, $password, $db);
-		if ($this->conn->connect_errno != 0){
-			throw(MySQLError("Failed to connect to MySQL: " . $this->conn->connect_error));
+	static public function init() {
+		$mysql_login_config = parse_ini_file('ini/mysql.ini');
+		self::conn = new mysqli($mysql_login_config['address'], $mysql_login_config['username'], $mysql_login_config['password'], $mysql_login_config['database']);
+		if (self::conn->connect_errno != 0){
+			ERRORS::log(ERRORS::MYSQL_ERROR, "Failed to connect to MySQL: " . self::conn->connect_error);
 		}
 	}
 
-	public function prepare($sql, &$inputs=NULL) {
-		$this->prep_stmt = $conn->perpare($sql);
-		if (!($this->prep_stmt)) {
-			throw(MySQLError("Prepared statement (" . $sql . ") failed, [" . $this->conn->errno . "]: " . $this->conn->error));
+	static public function prepare($sql, $types=NULL, &$inputs=NULL) {
+		self::prep_stmt = self::conn->prepare($sql);
+		if (!(self::prep_stmt)) {
+			ERRORS::log(ERRORS::MYSQL_ERROR, "Prepared statement (" . $sql . ") failed, [" . self::conn->errno . "]: " . self::conn->error);
 		}
 
 		if (is_array($inputs) && count($inputs) > 0) {
+			if (!is_string($types) || strlen($types) != count($inputs)) {
+				ERRORS::log(ERRORS::MYSQL_ERROR, "Type string does not fit inputs");
+			}
 			$tmp_in = array();
-			foreach($inputs as $key => $value) $tmp_in[$key] = &($inputs[$key]);
-			call_user_func_array(array($this->prep_stmt, 'bind_param'), $tmp_in);
-			if ($this->prep_stmt->errno != 0) throw(MySQLError("Error binding inputs for prepared statement (" . $sql . "), [" . $this->prep_stmt->errno . "]: " . $this->prep_stmt->error));
+			$tmp_in[] = &$types;
+			foreach($inputs as $key => $value) $tmp_in[$key] = &$inputs[$key];
+			call_user_func_array(array(self::prep_stmt, 'bind_param'), $tmp_in);
+			if (self::prep_stmt->errno != 0) ERRORS::log(ERRORS::MYSQL_ERROR, "Error binding inputs for prepared statement (" . $sql . "), [" . self::prep_stmt->errno . "]: " . self::prep_stmt->error);
 		}		
 	}
 
-	public function execute() {
-		if ($this->prep_stmt) {
-			if (!$this->prep_stmt->execute()) throw(MySQLError("Error executing prepared statement, [" . $this->prep_stmt->errno . "]: " . $this->prep_stmt->error));
-			$res = $this->prep_stmt->get_result();
-			$ret = array();
-			while($row = $res->fetch_assoc()){
-				$ret[] = $row;
+	static public function execute() {
+		if (self::prep_stmt) {
+			if (!self::prep_stmt->execute()) ERRORS::log(ERRORS::MYSQL_ERROR, "Error executing prepared statement, [" . self::prep_stmt->errno . "]: " . self::prep_stmt->error);
+			$res = self::prep_stmt->get_result();
+			if ($res) {
+				$ret = array();
+				while($row = $res->fetch_assoc()){
+					$ret[] = $row;
+				}
+				return $ret;
 			}
-			return $ret;
+			else return NULL;
 		}
-		else throw(MySQLError("Attempted to execute with no statement prepared"));
+		else ERRORS::log(ERRORS::MYSQL_ERROR, "Attempted to execute with no statement prepared");
 	}
 
-	public function run_query($sql, &$inputs=NULL) {
-		$this->prepare($sql, $inputs);
-		return $this->execute();
+	static public function run_query($sql, $types=NULL, &$inputs=NULL) {
+		self::prepare($sql, $inputs, $types);
+		return self::execute();
 	}
 }
 
