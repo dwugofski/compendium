@@ -32,11 +32,35 @@ if ($argc){
 		];
 		$permission_ids = array();
 		$permission_actions = [
-			// edit_users_all, view_pages_all, edit_pages_all, edit_pages_open/owned, add_comments, edit_themes, lock_page, view_pages_owned/opened
-			['eua', 'epa', 'vpa', 'epo', 'ac', 'et', 'lp', 'vpo'],
-			['eua', 'epa', 'vpa', 'epo', 'ac', 'et', 'lp', 'vpo'],
-			['epo', 'ac', 'et', 'lp', 'vpo'],
-			['vpo']
+			/*
+			 * eaa: Edit all admins
+			 * -----
+			 * eua: Edit all users
+			 * eta: Edit all themes
+			 * epa: Edit all pages
+			 * lpa: Lock all pages
+			 * gpa: Open all pages
+			 * eca: Edit all comments
+			 * aca: Add comments to all pages
+			 * vpa: View all pages
+			 * -----
+			 * euo: Edit own user
+			 * eto: Edit own themes
+			 * epo: Edit own pages
+			 * lpo: Lock own pages
+			 * gpo: Open own pages
+			 * eco: Edit own comments
+			 * aco: Add comments to own pages
+			 * vpo: View own pages
+			 * epg: Edit open pages
+			 * acg: Add comments to open pages
+			 * -----
+			 * vpu: View unlocked pages
+			 */
+			['eaa', 'eua', 'eta', 'epa', 'lpa', 'gpa', 'eca', 'aca', 'vpa', 'euo', 'epo', 'lpo', 'gpo', 'eco', 'aco', 'vpo', 'epg', 'acg', 'vpu'],
+			['eua', 'eta', 'epa', 'lpa', 'gpa', 'eca', 'aca', 'vpa', 'euo', 'epo', 'lpo', 'gpo', 'eco', 'aco', 'vpo', 'epg', 'acg', 'vpu'],
+			['euo', 'epo', 'lpo', 'gpo', 'eco', 'aco', 'vpo', 'epg', 'acg', 'vpu'],
+			['vpu'],
 		];
 
 		echo("Creating permissions\n");

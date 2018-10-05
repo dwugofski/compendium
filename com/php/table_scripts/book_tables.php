@@ -34,6 +34,7 @@ if ($argc){
 		content TEXT,
 		author_id INT(10) UNSIGNED NOT NULL, 
 		locked BOOLEAN DEFAULT FALSE, 
+		opened BOOLEAN DEFAULT FALSE, 
 		PRIMARY KEY (id), 
 		INDEX PAGE (title), 
 		FOREIGN KEY (author_id) REFERENCES users(id) 
