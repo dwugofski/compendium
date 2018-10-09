@@ -29,7 +29,7 @@ body #navbar {
   background-color: var(--accent);
   box-shadow: 0px 2px 5px var(--accent-dark);
   font-size: 120%;
-  height: 3em;
+  height: var(--navbar-height);
   overflow-x: hidden;
   overflow-y: hidden;
   width: 100%;
@@ -58,52 +58,140 @@ body #main {
   background-image: url("../../res/backgrounds/imperial_city.png");
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-position: 50% 0;
+  background-position: 50% 50%;
+  background-size: cover;
   box-shadow: inset 0 0 10px #000000;
-  background-color: var(--bg);
+  background-color: black;
   overflow-x: hidden;
   width: 100%; }
 
 body #sidebar {
   background-color: transparent;
-  float: left;
+  float: right;
+  overflow-x: auto;
   width: var(--sidebar-width); }
-  body #sidebar h1 {
-    background-color: var(--accent);
-    color: var(--fg-light);
-    display: block;
-    font-size: 120%;
-    font-weight: normal;
+  body #sidebar ul {
     margin: 0;
-    margin-right: 0.3em;
-    padding: 0.2em; }
-  body #sidebar h1.current {
-    border-top: 0.1em solid var(--accent-dark);
-    font-size: 150%;
-    margin-right: 0; }
-  body #sidebar h2 {
-    background-color: var(--bg);
-    border-right: 0.1em solid var(--accent);
-    color: var(--accent);
-    font-size: 110%;
-    font-weight: normal;
-    margin: 0;
-    margin-right: 1em;
-    padding: 0.2em;
-    text-indent: 1em; }
-  body #sidebar h2.parent {
-    border-bottom: 0.2em solid var(--accent); }
-  body #sidebar h3 {
-    background-color: var(--bg-shade);
-    border-right: 0.1em solid var(--accent);
-    font-size: 90%;
-    font-weight: normal;
-    margin: 0;
-    margin-right: 2em;
-    padding: 0.2em;
-    text-indent: 2em; }
-  body #sidebar h3.last {
-    border-bottom: 0.1em solid var(--accent); }
+    margin-left: 0.3em;
+    padding: 0; }
+    body #sidebar ul li {
+      background-color: var(--accent);
+      border-left: 0.1em solid var(--accent-dark);
+      color: var(--fg-light);
+      cursor: pointer;
+      display: block;
+      font-size: 120%;
+      font-weight: normal;
+      margin: 0;
+      padding: 0.2em;
+      padding-left: 2em;
+      text-indent: -1.5em;
+      -moz-transition: background-color 0.4s;
+      -webkit-transition: background-color 0.4s;
+      transition: background-color 0.4s;
+      -moz-transition: margin-left 0.1s;
+      -webkit-transition: margin-left 0.1s;
+      transition: margin-left 0.1s; }
+    body #sidebar ul li.parent {
+      border-bottom: 0.1em solid var(--accent-dark); }
+    body #sidebar ul li.restart {
+      border-top: 0.1em solid var(--accent-dark); }
+    body #sidebar ul li.last {
+      border-bottom: 0.1em solid var(--accent-dark); }
+    body #sidebar ul li:hover {
+      background-color: var(--accent-dark);
+      margin-left: -0.3em; }
+    body #sidebar ul ul {
+      margin-left: 0.7em; }
+      body #sidebar ul ul li {
+        background-color: var(--bg);
+        border-left: 0.1em solid var(--accent);
+        box-sizing: border-box;
+        color: var(--accent);
+        cursor: pointer;
+        font-size: 110%;
+        font-weight: normal;
+        margin: 0;
+        padding: 0.2em;
+        padding-left: 2em;
+        text-indent: -1.5em; }
+      body #sidebar ul ul li.parent {
+        border-bottom: 0.2em solid var(--accent); }
+      body #sidebar ul ul li.restart {
+        border-top: 0.1em solid var(--accent); }
+      body #sidebar ul ul li.last {
+        border-bottom: none; }
+      body #sidebar ul ul li:hover {
+        background-color: var(--bg);
+        border-top: 0.1em solid var(--accent);
+        border-bottom: 0.1em solid var(--accent);
+        margin-left: -0.3em;
+        padding-top: 0.1em;
+        padding-bottom: 0.1em;
+        font-weight: bold; }
+      body #sidebar ul ul li.first:hover {
+        border-top: none;
+        padding-top: 0.2em; }
+      body #sidebar ul ul li.parent:hover {
+        padding-bottom: 0.2em;
+        border-bottom: 0.2em solid var(--accent); }
+      body #sidebar ul ul li.restart:hover {
+        padding-top: 0.2em; }
+      body #sidebar ul ul li.last:hover {
+        padding-bottom: 0.2em;
+        border-bottom: none; }
+      body #sidebar ul ul ul {
+        background-color: var(--accent-light);
+        border-left: 0.2em solid var(--accent);
+        cursor: pointer;
+        font-size: 90%;
+        font-weight: normal;
+        margin: 0;
+        margin-left: 1em;
+        padding: 0.1em;
+        text-indent: 2em; }
+        body #sidebar ul ul ul li {
+          background-color: transparent;
+          border: 0 none black;
+          font-size: 100%;
+          margin-left: 1.5em;
+          padding: 0.2em 0.5em 0.2em 0.5em;
+          text-indent: -1.5em; }
+        body #sidebar ul ul ul li.parent {
+          border: none; }
+        body #sidebar ul ul ul li.restart {
+          border: none; }
+        body #sidebar ul ul ul li::before {
+          content: "\2013\00a0"; }
+        body #sidebar ul ul ul li:hover {
+          background-color: var(--accent-light);
+          border-bottom: none;
+          border-top: none;
+          font-weight: bold;
+          margin-left: 1.5em;
+          padding: 0.2em 0.5em 0.2em 0.5em; }
+        body #sidebar ul ul ul li.parent:hover {
+          border-bottom: none;
+          padding: 0.2em 0.5em 0.2em 0.5em; }
+        body #sidebar ul ul ul li.last:hover {
+          padding: 0.2em 0.5em 0.2em 0.5em; }
+        body #sidebar ul ul ul ul {
+          background-color: transparent;
+          border: 0 none black;
+          cursor: pointer;
+          font-size: 100%;
+          font-weight: normal;
+          margin: 0 0 0 0.2em;
+          padding-left: 1em; }
+          body #sidebar ul ul ul ul li {
+            padding: 0.2em 0 0.2em 0; }
+          body #sidebar ul ul ul ul li:hover {
+            padding: 0.2em 0 0.2em 0; }
+          body #sidebar ul ul ul ul li.parent:hover {
+            border-bottom: none;
+            padding: 0.2em 0 0.2em 0; }
+          body #sidebar ul ul ul ul li.last:hover {
+            padding: 0.2em 0 0.2em 0; }
 
 body #main #display {
   flex-grow: 1;
