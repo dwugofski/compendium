@@ -276,13 +276,31 @@ class Page implements Hashable {
 		return FALSE;
 	}
 
+	public function add_child($child) {
+		if ($child->has_parent()) ERRORS::log(ERRORS::PAGE_ERROR, "Child page %d already has parent\n", $child->id);
+		MYSQL::run_query("INSERT INTO sub_pages (parent_id, child_id) VALUES (?, ?)", 'ii', [&$this->id, &$child->id]);
+	}
+
 	public function has_children(){
 		$children = $this->get_children(FALSE);
 		return !is_empty($children);
 	}
 
+	public function get_level(){
+		$parents = $this->get_parents(TRUE);
+		return count($parents);
+	}
+
 	public function is_book() {
 		return !$this->has_parent();
+	}
+
+	public function is_chapter() {
+		return ($this->get_level() == 1);
+	}
+
+	public function is_page() {
+		return ($this->get_level() > 1);
 	}
 
 	public function get_text() {

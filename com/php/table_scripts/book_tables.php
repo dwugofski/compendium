@@ -35,6 +35,7 @@ if ($argc){
 		author_id INT(10) UNSIGNED NOT NULL, 
 		locked BOOLEAN DEFAULT FALSE, 
 		opened BOOLEAN DEFAULT FALSE, 
+		selector CHAR(12) NOT NULL, 
 		PRIMARY KEY (id), 
 		INDEX PAGE (title), 
 		FOREIGN KEY (author_id) REFERENCES users(id) 

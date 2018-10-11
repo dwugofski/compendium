@@ -183,15 +183,6 @@ class User implements Hashable {
 		}
 	}
 
-	/**
-	 * Generate a token to log a user in
-	 * 
-	 * Each token is an array with two string elements: 'selector' and 'validator.' This function will either 
-	 * return such an array, or it will return an array with an int 'error' and string 'msg' indicating 
-	 * an error occurred during generation.
-	 * 
-	 * @return array as previously described.
-	 */
 	public function generate_token() {
 		$validator = bin2hex(openssl_random_pseudo_bytes(10));
 		$selector = bin2hex(openssl_random_pseudo_bytes(12));
