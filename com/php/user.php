@@ -3,7 +3,7 @@
 include_once(dirname(__DIR__)."\errors.php");
 include_once(dirname(__DIR__)."\mysql.php");
 
-class User implements Hashable {
+class User implements Ds\Hashable {
 	const PERM_ROOT 	= 'root';
 	const PERM_ADMIN 	= 'admin';
 	const PERM_USER 	= 'user';
@@ -36,9 +36,9 @@ class User implements Hashable {
 
 
 	/** @var int $id The User's id in the database */
-	public $id;
+	private $id;
 	/** @var array $token The token - if any - associated with a user's login, of form ['selector', 'validator'] */
-	public $token;
+	private $token;
 
 	static public function login_user($username, $password, $remember_me=FALSE) {
 		if (self::check_user($username) == FALSE) {
@@ -109,8 +109,15 @@ class User implements Hashable {
 	}
 
 	static public function check_user($username) {
-		$sql = "SELECT username FROM users WHERE username = ?";
+		$sql = "SELECT id FROM users WHERE username = ?";
 		$users = MYSQL::run_query($sql, 's', [$username]);
+		if (empty($users)) return FALSE;
+		else return TRUE;
+	}
+
+	static public function check_userid($userid) {
+		$sql = "SELECT id FROM users WHERE id = ?";
+		$users = MYSQL::run_query($sql, 'i', [$userid]);
 		if (empty($users)) return FALSE;
 		else return TRUE;
 	}
@@ -126,21 +133,22 @@ class User implements Hashable {
 	}
 
 	static public function get_user($username) {
-		$sql = "SELECT * FROM users WHERE username = ?";
+		$sql = "SELECT id FROM users WHERE username = ?";
 		$users = MYSQL::run_query($sql, 's', [$username]);
 		if (empty($users)) return ['error' => ERRORS::USER_ERROR];
 		else {
-			return ['user' => $users[0]];
+			return new User($users[0]['id']);
 		}
 	}
 
 	static public function get_user_from_id($userid) {
-		$sql = "SELECT * FROM users WHERE id = ?";
-		$users = MYSQL::run_query($sql, 's', [$userid]);
-		if (empty($users)) return ['error' => ERRORS::USER_ERROR];
-		else {
-			return ['user' => $users[0]];
+		$newuser = NULL;
+		try {
+			$newuser = new User($userid);
 		}
+		catch(Exception $e) {}
+
+		return $newuser;
 	}
 
 	static public function check_login_token($selector) {
@@ -173,8 +181,29 @@ class User implements Hashable {
 	}
 
 	public function __construct($id) {
-		// Verify user exists
-		$this->id = $id;
+		if (User::check_userid($id)) $this->id = $id;
+		else ERRORS::log(ERRORS:USER_ERROR, "User with id %d not found" $id);
+	}
+
+	public function __get($name) {
+		switch($name){
+			case "id":
+				return $this->id;
+			case "token":
+				return $this->token;
+			default:
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
+		}
+	}
+
+	public function __set($name, $value) {
+		switch($name) {
+			case "id":
+			case "token":
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
+			default:
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of page", $name);
+		}
 	}
 
 	public function log_out() {
