@@ -40,7 +40,7 @@ class Page implements Ds\Hashable {
 
 		$selector = self::make_selector();
 		$sql = "INSERT INTO pages (author_id, title, content, selector) VALUES (?, ?, ?, ?)";
-		MYSQL::run_query($sql, 'isbs', [&$author, &$title, &$text, &$selector]);
+		MYSQL::run_query($sql, 'isbs', [&$author->id, &$title, &$text, &$selector]);
 		return MYSQL::get_index();
 	}
 
@@ -102,8 +102,6 @@ class Page implements Ds\Hashable {
 				return $this->is_book();
 			case "isChapter":
 				return $this->is_chapter();
-			case "isPage":
-				return $this->is_page();
 			case "book":
 				return $this->get_book();
 			case "chapter":
@@ -138,7 +136,6 @@ class Page implements Ds\Hashable {
 			case "children":
 			case "isBook":
 			case "isChapter":
-			case "isPage":
 			case "book":
 			case "chapter":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
@@ -202,7 +199,7 @@ class Page implements Ds\Hashable {
 	}
 
 	public function is_colab($user) {
-		$colabs = $this->get_whitelist();
+		$colabs = $this->get_colabs();
 		foreach ($colabs as $i => $colab) {
 			if ($colab->$id == $user->$id) return TRUE;
 		}
@@ -211,12 +208,14 @@ class Page implements Ds\Hashable {
 
 	public function add_collaborator($user) {
 		$this->unblacklist_user($user);
-		MYSQL::run_query("INSERT INTO page_colabs (page_id, collaborator_id) VALUES (?, ?)", 'ii', [&$this->id, &$user->id]);
+		if(!$this->is_colab($user)) MYSQL::run_query("INSERT INTO page_colabs (page_id, collaborator_id) VALUES (?, ?)", 'ii', [&$this->id, &$user->id]);
 	}
 
 	public function remove_collaborator($user) {
-		$sql = "DELETE FROM page_colabs WHERE page_id = ? AND collaborator_id = ?";
-		MYSQL::run_query($sql, 'ii', [&$this->id, &$user->id]);
+		if ($this->is_colab($user)) {
+			$sql = "DELETE FROM page_colabs WHERE page_id = ? AND collaborator_id = ?";
+			MYSQL::run_query($sql, 'ii', [&$this->id, &$user->id]);
+		}
 	}
 
 	public function get_listed_users() {
@@ -417,10 +416,6 @@ class Page implements Ds\Hashable {
 
 	public function is_chapter() {
 		return ($this->get_level() == 1);
-	}
-
-	public function is_page() {
-		return ($this->get_level() > 1);
 	}
 
 	public function get_text() {
