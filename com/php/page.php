@@ -437,7 +437,7 @@ class Page implements Ds\Hashable {
 	}
 
 	public function hash() {
-		return hash('ripemd160', $this->id);
+		return $this->selector;
 	}
 }
 

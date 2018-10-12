@@ -34,10 +34,7 @@ class User implements Ds\Hashable {
 	// user actions
 	const ACT_VIEW_UNLOCKED_PAGES 	= 'vpu';
 
-
-	/** @var int $id The User's id in the database */
 	private $id;
-	/** @var array $token The token - if any - associated with a user's login, of form ['selector', 'validator'] */
 	private $token;
 
 	static public function login_user($username, $password, $remember_me=FALSE) {
@@ -111,21 +108,19 @@ class User implements Ds\Hashable {
 	static public function check_user($username) {
 		$sql = "SELECT id FROM users WHERE username = ?";
 		$users = MYSQL::run_query($sql, 's', [$username]);
-		if (empty($users)) return FALSE;
-		else return TRUE;
+		return !empty($users);
 	}
 
 	static public function check_userid($userid) {
 		$sql = "SELECT id FROM users WHERE id = ?";
 		$users = MYSQL::run_query($sql, 'i', [$userid]);
-		if (empty($users)) return FALSE;
-		else return TRUE;
+		return !empty($users);
 	}
 
 	static public function validate_user($username, $password) {
 		$sql = "SELECT password FROM users WHERE username = ?";
 		$hashes = MYSQL::run_query($sql, 's', [$username]);
-		if (empty($hashes)) return ERRORS::USER_ERROR;
+		if (empty($hashes)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to validate unknown user '%s'", $username);
 		else {
 			if (password_verify($password, $hashes[0]['password'])) return TRUE;
 			else return FALSE;
@@ -176,6 +171,11 @@ class User implements Ds\Hashable {
 		else return TRUE;
 	}
 
+	static public function email_exists($email) {
+		$emails = MYSQL::run_query("SELECT id FROM users WHERE email = ?", 's', [&$email]);
+		return !empty($emails);
+	}
+
 	static public function hash_password($password) {
 		return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
 	}
@@ -191,6 +191,8 @@ class User implements Ds\Hashable {
 				return $this->id;
 			case "token":
 				return $this->token;
+			case "email":
+				return $this->get_email();
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
 		}
@@ -198,6 +200,8 @@ class User implements Ds\Hashable {
 
 	public function __set($name, $value) {
 		switch($name) {
+			case "email":
+				$this->set_email($value);
 			case "id":
 			case "token":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
@@ -256,6 +260,19 @@ class User implements Ds\Hashable {
 		if(is_empty($ids)) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("Permission level '%s' not found", $permission_level));
 		MYSQL::run_query("DELETE FROM user_roles WHERE id = ?", 'i', &$this->id);
 		MYSQL::run_query("INSERT INTO user_roles (permission_level, user_id) VALUES (?, ?)", 'ii', [&$ids[0]['id'], &$this->id]);
+	}
+
+	public function get_email(){
+		$emails = MYSQL::run_query("SELECT email FROM users WHERE id = ?", 'i', [&$this->id]);
+		if (empty($emails)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to get email of unknown user %d", $this->id);
+		return $emails[0]['email'];
+	}
+
+	public function set_email($email){
+		if (User::email_exists($email)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set email to '%s' despite already being in use", $email);
+		if (!User::validate_email($email)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set email to invalid value '%s'", $email);
+
+		MYSQL::run_query("UPDATE users SET email = ? WHERE id = ?", 'si', [&$email, &$this->id]);
 	}
 
 	// Hashable functions
