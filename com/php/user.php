@@ -205,6 +205,8 @@ class User implements Ds\Hashable {
 		switch($name){
 			case "id":
 				return $this->id;
+			case "username":
+				return $this->get_username();
 			case "token":
 				return $this->token;
 			case "email":
@@ -220,6 +222,8 @@ class User implements Ds\Hashable {
 		switch($name) {
 			case "email":
 				$this->set_email($value);
+			case "username":
+				$this->set_username($value);
 			case "id":
 			case "token":
 			case "selector":
@@ -297,6 +301,19 @@ class User implements Ds\Hashable {
 	public function get_selector() {
 		$selector = MYSQL::run_query("SELECT selector FROM users WHERE id = ?", 'i', [&$this->id])[0]["selector"];
 		return $selector;
+	}
+
+	public function get_username() {
+		$usernames = MYSQL::run_query("SELECT username FROM users WHERE id = ?", "i", $this->id);
+		if (empty($usernames)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to get username of unknown user '%d'", $this->id);
+		return $usernames[0]['username'];
+	}
+
+	public function set_username($username) {
+		if (User::check_user($username)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to '%s' despite already being in use", $username);
+		if (!User::validate_username($username)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to invalid value '%s'", $username);
+
+		MYSQL::run_query("UPDATE users SET username = ? WHERE id = ?", 'si', [&$username, &$this->id]);
 	}
 
 	// Hashable functions

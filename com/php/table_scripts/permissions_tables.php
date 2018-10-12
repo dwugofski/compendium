@@ -22,10 +22,10 @@ function permissions_tables($overwrite, $delete) {
 		}
 
 		$permission_levels = [
-			'root',
-			'admin',
-			'user',
-			'guest'
+			User::PERM_ROOT,
+			User::PERM_ADMIN,
+			User::PERM_USER,
+			User::PERM_GUEST
 		];
 		$permission_ids = array();
 		$permission_actions = [
