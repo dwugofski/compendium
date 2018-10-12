@@ -3,8 +3,8 @@
 include_once(dirname(__DIR__)."\errors.php");
 include_once(dirname(__DIR__)."\mysql.php");
 
-class Page implements Hashable {
-	public $id;
+class Page implements Ds\Hashable {
+	private $id;
 
 	public static function validate_title($title) {
 		return is_string($title);
@@ -43,9 +43,63 @@ class Page implements Hashable {
 		return MYSQL::get_index();
 	}
 
+	private function make_selector() {
+		$selector = bin2hex(openssl_random_pseudo_bytes(12));
+		$unique = TRUE;
+		MYSQL::prepare("SELECT id FROM pages WHERE selector = ?", "s", [&$selector]);
+		for ($i=0; $i<10; $i+=1) {
+			if (!empty(MYSQL::execute())) {
+				$unique = TRUE;
+			} else {
+				$selector = bin2hex(openssl_random_pseudo_bytes(12));
+			}
+		}
+		if ($unique) return $selector;
+		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector\n"));
+	}
+
 	public function __construct($pageid) {
 		if (self::is_page($pageid)) $this->id = $pageid;
 		else ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Page '%d' not found --> Page::__construct()", $pageid));
+	}
+
+	public function __get($name) {
+		switch($name){
+			case "id":
+				return $this->id;
+			case "title":
+				return $this->get_title();
+			case "text":
+				return $this->get_text();
+			case "selector":
+				return $this->get_selector();
+			case "locked":
+				return $this->is_locked();
+			case "opened":
+				return $this->is_opened();
+			default:
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
+		}
+	}
+
+	public function __set($name, $value) {
+		switch($name) {
+			case "title":
+				$this->set_title($value);
+			case "text":
+				$this->set_text($value);
+			case "locked":
+				if ($value) $this->lock();
+				else $this->unlock();
+			case "opened":
+				if ($value) $this->open();
+				else $this->close();
+			case "id":
+			case "selector":
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
+			default:
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of page", $name);
+		}
 	}
 
 	public function can_see($user) {
@@ -121,7 +175,7 @@ class Page implements Hashable {
 	}
 
 	public function get_listed_users() {
-		$sql = "SELECT user_id FROM page_whitelist WHERE page_id = ?";
+		$sql = "SELECT user_id FROM page_whitelists WHERE page_id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
 		$users = array();
 		if (is_array($rows) && count($rows) > 0) {
@@ -141,17 +195,17 @@ class Page implements Hashable {
 	}
 
 	public function list_user($user, $color=FALSE) {
-		$sql = "INSERT INTO page_whitelist (page_id, user_id, color) VALUES (?, ?, ?)";
+		$sql = "INSERT INTO page_whitelists (page_id, user_id, color) VALUES (?, ?, ?)";
 		MYSQL::run_query($sql, 'iii', [&$this->id, &$user->id, &$color]);
 	}
 
 	public function unlist_user($user) {
-		$sql = "DELETE FROM page_whitelist WHERE page_id = ? AND user_id = ?";
+		$sql = "DELETE FROM page_whitelists WHERE page_id = ? AND user_id = ?";
 		MYSQL::run_query($sql, 'ii', [&$this->id, &$user->id])
 	}
 
 	public function get_whitelist() {
-		$sql = "SELECT user_id FROM page_whitelist WHERE page_id = ? AND color = ?";
+		$sql = "SELECT user_id FROM page_whitelists WHERE page_id = ? AND color = ?";
 		$rows = MYSQL::run_query($sql, 'ii', [&$this->id, TRUE]);
 		$users = array();
 		if (is_array($rows) && count($rows) > 0) {
@@ -180,7 +234,7 @@ class Page implements Hashable {
 	}
 
 	public function get_blacklist() {
-		$sql = "SELECT user_id FROM page_whitelist WHERE page_id = ? AND color = ?";
+		$sql = "SELECT user_id FROM page_whitelists WHERE page_id = ? AND color = ?";
 		$rows = MYSQL::run_query($sql, 'ii', [&$this->id, FALSE]);
 		$users = array();
 		if (is_array($rows) && count($rows) > 0) {
@@ -219,7 +273,7 @@ class Page implements Hashable {
 	public function get_parents($recursive=FALSE) {
 		$sql = "SELECT parent_id FROM sub_pages WHERE child_id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
-		$parent_ids = Set();
+		$parent_ids = Ds\Set();
 		if (is_empty($rows) == FALSE) {
 			foreach ($rows as $i => $row) {
 				$parent_ids->add($row['parent_id']);
@@ -312,7 +366,7 @@ class Page implements Hashable {
 		else ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Could not find page '%d' --> Page::get_text()", $this->id));
 	}
 
-	public function set_text($title) {
+	public function set_text($text) {
 		if (Pages::validate_text($text) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Text format invalid:\n ---------- \n%s\n ---------- \n --> Pages::set_text()", $text));
 		$sql = "UPDATE pages SET content = ? WHERE id = ?";
 		MYSQL::run_query($sql, 'bi', [&$text, &$this->id]);
@@ -369,6 +423,11 @@ class Page implements Hashable {
 	public function close() {
 		$sql = "UPDATE pages SET open = ? WHERE id = ?";
 		MYSQL::run_query($sql, 'si', [FALSE, &$this->id]);
+	}
+
+	public function get_selector() {
+		$selector = MYSQL::run_query("SELECT selector FROM pages WHERE id = ?", 'i', [&$this->id])[0]["selector"];
+		return $selector;
 	}
 
 	// Hashable functions

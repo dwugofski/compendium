@@ -1,21 +1,18 @@
 <?php
 
 include_once(dirname(__DIR__)."..\mysql.php");
+include_once(dirname(__DIR__)."..\user.php");
 
-function display_usage(){
+function display_permissions_usage(){
 	echo("\nUsage:\n");
-	echo("    php user_table.php [-x | -xx]\n");
+	echo("    php permissions_tables.php [-x | -xx]\n");
+	echo("\n")
+	echo("Options:\n");
+	echo("    -x    Overwrite existing tables if they exist\n");
+	echo("    -xx   Delete existing tables if they exist, and do not create new ones\n");
 }
 
-if ($argc){
-	$overwrite = FALSE;
-	$delete = FALSE;
-	if ($argc > 1 && ($argv[1] == "-x" ||  $argv[1] == "-xx")) {
-		$overwrite = TRUE;
-		$argc -= 1;
-		if ($argv[1] == "-xx") $delete = TRUE;
-	}
-
+function permissions_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
 			MYSQL::run_query("DROP TABLE IF EXISTS user_roles CASCADE");
@@ -32,35 +29,10 @@ if ($argc){
 		];
 		$permission_ids = array();
 		$permission_actions = [
-			/*
-			 * eaa: Edit all admins
-			 * -----
-			 * eua: Edit all users
-			 * eta: Edit all themes
-			 * epa: Edit all pages
-			 * lpa: Lock all pages
-			 * gpa: Open all pages
-			 * eca: Edit all comments
-			 * aca: Add comments to all pages
-			 * vpa: View all pages
-			 * -----
-			 * euo: Edit own user
-			 * eto: Edit own themes
-			 * epo: Edit own pages
-			 * lpo: Lock own pages
-			 * gpo: Open own pages
-			 * eco: Edit own comments
-			 * aco: Add comments to own pages
-			 * vpo: View own pages
-			 * epg: Edit open pages
-			 * acg: Add comments to open pages
-			 * -----
-			 * vpu: View unlocked pages
-			 */
-			['eaa', 'eua', 'eta', 'epa', 'lpa', 'gpa', 'eca', 'aca', 'vpa', 'euo', 'epo', 'lpo', 'gpo', 'eco', 'aco', 'vpo', 'epg', 'acg', 'vpu'],
-			['eua', 'eta', 'epa', 'lpa', 'gpa', 'eca', 'aca', 'vpa', 'euo', 'epo', 'lpo', 'gpo', 'eco', 'aco', 'vpo', 'epg', 'acg', 'vpu'],
-			['euo', 'epo', 'lpo', 'gpo', 'eco', 'aco', 'vpo', 'epg', 'acg', 'vpu'],
-			['vpu'],
+			[User::ACT_EDIT_ALL_ADMINS, User::ACT_EDIT_ALL_USERS, User::ACT_EDIT_ALL_THEMES, User::ACT_EDIT_ALL_PAGES, User::ACT_LOCK_ALLPAGES, User::ACT_OPEN_ALL_PAGES, User::ACT_EDIT_ALL_COMMENTS, User::ACT_ADD_ALL_COMMENTS, User::ACT_VIEW_ALL_PAGES, User::ACT_EDIT_OWN_USER, User::ACT_EDIT_OWN_PAGES, User::ACT_LOCK_OWN_PAGES, User::ACT_OPEN_OWN_PAGES, User::ACT_EDIT_OWN_COMMENTS, User::ACT_ADD_OWN_COMMENTS, User::ACT_VIEW_OWN_PAGES, User::ACT_EDIT_OPEN_PAGES, User::ACT_ADD_OPEN_COMMENTS, User::VIEW_UNLOCKED_PAGES],
+			[User::ACT_EDIT_ALL_USERS, User::ACT_EDIT_ALL_THEMES, User::ACT_EDIT_ALL_PAGES, User::ACT_LOCK_ALLPAGES, User::ACT_OPEN_ALL_PAGES, User::ACT_EDIT_ALL_COMMENTS, User::ACT_ADD_ALL_COMMENTS, User::ACT_VIEW_ALL_PAGES, User::ACT_EDIT_OWN_USER, User::ACT_EDIT_OWN_PAGES, User::ACT_LOCK_OWN_PAGES, User::ACT_OPEN_OWN_PAGES, User::ACT_EDIT_OWN_COMMENTS, User::ACT_ADD_OWN_COMMENTS, User::ACT_VIEW_OWN_PAGES, User::ACT_EDIT_OPEN_PAGES, User::ACT_ADD_OPEN_COMMENTS, VIEW_UNLOCKED_PAGES],
+			[User::ACT_EDIT_OWN_USER, User::ACT_EDIT_OWN_PAGES, User::ACT_LOCK_OWN_PAGES, User::ACT_OPEN_OWN_PAGES, User::ACT_EDIT_OWN_COMMENTS, User::ACT_ADD_OWN_COMMENTS, User::ACT_VIEW_OWN_PAGES, User::ACT_EDIT_OPEN_PAGES, User::ACT_ADD_OPEN_COMMENTS, User::VIEW_UNLOCKED_PAGES],
+			[User::VIEW_UNLOCKED_PAGES],
 		];
 
 		echo("Creating permissions\n");
@@ -84,7 +56,7 @@ if ($argc){
 			$permission_ids[] = MYSQL::get_index();
 		}
 
-		echo("Creating actions\n");
+		echo("Creating permission_actions\n");
 
 		$sql = "
 		CREATE TABLE permission_actions (
@@ -110,7 +82,7 @@ if ($argc){
 			}
 		}
 
-		echo("Creating roles\n");
+		echo("Creating user_roles\n");
 
 		$sql = "
 		CREATE TABLE user_roles (
@@ -127,17 +99,28 @@ if ($argc){
 		MYSQL::run_query($sql);
 
 		echo("Permissions tables configured successfully!\n");
-
-		// Steps:
-		// 1. Check if table exists
-		// 2. If table does not exist, create table
-		//    2.a If table does exist, overwrite if specified
 	}
 	catch(Exception $e){
-		echo("Error occurred in trying to establish table:\n");
+		echo("Error occurred in trying to establish permissions tables:\n");
 		echo($e->getMessage() . "\n");
 	}
 }
-else display_usage();
+
+if ($argc && strpos($argv[0], "permissions_tables.php") >= 0) {
+	$overwrite = FALSE;
+	$delete = FALSE;
+	if ($argc > 1 && $argv[1] == "-h" || $argv[1] == "--help") {
+		display_permissions_usage();
+	}
+	else {
+		if ($argc > 1 && ($argv[1] == "-x" ||  $argv[1] == "-xx")) {
+			$overwrite = TRUE;
+			$argc -= 1;
+			if ($argv[1] == "-xx") $delete = TRUE;
+		}
+
+		permissions_tables($overwrite, $delete);
+	}
+}
 
 ?>
