@@ -212,7 +212,7 @@ class User implements Ds\Hashable {
 			case "selector":
 				return $this->get_selector();
 			default:
-				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of user", $name);
 		}
 	}
 
@@ -223,9 +223,9 @@ class User implements Ds\Hashable {
 			case "id":
 			case "token":
 			case "selector":
-				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of user", $name);
 			default:
-				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of page", $name);
+				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of user", $name);
 		}
 	}
 

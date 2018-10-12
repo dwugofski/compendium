@@ -68,6 +68,8 @@ class Page implements Ds\Hashable {
 		switch($name){
 			case "id":
 				return $this->id;
+			case "author":
+				return $this->get_author();
 			case "title":
 				return $this->get_title();
 			case "text":
@@ -78,6 +80,34 @@ class Page implements Ds\Hashable {
 				return $this->is_locked();
 			case "opened":
 				return $this->is_opened();
+			case "colabs":
+			case "collabs":
+			case "collaborators":
+				return $this->get_colabs();
+			case "whitelist":
+				return $this->get_whitelist();
+			case "blacklist":
+				return $this->get_blacklist();
+			case "level":
+				return $this->get_level();
+			case "parents":
+				return $this->get_parents(TRUE);
+			case "parent":
+				return $this->get_parent();
+			case "all_children":
+				return $this->get_children(TRUE);
+			case "children":
+				return $this->get_children(FALSE);
+			case "isBook":
+				return $this->is_book();
+			case "isChapter":
+				return $this->is_chapter();
+			case "isPage":
+				return $this->is_page();
+			case "book":
+				return $this->get_book();
+			case "chapter":
+				return $this->get_chapter();
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
 		}
@@ -96,7 +126,21 @@ class Page implements Ds\Hashable {
 				if ($value) $this->open();
 				else $this->close();
 			case "id":
+			case "author":
 			case "selector":
+			case "colabs":
+			case "collabs":
+			case "collaborators":
+			case "level":
+			case "parents":
+			case "parent":
+			case "all_children":
+			case "children":
+			case "isBook":
+			case "isChapter":
+			case "isPage":
+			case "book":
+			case "chapter":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of page", $name);
@@ -290,6 +334,11 @@ class Page implements Ds\Hashable {
 		foreach($parent_ids as $i=>$parent_id) $parents[] = new Page($parent_id);
 	}
 
+	public function get_parent() {
+		$parents = $this->get_parents(FALSE);
+		return $parents[0];
+	}
+
 	public function is_parent($page, $recursive=FALSE) {
 		$parents = $this->get_parents($recursive);
 		foreach ($parents as $i => $parent) {
@@ -346,6 +395,22 @@ class Page implements Ds\Hashable {
 		return count($parents);
 	}
 
+	public function get_book(){
+		$book = $this;
+		while($book && !$book->is_book()){
+			$book = $book->get_parent();
+		}
+		return $book;
+	}
+
+	public function get_chapter(){
+		$chapter = $this;
+		while($chapter && !$chapter->is_chapter()){
+			$chapter = $chapter->get_parent();
+		}
+		return $chapter;
+	}
+
 	public function is_book() {
 		return !$this->has_parent();
 	}
@@ -397,14 +462,16 @@ class Page implements Ds\Hashable {
 		else ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Could not find page '%d' --> Page::is_locked()", $this->id));
 	}
 
+	public function set_locked($locked) {
+		MYSQL::run_query("UPDATE pages SET locked = ? WHERE id = ?", 'si', [&$locked, &$this->id]);
+	}
+
 	public function lock() {
-		$sql = "UPDATE pages SET locked = ? WHERE id = ?";
-		MYSQL::run_query($sql, 'si', [TRUE, &$this->id]);
+		$this->set_locked(TRUE);
 	}
 
 	public function unlock() {
-		$sql = "UPDATE pages SET locked = ? WHERE id = ?";
-		MYSQL::run_query($sql, 'si', [FALSE, &$this->id]);
+		$this->set_locked(FALSE);
 	}
 
 	public function is_opened() {
@@ -416,14 +483,16 @@ class Page implements Ds\Hashable {
 		else ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Could not find page '%d' --> Page::is_opened()", $this->id));
 	}
 
+	public function set_opened($opened) {
+		MYSQL::run_query("UPDATE pages SET open = ? WHERE id = ?", 'si', [&$opened, &$this->id]);
+	}
+
 	public function open() {
-		$sql = "UPDATE pages SET open = ? WHERE id = ?";
-		MYSQL::run_query($sql, 'si', [TRUE, &$this->id]);
+		$this->set_opened(TRUE);
 	}
 
 	public function close() {
-		$sql = "UPDATE pages SET open = ? WHERE id = ?";
-		MYSQL::run_query($sql, 'si', [FALSE, &$this->id]);
+		$this->set_opened(FALSE);
 	}
 
 	public function get_selector() {
