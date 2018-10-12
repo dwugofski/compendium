@@ -213,6 +213,8 @@ class User implements Ds\Hashable {
 				return $this->get_email();
 			case "selector":
 				return $this->get_selector();
+			case "permissions":
+				return $this->get_permissions();
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of user", $name);
 		}
@@ -224,6 +226,8 @@ class User implements Ds\Hashable {
 				$this->set_email($value);
 			case "username":
 				$this->set_username($value);
+			case "permission":
+				return $this->grant_permissions($value);
 			case "id":
 			case "token":
 			case "selector":
@@ -272,8 +276,23 @@ class User implements Ds\Hashable {
 		}
 	}
 
+	public function get_perm_level() {
+		return MYSQL::run_query("SELECT permission_level FROM user_roles WHERE user_id = ?", 'i', [&$this->id])[0]['permission_level'];
+	}
+
+	public function get_permissions() {
+		$perm_level = $this->get_perm_level();
+		$actions = MYSQL::run_query("SELECT description FROM permission_actions WHERE permission_level = ?", 's', [&$perm_level]);
+		$permissions = array();
+		foreach($actions as $i=>$action){
+			$permissions[$i] = $action['description'];
+		}
+		return $permissions;
+	}
+
 	public function has_permission($action) {
-		$permission_level = (MYSQL::run_query("SELECT permission_level FROM user_roles WHERE user_id = ?", 'i', [$this->id]))[0]['permission_level'];
+		// Edit this if we do first-run initialization... currently is optimized for every-time querying
+		$permission_level = (MYSQL::run_query("SELECT permission_level FROM user_roles WHERE user_id = ?", 'i', [&$this->id]))[0]['permission_level'];
 		if (MYSQL::run_query("SELECT id FROM permission_actions WHERE description = ? AND permission_level = ?", 'si', [$action, $permission_level])) return TRUE;
 		else return FALSE;
 	}
