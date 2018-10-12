@@ -67,16 +67,16 @@ body #main {
 
 body #sidebar {
   background-color: transparent;
-  float: right;
+  float: left;
   overflow-x: auto;
   width: var(--sidebar-width); }
   body #sidebar ul {
     margin: 0;
-    margin-left: 0.3em;
+    margin-right: 0.3em;
     padding: 0; }
     body #sidebar ul li {
       background-color: var(--accent);
-      border-left: 0.1em solid var(--accent-dark);
+      border-right: 0.1em solid var(--accent-dark);
       color: var(--fg-light);
       cursor: pointer;
       display: block;
@@ -89,9 +89,9 @@ body #sidebar {
       -moz-transition: background-color 0.4s;
       -webkit-transition: background-color 0.4s;
       transition: background-color 0.4s;
-      -moz-transition: margin-left 0.1s;
-      -webkit-transition: margin-left 0.1s;
-      transition: margin-left 0.1s; }
+      -moz-transition: margin-right 0.1s;
+      -webkit-transition: margin-right 0.1s;
+      transition: margin-right 0.1s; }
     body #sidebar ul li.parent {
       border-bottom: 0.1em solid var(--accent-dark); }
     body #sidebar ul li.restart {
@@ -100,12 +100,12 @@ body #sidebar {
       border-bottom: 0.1em solid var(--accent-dark); }
     body #sidebar ul li:hover {
       background-color: var(--accent-dark);
-      margin-left: -0.3em; }
+      margin-right: -0.3em; }
     body #sidebar ul ul {
-      margin-left: 0.7em; }
+      margin-right: 0.7em; }
       body #sidebar ul ul li {
         background-color: var(--bg);
-        border-left: 0.1em solid var(--accent);
+        border-right: 0.1em solid var(--accent);
         box-sizing: border-box;
         color: var(--accent);
         cursor: pointer;
@@ -125,7 +125,7 @@ body #sidebar {
         background-color: var(--bg);
         border-top: 0.1em solid var(--accent);
         border-bottom: 0.1em solid var(--accent);
-        margin-left: -0.3em;
+        margin-right: -0.3em;
         padding-top: 0.1em;
         padding-bottom: 0.1em;
         font-weight: bold; }
@@ -142,21 +142,20 @@ body #sidebar {
         border-bottom: none; }
       body #sidebar ul ul ul {
         background-color: var(--accent-light);
-        border-left: 0.2em solid var(--accent);
+        border-right: 0.2em solid var(--accent);
         cursor: pointer;
         font-size: 90%;
         font-weight: normal;
         margin: 0;
-        margin-left: 1em;
+        margin-right: 1em;
         padding: 0.1em;
-        text-indent: 2em; }
+        padding-left: 1em; }
         body #sidebar ul ul ul li {
           background-color: transparent;
           border: 0 none black;
           font-size: 100%;
-          margin-left: 1.5em;
-          padding: 0.2em 0.5em 0.2em 0.5em;
-          text-indent: -1.5em; }
+          padding: 0.2em 0.5em 0.2em 1em;
+          text-indent: -1em; }
         body #sidebar ul ul ul li.parent {
           border: none; }
         body #sidebar ul ul ul li.restart {
@@ -168,20 +167,20 @@ body #sidebar {
           border-bottom: none;
           border-top: none;
           font-weight: bold;
-          margin-left: 1.5em;
-          padding: 0.2em 0.5em 0.2em 0.5em; }
+          margin-right: 1.5em;
+          padding: 0.2em 0em 0.2em 1em; }
         body #sidebar ul ul ul li.parent:hover {
           border-bottom: none;
-          padding: 0.2em 0.5em 0.2em 0.5em; }
+          padding: 0.2em 0em 0.2em 1em; }
         body #sidebar ul ul ul li.last:hover {
-          padding: 0.2em 0.5em 0.2em 0.5em; }
+          padding: 0.2em 0em 0.2em 1em; }
         body #sidebar ul ul ul ul {
           background-color: transparent;
           border: 0 none black;
           cursor: pointer;
           font-size: 100%;
           font-weight: normal;
-          margin: 0 0 0 0.2em;
+          margin: 0 0 0 1em;
           padding-left: 1em; }
           body #sidebar ul ul ul ul li {
             padding: 0.2em 0 0.2em 0; }
