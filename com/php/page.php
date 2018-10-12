@@ -38,8 +38,9 @@ class Page implements Ds\Hashable {
 		if (self::validate_title($title) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page title:\n --------- \n%s\n ---------- \n --> Page::create_new_page()", $title));
 		if (self::validate_text($text) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page text:\n --------- \n%s\n ---------- \n --> Page::create_new_page()", $text));
 
-		$sql = "INSERT INTO pages (author_id, title, content) VALUES (?, ?, ?)";
-		MYSQL::run_query($sql, 'isb', [&$author, &$title, &$text]);
+		$selector = self::make_selector();
+		$sql = "INSERT INTO pages (author_id, title, content, selector) VALUES (?, ?, ?, ?)";
+		MYSQL::run_query($sql, 'isbs', [&$author, &$title, &$text, &$selector]);
 		return MYSQL::get_index();
 	}
 
@@ -55,7 +56,7 @@ class Page implements Ds\Hashable {
 			}
 		}
 		if ($unique) return $selector;
-		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector\n"));
+		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector for pages\n"));
 	}
 
 	public function __construct($pageid) {

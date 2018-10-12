@@ -26,8 +26,10 @@ function user_tables($overwrite, $delete) {
 		username VARCHAR(75) NOT NULL, 
 		password VARCHAR(100) NOT NULL,
 		email VARCHAR(255) NULL DEFAULT NULL,
+		selector CHAR(12) NOT NULL, 
 		PRIMARY KEY (id),
-		INDEX USER (username))
+		INDEX USER (username), 
+		UNIQUE INDEX SEL (selector))
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
 

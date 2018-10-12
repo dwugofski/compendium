@@ -97,12 +97,28 @@ class User implements Ds\Hashable {
 			ERRORS::log(ERRORS::USER_ERROR, "Invalid email: %s", $email);
 		}
 
-		$sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-		MYSQL::run_query($sql, 'sss', [$username, $passhash, $email]);
+		$selector = self::make_selector();
+		$sql = "INSERT INTO users (username, password, email, selector) VALUES (?, ?, ?, ?)";
+		MYSQL::run_query($sql, 'ssss', [&$username, &$passhash, &$email, &$selector]);
 		$id = MYSQL::get_index();
 		$user = self::login_user($username, $password, $remember_me);
 		$user->grant_permissions(User::PERM_GUEST);
 		return $user;
+	}
+
+	private function make_selector() {
+		$selector = bin2hex(openssl_random_pseudo_bytes(12));
+		$unique = TRUE;
+		MYSQL::prepare("SELECT id FROM users WHERE selector = ?", "s", [&$selector]);
+		for ($i=0; $i<10; $i+=1) {
+			if (!empty(MYSQL::execute())) {
+				$unique = TRUE;
+			} else {
+				$selector = bin2hex(openssl_random_pseudo_bytes(12));
+			}
+		}
+		if ($unique) return $selector;
+		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector for users\n"));
 	}
 
 	static public function check_user($username) {
@@ -193,6 +209,8 @@ class User implements Ds\Hashable {
 				return $this->token;
 			case "email":
 				return $this->get_email();
+			case "selector":
+				return $this->get_selector();
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
 		}
@@ -204,6 +222,7 @@ class User implements Ds\Hashable {
 				$this->set_email($value);
 			case "id":
 			case "token":
+			case "selector":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of page", $name);
@@ -275,6 +294,11 @@ class User implements Ds\Hashable {
 		MYSQL::run_query("UPDATE users SET email = ? WHERE id = ?", 'si', [&$email, &$this->id]);
 	}
 
+	public function get_selector() {
+		$selector = MYSQL::run_query("SELECT selector FROM users WHERE id = ?", 'i', [&$this->id])[0]["selector"];
+		return $selector;
+	}
+
 	// Hashable functions
 
 	public function equals($other_user) {
@@ -282,7 +306,7 @@ class User implements Ds\Hashable {
 	}
 
 	public function hash() {
-		return hash('ripemd160', $this->id);
+		return $this->selector;
 	}
 }
 
