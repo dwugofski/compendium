@@ -1,6 +1,6 @@
 <?php
 
-include_once(dirname(__DIR__)."..\mysql.php");
+include_once(dirname(__DIR__)."../mysql.php");
 
 function display_page_usage(){
 	echo("\nUsage:\n");

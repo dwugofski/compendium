@@ -1,7 +1,10 @@
 <?php
 
+include_once "table_scripts/tables.php";
 include_once "errors.php";
 include_once "user.php";
+
+tables(TRUE, FALSE);
 
 echo("\nCreating root\n");
 $root = User::create_new_user("root", "iamroot", "root@groot.com");
