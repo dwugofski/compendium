@@ -1,9 +1,10 @@
 <?php
 
-include_once(dirname(__DIR__)."\errors.php");
-include_once(dirname(__DIR__)."\mysql.php");
+echo(__DIR__."\n");
+include_once(__DIR__."/errors.php");
+include_once(__DIR__."/mysql.php");
 
-class User implements Ds\Hashable {
+class User {
 	const PERM_ROOT 	= 'root';
 	const PERM_ADMIN 	= 'admin';
 	const PERM_USER 	= 'user';
@@ -198,7 +199,7 @@ class User implements Ds\Hashable {
 
 	public function __construct($id) {
 		if (User::check_userid($id)) $this->id = $id;
-		else ERRORS::log(ERRORS:USER_ERROR, "User with id %d not found" $id);
+		else ERRORS::log(ERRORS::USER_ERROR, "User with id %d not found", $id);
 	}
 
 	public function __get($name) {
@@ -300,7 +301,7 @@ class User implements Ds\Hashable {
 	public function grant_permissions($permission_level) {
 		$ids = MYSQL::run_query("SELECT id FROM permissions WHERE title = ?", 's', $permission_level);
 		if(is_empty($ids)) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("Permission level '%s' not found", $permission_level));
-		MYSQL::run_query("DELETE FROM user_roles WHERE id = ?", 'i', &$this->id);
+		MYSQL::run_query("DELETE FROM user_roles WHERE id = ?", 'i', [&$this->id]);
 		MYSQL::run_query("INSERT INTO user_roles (permission_level, user_id) VALUES (?, ?)", 'ii', [&$ids[0]['id'], &$this->id]);
 	}
 
@@ -333,16 +334,6 @@ class User implements Ds\Hashable {
 		if (!User::validate_username($username)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to invalid value '%s'", $username);
 
 		MYSQL::run_query("UPDATE users SET username = ? WHERE id = ?", 'si', [&$username, &$this->id]);
-	}
-
-	// Hashable functions
-
-	public function equals($other_user) {
-		return ($this->id == $other_user->id);
-	}
-
-	public function hash() {
-		return $this->selector;
 	}
 }
 

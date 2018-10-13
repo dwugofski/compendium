@@ -27,7 +27,7 @@ class ERRORS {
 		$error = ($size < 1) ? self::UNKNOWN_ERROR : func_get_arg(0);
 		$msg_args = array();
 		$msg_args[] = ($size < 2) ? "" : func_get_arg(1);
-		for ($i=2, $i<$size; $i+=1){
+		for ($i=2; $i<$size; $i+=1){
 			$msg_args[] = func_get_arg($i);
 		}
 		$msg = call_user_func_array('sprintf', $msg_args);

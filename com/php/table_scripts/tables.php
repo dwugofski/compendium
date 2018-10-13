@@ -1,15 +1,15 @@
 <?php
 
-include_once(dirname(__DIR__)."../mysql.php");
-include_once(dirname(__DIR__)."user_tables.php");
-include_once(dirname(__DIR__)."permissions_tables.php");
-include_once(dirname(__DIR__)."login_tokens_tables.php");
-include_once(dirname(__DIR__)."page_tables.php");
+include_once(__DIR__."/../mysql.php");
+include_once(__DIR__."/user_tables.php");
+include_once(__DIR__."/permissions_tables.php");
+include_once(__DIR__."/login_tokens_tables.php");
+include_once(__DIR__."/page_tables.php");
 
 function display_tables_usage(){
 	echo("\nUsage:\n");
 	echo("    php tables.php [-h | --help] [<table name1> ... <tablenameN>] [-x | -xx]\n");
-	echo("\n")
+	echo("\n");
 	echo("Options:\n");
 	echo("    table nameN     Name(s) of the table(s) to create/delete, default to create/delete all tables\n");
 	echo("                    Table Names:\n");

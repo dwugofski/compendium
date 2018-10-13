@@ -3,7 +3,7 @@
 include_once(dirname(__DIR__)."\errors.php");
 include_once(dirname(__DIR__)."\mysql.php");
 
-class Page implements Ds\Hashable {
+class Page {
 	private $id;
 
 	public static function validate_title($title) {
@@ -317,20 +317,21 @@ class Page implements Ds\Hashable {
 	public function get_parents($recursive=FALSE) {
 		$sql = "SELECT parent_id FROM sub_pages WHERE child_id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
-		$parent_ids = Ds\Set();
+		$parent_ids = array();
 		if (is_empty($rows) == FALSE) {
 			foreach ($rows as $i => $row) {
-				$parent_ids->add($row['parent_id']);
-				$new_parent = new Page($row['parent_id']);
+				$parent_ids[$row['parent_id']] = $row['parent_id'];
 				if ($recursive){
+					$new_parent = new Page($row['parent_id']);
 					foreach ($new_parent->get_parents($recursive) as $j=>$grandparent){
-						$parent_ids->add($grandparent->$id);
+						$parent_ids[$grandparent->$id] = $grandparent->$id;
 					}
 				}
 			}
 		}
 		$parents = array();
 		foreach($parent_ids as $i=>$parent_id) $parents[] = new Page($parent_id);
+		return $parents;
 	}
 
 	public function get_parent() {
@@ -357,11 +358,11 @@ class Page implements Ds\Hashable {
 		$child_ids = Set();
 		if (is_empty($rows) == FALSE) {
 			foreach ($rows as $i => $row) {
-				$child_ids->add($row['child_id']);
-				$new_child = new Page($row['child_id']);
+				$child_ids[$row['child_id']] = $row['child_id'];
 				if ($recursive){
+					$new_child = new Page($row['child_id']);
 					foreach ($new_child->get_parents($recursive) as $j=>$grandchild){
-						$child_ids->add($grandchild->$id);
+						$child_ids[$grandchild->$id] = $grandchild->$id;
 					}
 				}
 			}

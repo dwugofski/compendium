@@ -5,7 +5,7 @@ include_once(dirname(__DIR__)."../mysql.php");
 function display_page_usage(){
 	echo("\nUsage:\n");
 	echo("    php page_tables.php [-x | -xx]\n");
-	echo("\n")
+	echo("\n");
 	echo("Options:\n");
 	echo("    -x    Overwrite existing tables if they exist\n");
 	echo("    -xx   Delete existing tables if they exist, and do not create new ones\n");
