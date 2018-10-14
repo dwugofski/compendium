@@ -24,20 +24,21 @@ function display_tables_usage(){
 
 function tables($overwrite, $delete, $tables=NULL) {
 	if ($delete || $overwrite) {
+		echo("deleting tables\n");
 		if (empty($tables) || in_array("page", $tables) || in_array("pages", $tables)) page_tables(TRUE, TRUE);
 		if (empty($tables) || in_array("permissions", $tables)) permissions_tables(TRUE, TRUE);
 		if (empty($tables) || in_array("tokens", $tables) || in_array("login_tokens", $tables)) login_tokens_tables(TRUE, TRUE);
-		if (empty($tables) || in_array("user", $tables) || in_array("users", $tables)) login_tokens_tables(TRUE, TRUE);
+		if (empty($tables) || in_array("user", $tables) || in_array("users", $tables)) user_tables(TRUE, TRUE);
 	}
 	if (!$delete) {
-		if (empty($tables) || in_array("user", $tables) || in_array("users", $tables)) login_tokens_tables(FALSE, FALSE);
+		if (empty($tables) || in_array("user", $tables) || in_array("users", $tables)) user_tables(FALSE, FALSE);
 		if (empty($tables) || in_array("tokens", $tables) || in_array("login_tokens", $tables)) login_tokens_tables(FALSE, FALSE);
 		if (empty($tables) || in_array("permissions", $tables)) permissions_tables(FALSE, FALSE);
 		if (empty($tables) || in_array("page", $tables) || in_array("pages", $tables)) page_tables(FALSE, FALSE);
 	}
 }
 
-if ($argc && strpos($argv[0], "tables.php") >= 0) {
+if ($argc && strpos($argv[0], "tables.php") !== FALSE) {
 	$overwrite = FALSE;
 	$delete = FALSE;
 	if ($argc > 1 && $argv[1] == "-h" || $argv[1] == "--help") {

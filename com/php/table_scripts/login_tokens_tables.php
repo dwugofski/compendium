@@ -14,6 +14,7 @@ function display_tokens_usage(){
 function login_tokens_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting login_tokens\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS login_tokens CASCADE");
 			if ($delete) return;
 		}
@@ -23,7 +24,7 @@ function login_tokens_tables($overwrite, $delete) {
 		$sql = "
 		CREATE TABLE login_tokens (
 		id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-		selector char(12) NOT NULL,
+		selector char(24) NOT NULL,
 		valhash char(128) NOT NULL,
 		userid integer(11) UNSIGNED NOT NULL,
 		expires datetime NOT NULL,
@@ -46,7 +47,7 @@ function login_tokens_tables($overwrite, $delete) {
 	}
 }
 
-if ($argc && strpos($argv[0], "login_tokens_tables.php") >= 0) {
+if ($argc && strpos($argv[0], "login_tokens_tables.php") !== FALSE) {
 	$overwrite = FALSE;
 	$delete = FALSE;
 	if ($argc > 1 && $argv[1] == "-h" || $argv[1] == "--help") {

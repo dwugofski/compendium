@@ -15,8 +15,11 @@ function display_permissions_usage(){
 function permissions_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting user_roles\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS user_roles CASCADE");
+			echo("Deleting permission_actions\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS permission_actions CASCADE");
+			echo("Deleting permissions\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS permissions CASCADE");
 			if ($delete) return;
 		}
@@ -106,7 +109,7 @@ function permissions_tables($overwrite, $delete) {
 	}
 }
 
-if ($argc && strpos($argv[0], "permissions_tables.php") >= 0) {
+if ($argc && strpos($argv[0], "permissions_tables.php") !== FALSE) {
 	$overwrite = FALSE;
 	$delete = FALSE;
 	if ($argc > 1 && $argv[1] == "-h" || $argv[1] == "--help") {

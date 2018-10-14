@@ -45,8 +45,7 @@ class User {
 			if (!self::validate_user($username, $password)) {
 				ERRORS::log($resp, sprintf("Invalid password entered", $password));
 			} else {
-				$user_data = self::get_user($username);
-				$user = new User($user_data['id']);
+				$user = self::get_user($username);
 				if ($remember_me = TRUE) {
 					$user->generate_token();
 				}
@@ -86,7 +85,7 @@ class User {
 	static public function create_new_user($username, $password, $email=NULL, $remember_me=FALSE) {
 		$sql = "SELECT id FROM users WHERE username = ?";
 		$existing_users = MYSQL::run_query($sql, 's', [$username]);
-		if (!is_empty($existing_users)) {
+		if (!empty($existing_users)) {
 			ERRORS::log(ERRORS::USER_ERROR, sprintf("User '%s' already exists", $username));
 		}
 
@@ -100,6 +99,7 @@ class User {
 
 		$selector = self::make_selector();
 		$sql = "INSERT INTO users (username, password, email, selector) VALUES (?, ?, ?, ?)";
+		echo(sprintf("Selector: %s\n", $selector));
 		MYSQL::run_query($sql, 'ssss', [&$username, &$passhash, &$email, &$selector]);
 		$id = MYSQL::get_index();
 		$user = self::login_user($username, $password, $remember_me);
@@ -299,9 +299,9 @@ class User {
 	}
 
 	public function grant_permissions($permission_level) {
-		$ids = MYSQL::run_query("SELECT id FROM permissions WHERE title = ?", 's', $permission_level);
-		if(is_empty($ids)) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("Permission level '%s' not found", $permission_level));
-		MYSQL::run_query("DELETE FROM user_roles WHERE id = ?", 'i', [&$this->id]);
+		$ids = MYSQL::run_query("SELECT id FROM permissions WHERE title = ?", 's', [&$permission_level]);
+		if(empty($ids)) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("Permission level '%s' not found", $permission_level));
+		MYSQL::run_query("DELETE FROM user_roles WHERE user_id = ?", 'i', [&$this->id]);
 		MYSQL::run_query("INSERT INTO user_roles (permission_level, user_id) VALUES (?, ?)", 'ii', [&$ids[0]['id'], &$this->id]);
 	}
 
@@ -324,7 +324,7 @@ class User {
 	}
 
 	public function get_username() {
-		$usernames = MYSQL::run_query("SELECT username FROM users WHERE id = ?", "i", $this->id);
+		$usernames = MYSQL::run_query("SELECT username FROM users WHERE id = ?", "i", [&$this->id]);
 		if (empty($usernames)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to get username of unknown user '%d'", $this->id);
 		return $usernames[0]['username'];
 	}

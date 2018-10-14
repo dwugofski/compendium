@@ -1,9 +1,19 @@
 <?php
 
-include_once "table_scripts/tables.php";
-include_once "errors.php";
-include_once "user.php";
-include_once "page.php";
+$ob_file = fopen('test.log','w');
+
+function ob_file_callback($buffer)
+{
+  global $ob_file;
+  fwrite($ob_file,$buffer);
+}
+
+ob_start('ob_file_callback');
+
+include_once __DIR__."/table_scripts/tables.php";
+include_once __DIR__."/errors.php";
+include_once __DIR__."/user.php";
+include_once __DIR__."/page.php";
 
 tables(TRUE, FALSE);
 
@@ -57,7 +67,7 @@ try {
 	$user2 = User::create_new_user("Foo", "bar", "foo@bar.com");
 }
 catch(Exception $e){
-	echo("Failed to in creating second, identical user\n");
+	echo("Failed to create second, identical user\n");
 }
 
 echo("\nCreating second, unique user\n");
@@ -66,18 +76,18 @@ echo(sprintf("User2's username is: %s\n", $user2->username));
 echo(sprintf("User2's email is: %s\n", $user2->email));
 echo(sprintf("User2's password is %s'bar'\n", User::validate_user($user2->username, "bar") ? "" : "not "));
 echo("Making user2 a user\n");
-$user->grant_permissions(User::PERM_USER);
+$user2->grant_permissions(User::PERM_USER);
 echo("User2 now has following permissions:\n");
-if ($user->has_permission(User::ACT_EDIT_ALL_ADMINS)) echo("    Edit all admins\n");
-if ($user->has_permission(User::ACT_EDIT_ALL_USERS)) echo("    Edit all users\n");
-if ($user->has_permission(User::ACT_EDIT_OWN_USER)) echo("    Edit own user\n");
-if ($user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) echo("    View unlocked pages\n");
+if ($user2->has_permission(User::ACT_EDIT_ALL_ADMINS)) echo("    Edit all admins\n");
+if ($user2->has_permission(User::ACT_EDIT_ALL_USERS)) echo("    Edit all users\n");
+if ($user2->has_permission(User::ACT_EDIT_OWN_USER)) echo("    Edit own user\n");
+if ($user2->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) echo("    View unlocked pages\n");
 
 echo("\nCreating guest\n");
 $guest = User::create_new_user("Hello", "World!", "hello@world.com");
 echo(sprintf("Guest's username is: %s\n", $guest->username));
 echo(sprintf("Guest's email is: %s\n", $guest->email));
-echo(sprintf("Guest's password is %s'bar'", User::validate_user($guest->username, "bar") ? "" : "not "));
+echo(sprintf("Guest's password is %s'bar'\n", User::validate_user($guest->username, "bar") ? "" : "not "));
 echo("Guest now has following permissions:\n");
 if ($guest->has_permission(User::ACT_EDIT_ALL_ADMINS)) echo("    Edit all admins\n");
 if ($guest->has_permission(User::ACT_EDIT_ALL_USERS)) echo("    Edit all users\n");
@@ -114,6 +124,8 @@ echo(sprintf("User's book is %sopened\n", $user_book->opened ? "" : "not "));
 
 echo("\n\nChecking access\n");
 function user_access_tests() {
+	global $user_book, $root, $admin, $user, $user2, $guest;
+
 	echo("\nChecking all users' access\n");
 	echo(sprintf("User's book's is %slocked\n", $user_book->locked ? "" : "not "));
 	echo(sprintf("User's book's is %sopened\n", $user_book->opened ? "" : "not "));
@@ -290,21 +302,28 @@ user_access_tests();
 
 echo("\n\nChecking subpages\n");
 function page_children($pagename, $page){
-	echo(sprintf("%s's direct children are\n", $pagename));
-	foreach ($page->children as $i => $child) {
-		echo(sprintf("    %s\n", $child->title));
-	}
-	echo(sprintf("All %s's children are\n", $pagename));
-	foreach ($page->all_children as $i => $child) {
-		echo(sprintf("    %s\n", $child->title));
+	if (!$page->has_children()) echo(sprintf("%s has no children\n", $pagename));
+	else {
+		echo(sprintf("%s's direct children are\n", $pagename));
+		foreach ($page->children as $i => $child) {
+			echo(sprintf("    %s\n", $child->title));
+		}
+		echo(sprintf("All %s's children are\n", $pagename));
+		foreach ($page->all_children as $i => $child) {
+			echo(sprintf("    %s\n", $child->title));
+		}
 	}
 }
 function page_parents($pagename, $page){
-	echo(sprintf("%s's parent is\n", $pagename, $page->parent));
-	echo(sprintf("%s's parents are\n", $pagename));
-	foreach ($page->children as $i => $child) {
-		echo(sprintf("    %s\n", $child->title));
+	if ($page->has_parent()) {
+		echo(sprintf("%s's parent is %s\n", $pagename, $page->parent->title));
+		echo(sprintf("%s's parents are\n", $pagename));
+		foreach ($page->parents as $i => $parent) {
+			echo(sprintf("    %s\n", $parent->title));
+		}
 	}
+	else echo(sprintf("%s has no parents\n", $pagename));
+	
 }
 
 echo("\nCreating user chapter\n");
@@ -318,6 +337,8 @@ page_parents("User's chapter", $user_chapter);
 
 echo("\nAdding user chapter to book\n");
 $user_book->add_child($user_chapter);
+echo(sprintf("User's chapter is %sa book\n", $user_chapter->isBook ? "" : "not "));
+echo(sprintf("User's chapter is %sa chapter\n", $user_chapter->isChapter ? "" : "not "));
 page_children("User's book", $user_book);
 page_parents("User's book", $user_book);
 page_children("User's chapter", $user_chapter);

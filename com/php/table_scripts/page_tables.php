@@ -14,11 +14,17 @@ function display_page_usage(){
 function page_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting page_subjects\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS page_subjects CASCADE");
+			echo("Deleting subjects\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS subjects CASCADE");
+			echo("Deleting sub_pages\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS sub_pages CASCADE");
+			echo("Deleting page_whitelists\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS page_whitelists CASCADE");
+			echo("Deleting page_colabs\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS page_colabs CASCADE");
+			echo("Deleting pages\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS pages CASCADE");
 			if ($delete) return;
 		}
@@ -33,7 +39,7 @@ function page_tables($overwrite, $delete) {
 		author_id INT(10) UNSIGNED NOT NULL, 
 		locked BOOLEAN DEFAULT FALSE, 
 		opened BOOLEAN DEFAULT FALSE, 
-		selector CHAR(12) NOT NULL, 
+		selector CHAR(24) NOT NULL, 
 		PRIMARY KEY (id), 
 		INDEX PAGE (title), 
 		UNIQUE INDEX SEL (selector), 
@@ -130,7 +136,7 @@ function page_tables($overwrite, $delete) {
 	}
 }
 
-if ($argc && strpos($argv[0], "page_tables.php") >= 0) {
+if ($argc && strpos($argv[0], "page_tables.php") !== FALSE) {
 	$overwrite = FALSE;
 	$delete = FALSE;
 	if ($argc > 1 && $argv[1] == "-h" || $argv[1] == "--help") {

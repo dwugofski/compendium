@@ -14,6 +14,7 @@ function display_user_usage(){
 function user_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting users\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS users CASCADE");
 			if ($delete) return;
 		}
@@ -26,7 +27,7 @@ function user_tables($overwrite, $delete) {
 		username VARCHAR(75) NOT NULL, 
 		password VARCHAR(100) NOT NULL,
 		email VARCHAR(255) NULL DEFAULT NULL,
-		selector CHAR(12) NOT NULL, 
+		selector CHAR(24) NOT NULL, 
 		PRIMARY KEY (id),
 		INDEX USER (username), 
 		UNIQUE INDEX SEL (selector))
@@ -41,7 +42,7 @@ function user_tables($overwrite, $delete) {
 	}
 }
 
-if ($argc && strpos($argv[0], "user_tables.php") >= 0) {
+if ($argc && strpos($argv[0], "user_tables.php") !== FALSE) {
 	$overwrite = FALSE;
 	$delete = FALSE;
 	if ($argc > 1 && $argv[1] == "-h" || $argv[1] == "--help") {
