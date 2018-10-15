@@ -1,11 +1,13 @@
 
 body #sidebar {
 	background-color: transparent;
-	float: left;
-	overflow-x: auto;
+	direction: rtl;
+	overflow-y: auto;
+	position: fixed;
 	width: var(--sidebar-width);
 
 	ul {
+		direction: ltr;
 		margin: 0;
 		margin-right: 0.3em;
 		padding: 0;
@@ -33,11 +35,19 @@ body #sidebar {
 			border-top: 0.1em solid var(--accent-dark);
 		}
 		li.last {
-			border-bottom: 0.1em solid var(--accent-dark);
+			//border-bottom: 0.1em solid var(--accent-dark);
 		}
 		li:hover {
 			background-color: var(--accent-dark);
 			margin-right: -0.3em;
+		}
+		#sidebar_footer {
+			padding: 0 0 0 0;
+			margin: 0 0 0 0;
+		}
+		#sidebar_footer:hover {
+			background-color: var(--accent);
+			margin-right: 0em;
 		}
 
 		ul {
@@ -98,8 +108,7 @@ body #sidebar {
 				font-weight: normal;
 				margin: 0;
 				margin-right: 1em;
-				padding: 0.1em;
-				padding-left: 1em;
+				padding: 0.1em 0.2em 0.1em 1em;
 
 				li {
 					background-color: transparent;
@@ -160,4 +169,9 @@ body #sidebar {
 			}
 		}
 	}
+}
+body #sidebar::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+    display: none;
 }
