@@ -14,9 +14,47 @@ body {
     float: left; }
   body .clearer {
     clear: both; }
+  body .screen {
+    background-color: var(--accent-screen);
+    display: none;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99; }
+  body hr {
+    background-color: var(--accent);
+    border-style: none;
+    height: 0.2em; }
 
 body > * {
   flex-shrink: 0; }
+
+body form label {
+  color: var(--accent);
+  display: block;
+  font-family: var(--sans-font);
+  font-size: 90%;
+  font-weight: bold;
+  margin-top: 0.2em; }
+body form input[type=text] {
+  box-sizing: border-box;
+  border: 1px solid var(--accent-light);
+  border-radius: 0.2em;
+  display: block;
+  padding: 0.5em;
+  width: 100%; }
+body form .button {
+  background-color: var(--accent);
+  border-radius: 0.2em;
+  color: var(--fg-light);
+  cursor: pointer;
+  margin-top: 1em;
+  padding: 0.5em;
+  text-align: center; }
+body form .button:hover {
+  background-color: var(--accent-dark); }
 
 body #header h1 {
   color: var(--accent);
@@ -28,7 +66,7 @@ body #header h1 {
 body #navbar {
   background-color: var(--accent);
   box-shadow: 0px 2px 5px var(--accent-dark);
-  font-size: 120%;
+  font-size: 100%;
   height: var(--navbar-height);
   overflow-x: hidden;
   overflow-y: hidden;
@@ -82,7 +120,7 @@ body #sidebar {
       color: var(--fg-light);
       cursor: pointer;
       display: block;
-      font-size: 120%;
+      font-size: 100%;
       font-weight: normal;
       margin: 0;
       padding: 0.2em;
@@ -94,6 +132,8 @@ body #sidebar {
       -moz-transition: margin-right 0.1s;
       -webkit-transition: margin-right 0.1s;
       transition: margin-right 0.1s; }
+    body #sidebar ul li.first {
+      padding-top: 1em; }
     body #sidebar ul li.parent {
       border-bottom: 0.1em solid var(--accent-dark); }
     body #sidebar ul li.restart {
@@ -115,12 +155,14 @@ body #sidebar {
         box-sizing: border-box;
         color: var(--accent);
         cursor: pointer;
-        font-size: 110%;
+        font-size: 100%;
         font-weight: normal;
         margin: 0;
         padding: 0.2em;
         padding-left: 2em;
         text-indent: -1.5em; }
+      body #sidebar ul ul li.first {
+        padding-top: 0.2em; }
       body #sidebar ul ul li.parent {
         border-bottom: 0.2em solid var(--accent); }
       body #sidebar ul ul li.restart {
@@ -236,12 +278,12 @@ body #main #display #heading {
     font-size: 300%;
     height: 60px;
     line-height: 60px;
-    top: 100px; }
+    top: 30px; }
   body #main #display #heading h2 {
     font-size: 150%;
     height: 30px;
     line-height: 30px;
-    top: 70px; }
+    top: 90px; }
 
 body #main #display #content {
   background-color: var(--bg);
@@ -302,5 +344,39 @@ body #main #display #content {
       color: var(--accent);
       font-style: italic;
       font-weight: bold; }
+
+body #login_screen #login {
+  background-color: var(--bg);
+  border: 0.1em solid var(--accent);
+  border-radius: 0.5em;
+  box-sizing: border-box;
+  margin: 10em auto 0 auto;
+  padding: 2em 1em;
+  width: var(--login-width); }
+  body #login_screen #login h1 {
+    border-bottom: 0.1em solid var(--accent);
+    color: var(--accent);
+    font-family: var(--serif-font);
+    font-variant: small-caps;
+    font-size: 200%;
+    font-weight: bold;
+    margin: 0em 0 0.5em 0;
+    text-align: center; }
+  body #login_screen #login h2 {
+    color: var(--accent);
+    font-family: var(--sans-font);
+    font-size: 110%;
+    font-weight: bold;
+    margin: 1em 0 0 0;
+    text-align: center; }
+    body #login_screen #login h2 a {
+      text-decoration: underline;
+      cursor: pointer; }
+    body #login_screen #login h2 a:hover {
+      color: var(--accent-dark); }
+  body #login_screen #login form {
+    padding: 0 4em 0em 4em; }
+  body #login_screen #login #signup_form {
+    display: none; }
 
 /*# sourceMappingURL=main.css.map */

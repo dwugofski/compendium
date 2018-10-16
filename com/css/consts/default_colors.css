@@ -14,8 +14,8 @@
 	--accent-screen: rgba(122, 32, 12, 0.7);
 
 	--fg: black;
-	--fg-light: #fdf1dc;
-	--fg-dark: #7a200d;
+	--fg-light: var(--bg);
+	--fg-dark: var(--accent);
 
 	--red-dark: #7A200D;
 	--red: #A2402B;

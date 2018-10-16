@@ -1,0 +1,46 @@
+
+body #login_screen #login {
+	background-color: var(--bg);
+	border: 0.1em solid var(--accent);
+	border-radius: 0.5em;
+	box-sizing: border-box;
+	margin: 10em auto 0 auto;
+	padding: 2em 1em;
+	width: var(--login-width);
+
+	h1 {
+		border-bottom: 0.1em solid var(--accent);
+		color: var(--accent);
+		font-family: var(--serif-font);
+		font-variant: small-caps;
+		font-size: 200%;
+		font-weight: bold;
+		margin: 0em 0 0.5em 0;
+		text-align: center;
+	}
+
+	h2 {
+		color: var(--accent);
+		font-family: var(--sans-font);
+		font-size: 110%;
+		font-weight: bold;
+		margin: 1em 0 0 0;
+		text-align: center;
+
+		a {
+			text-decoration: underline;
+			cursor: pointer;
+		}
+		a:hover {
+			color: var(--accent-dark);
+		}
+	}
+
+	form {
+		padding: 0 4em 0em 4em;
+	}
+
+	#signup_form {
+		display: none;
+	}
+}

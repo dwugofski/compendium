@@ -3,9 +3,11 @@
 	--min-width: 800px;
 	--min-width-delta: 816px;
 
-	--heading-height: 400px;
-	--navbar-height: 60px;
-	--sidebar-width: 400px;
+	--heading-height: 160px;
+	--navbar-height: 40px;
+	--sidebar-width: 375px;
 	--content-width: 1000px;
-	--content-adjust: -200px;
+	--content-adjust: 0px;
+
+	--login-width: 400px;
 }

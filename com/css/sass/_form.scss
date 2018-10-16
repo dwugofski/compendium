@@ -1,0 +1,33 @@
+
+body form {
+	label {
+		color: var(--accent);
+		display: block;
+		font-family: var(--sans-font);
+		font-size: 90%;
+		font-weight: bold;
+		margin-top: 0.2em;
+	}
+
+	input[type=text]{
+		box-sizing: border-box;
+		border: 1px solid var(--accent-light);
+		border-radius: 0.2em;
+		display: block;
+		padding: 0.5em;
+		width: 100%;
+	}
+
+	.button {
+		background-color: var(--accent);
+		border-radius: 0.2em;
+		color: var(--fg-light);
+		cursor: pointer;
+		margin-top: 1em;
+		padding: 0.5em;
+		text-align: center;
+	}
+	.button:hover {
+		background-color: var(--accent-dark);
+	}
+}

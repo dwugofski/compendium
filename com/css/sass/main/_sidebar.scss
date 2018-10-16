@@ -18,7 +18,7 @@ body #sidebar {
 			color: var(--fg-light);
 			cursor: pointer;
 			display: block;
-			font-size: 120%;
+			font-size: 100%;
 			font-weight: normal;
 			margin: 0;
 			padding: 0.2em;
@@ -27,6 +27,9 @@ body #sidebar {
 
 			@include transition(background-color, 0.4s);
 			@include transition(margin-right, 0.1s);
+		}
+		li.first {
+			padding-top: 1em;
 		}
 		li.parent {
 			border-bottom: 0.1em solid var(--accent-dark);
@@ -59,12 +62,15 @@ body #sidebar {
 				box-sizing: border-box;
 				color: var(--accent);
 				cursor: pointer;
-				font-size: 110%;
+				font-size: 100%;
 				font-weight: normal;
 				margin: 0;
 				padding: 0.2em;
 				padding-left: 2em;
 				text-indent: -1.5em;
+			}
+			li.first {
+				padding-top: 0.2em;
 			}
 			li.parent {
 				border-bottom: 0.2em solid var(--accent);

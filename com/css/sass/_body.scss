@@ -14,6 +14,23 @@ body {
 	.fr { float: right; }
 	.fl { float: left; }
 	.clearer {clear: both; }
+
+	.screen {
+		background-color: var(--accent-screen);
+		display: none;
+		height: 100%;
+		left: 0;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 99;
+	}
+
+	hr {
+		background-color: var(--accent);
+		border-style: none;
+		height: 0.2em;
+	}
 }
 
 body > * {
