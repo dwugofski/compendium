@@ -1,5 +1,14 @@
 <?php
 
+class CompendiumError extends Exception {
+	var $can_show;
+
+	public function __construct($message = "", $can_show = FALSE, $code = ERRORS::NO_ERROR, $previous = NULL) {
+		parent::__construct($message, $code, $previous);
+		$this->can_show = $can_show;
+	}
+}
+
 class ERRORS {
 	const NO_ERROR 				= 0;
 	const MYSQL_ERROR 			= 1;
@@ -33,7 +42,12 @@ class ERRORS {
 		$msg = call_user_func_array('sprintf', $msg_args);
 		$log_string = self::error_to_string($error).": ".$msg;
 		error_log($log_string);
-		throw(new Exception($log_string));
+		throw(new CompendiumError($log_string, FALSE, $error));
+	}
+
+	static public function json_log(CompendiumError $e) {
+		if ($e->can_show) echo(json_encode(["error" => $e->get_message()]));
+		else echo(json_encode(["error" => "Server encountered fatal error!"]));
 	}
 }
 

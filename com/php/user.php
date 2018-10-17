@@ -55,7 +55,7 @@ class User {
 	}
 
 	static public function login_from_token($selector, $validator) {
-		$tokens = self::check_login_token($selector);
+		/*$tokens = self::check_login_token($selector);
 		if (!empty($tokens)) {
 			$token = $tokens[0];
 			if (hash_equals($token['valhash'], hash('sda256', $validator))) {
@@ -72,14 +72,26 @@ class User {
 						self::delete_login_token($selector);
 					}
 					$user = new User($token['userid']);
-					$user->$token = ['selector' => $selector, 'validator' => $validator];
+					$user->token = ['selector' => $selector, 'validator' => $validator];
 					return $user;
 				}
 			}
 			self::delete_login_token($selector);
 		}
 
-		ERRORS::log(ERRORS::USER_ERROR, 'Attempt to use invalid login token detected!');
+		ERRORS::log(ERRORS::USER_ERROR, 'Attempt to use invalid login token detected!');*/
+
+		if (self::validate_token($selector, $validator)) {
+			$sql = "SELECT id FROM users WHERE id = ?";
+			$users = MYSQL::run_query($sql, 'i', [&$token['userid']]);
+			if (empty($users)) {
+				ERRORS::log(ERRORS::USER_ERROR, "Login token's user not found");
+				self::delete_login_token($selector);
+			}
+			$user = new User($token['userid']);
+			$user->token = ['selector' => $selector, 'validator' => $validator];
+			return $user;
+		} else ERRORS::log(ERRORS::USER_ERROR, 'Attempt to use invalid login token detected!');
 	}
 
 	static public function create_new_user($username, $password, $email=NULL, $remember_me=FALSE) {
@@ -134,6 +146,12 @@ class User {
 		return !empty($users);
 	}
 
+	static public function check_user_email($email) {
+		$sql = "SELECT id FROM users WHERE email = ?";
+		$users = MYSQL::run_query($sql, 'i', [&$email]);
+		return !empty($users);
+	}
+
 	static public function validate_user($username, $password) {
 		$sql = "SELECT password FROM users WHERE username = ?";
 		$hashes = MYSQL::run_query($sql, 's', [$username]);
@@ -144,9 +162,41 @@ class User {
 		}
 	}
 
+	static public function validate_token($selector, $validator) {
+		$tokens = self::check_login_token($selector);
+		if (!empty($tokens)) {
+			$token = $tokens[0];
+			if (hash_equals($token['valhash'], hash('sda256', $validator))) {
+				$expires = new DateTime($token['expires']);
+				$now = new DateTime();
+				if ($expires < $now) {
+					self::delete_login_token($selector);
+				} else {
+					$sql = "SELECT id FROM users WHERE id = ?";
+					$users = MYSQL::run_query($sql, 'i', [&$token['userid']]);
+					if (empty($users)) {
+						self::delete_login_token($selector);
+					} else return TRUE;
+				}
+			}
+			self::delete_login_token($selector);
+		}
+
+		return FALSE;
+	}
+
 	static public function get_user($username) {
 		$sql = "SELECT id FROM users WHERE username = ?";
 		$users = MYSQL::run_query($sql, 's', [$username]);
+		if (empty($users)) return ['error' => ERRORS::USER_ERROR];
+		else {
+			return new User($users[0]['id']);
+		}
+	}
+
+	static public function get_user_from_email($email) {
+		$sql = "SELECT id FROM users WHERE email = ?";
+		$users = MYSQL::run_query($sql, 's', [$email]);
 		if (empty($users)) return ['error' => ERRORS::USER_ERROR];
 		else {
 			return new User($users[0]['id']);
@@ -183,7 +233,7 @@ class User {
 	}
 
 	static public function validate_email($email) {
-		if (empty($email)) return ERRORS::NO_ERROR;
+		if (empty($email)) return FALSE;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return FALSE;
 		else return TRUE;
 	}
@@ -216,6 +266,8 @@ class User {
 				return $this->get_selector();
 			case "permissions":
 				return $this->get_permissions();
+			case "data":
+				return ["username" => $this->get_username, "token" => $this->token, "email" => $this->email, "selector" => $this->get_selector()];
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of user", $name);
 		}
@@ -232,6 +284,7 @@ class User {
 			case "id":
 			case "token":
 			case "selector":
+			case "data":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of user", $name);
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of user", $name);

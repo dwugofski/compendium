@@ -43,6 +43,25 @@ Compendium.Login = {
 		}
 	},
 
+	submit_login_form : function() {
+		var login_data = this.login_form.serializeArray().reduce(function(o, i){ 
+			o[i.name] = i.value;
+			return o;
+		}, {});
+		var php_data = {"userident": login_data.username, "password":login_data.password};
+		$.post("com/php/login_user.php", php_data, this.handle_php_login.bind(this), "json").fail(this.handle_php_login_error.bind(this));
+	},
+
+	handle_php_login : function(data, status, jqxhr) {
+		console.log("Login Success");
+		console.log(data);
+	},
+
+	handle_php_login_error : function(data, status, jqxhr) {
+		console.log("Login Error");
+		console.log(data);
+	},
+
 	namespace : "Compendium.Login"
 };
 
