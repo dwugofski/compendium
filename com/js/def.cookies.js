@@ -24,7 +24,7 @@ Compendium.Cookies = {
 				cookie = cookie.substring(1);
 			}
 			if (cookie.indexOf(name) == 0) {
-				return JSON.parse(c.substring(name.length, cookie.length));
+				return JSON.parse(cookie.substring(name.length, cookie.length));
 			}
 		}
 		return undefined;
@@ -43,7 +43,7 @@ Compendium.Cookies = {
 			var name_end = cookie.indexOf("=");
 			if (name_end < 0) continue;
 			var name = cookie.substring(0, name_end);
-			var value = JSON.parse(cookie.substring(name_end));
+			var value = JSON.parse(cookie.substring(name_end+1));
 			while(name.charAt(0) == ' ') {
 				name = name.substring(1);
 			}
