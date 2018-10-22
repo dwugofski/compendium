@@ -13,6 +13,7 @@ Compendium.Login = {
 
 		$("#login_sign_up").click({action: "signup"}, this.switch_login_screen.bind(this));
 		$("#signup_log_in").click({action: "login"}, this.switch_login_screen.bind(this));
+		$("#login_form_submit").click({action: "login"}, this.submit_login_form.bind(this));
 
 		this.navopt.click(this.display_login_screen.bind(this));
 		this.screen.click(function(event) {
@@ -44,17 +45,24 @@ Compendium.Login = {
 	},
 
 	submit_login_form : function() {
+		console.log("Running");
 		var login_data = this.login_form.serializeArray().reduce(function(o, i){ 
 			o[i.name] = i.value;
 			return o;
 		}, {});
 		var php_data = {"userident": login_data.username, "password":login_data.password};
-		$.post("com/php/login_user.php", php_data, this.handle_php_login.bind(this), "json").fail(this.handle_php_login_error.bind(this));
+		$.ajax({
+			url : "com/php/login_user.php",
+			type : "POST",
+			data : php_data,
+			success : this.handle_php_login.bind(this),
+			error : this.handle_php_login_error.bind(this)
+		});
 	},
 
 	handle_php_login : function(data, status, jqxhr) {
 		console.log("Login Success");
-		console.log(data);
+		console.log(JSON.parse(data));
 	},
 
 	handle_php_login_error : function(data, status, jqxhr) {

@@ -2,7 +2,6 @@
 
 include_once(__DIR__."/session.php");
 include_once(__DIR__."/errors.php");
-include_once(__DIR__."/json/json_head.php");
 include_once(__DIR__."/user.php");
 
 // TODO: Limit login attempts -- gate login with capcha after certain # attempts
@@ -45,7 +44,7 @@ try {
 	json_ret($user->data);
 }
 catch (CompendiumError $e) {
-	json_log($e);
+	ERRORS::json_log($e);
 }
 
 

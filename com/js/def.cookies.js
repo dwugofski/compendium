@@ -43,7 +43,13 @@ Compendium.Cookies = {
 			var name_end = cookie.indexOf("=");
 			if (name_end < 0) continue;
 			var name = cookie.substring(0, name_end);
-			var value = JSON.parse(cookie.substring(name_end+1));
+			console.log(cookie.substring(name_end+1));
+			var value = ""; 
+			try {
+				value = JSON.parse(cookie.substring(name_end+1));
+			} catch(e) {
+				value = cookie.substring(name_end+1);
+			}
 			while(name.charAt(0) == ' ') {
 				name = name.substring(1);
 			}

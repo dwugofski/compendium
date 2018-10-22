@@ -1,7 +1,7 @@
 <?php
 
 class CompendiumError extends Exception {
-	var $can_show;
+	public $can_show;
 
 	public function __construct($message = "", $can_show = FALSE, $code = ERRORS::NO_ERROR, $previous = NULL) {
 		parent::__construct($message, $code, $previous);
@@ -46,8 +46,11 @@ class ERRORS {
 	}
 
 	static public function json_log(CompendiumError $e) {
-		if ($e->can_show) echo(json_encode(["error" => $e->get_message()]));
-		else echo(json_encode(["error" => "Server encountered fatal error!"]));
+		try {
+			self::log($e->getCode(), $e->getMessage());
+		} catch(CompendiumError $x) {}
+		if ($e->can_show) echo(json_encode(array("error" => $e->getMessage())));
+		else echo(json_encode(array("error" => "Server encountered fatal error!")));
 	}
 }
 

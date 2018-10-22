@@ -1,6 +1,5 @@
 <?php
 
-echo(__DIR__."\n");
 include_once(__DIR__."/errors.php");
 include_once(__DIR__."/mysql.php");
 
