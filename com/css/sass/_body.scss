@@ -26,6 +26,14 @@ body {
 		z-index: 99;
 	}
 
+	.error {
+		color: var(--error);
+		display: none;
+		font-family: var(--code-font);
+		margin-top: 0.5em;
+		text-align: center;
+	}
+
 	hr {
 		background-color: var(--accent);
 		border-style: none;

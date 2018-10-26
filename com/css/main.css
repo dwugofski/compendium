@@ -23,6 +23,12 @@ body {
     top: 0;
     width: 100%;
     z-index: 99; }
+  body .error {
+    color: var(--error);
+    display: none;
+    font-family: var(--code-font);
+    margin-top: 0.5em;
+    text-align: center; }
   body hr {
     background-color: var(--accent);
     border-style: none;
@@ -38,7 +44,7 @@ body form label {
   font-size: 90%;
   font-weight: bold;
   margin-top: 0.2em; }
-body form input[type=text] {
+body form input[type=text], body form input[type=password] {
   box-sizing: border-box;
   border: 1px solid var(--accent-light);
   border-radius: 0.2em;
@@ -55,6 +61,34 @@ body form .button {
   text-align: center; }
 body form .button:hover {
   background-color: var(--accent-dark); }
+body form .button.disabled {
+  background-color: var(--accent-light);
+  cursor: default; }
+body form .ttb {
+  display: block;
+  position: relative; }
+  body form .ttb .tt {
+    display: none; }
+body form .ttb:hover .tt, body form .ttb:hover .tt {
+  background-color: var(--bg);
+  border: 0.1em solid var(--accent-light);
+  border-radius: 0.2em;
+  color: var(--accent);
+  display: inline-block;
+  font-family: var(--sans-font);
+  font-size: 90%;
+  font-weight: bold;
+  left: 100%;
+  padding: 0.2em;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  z-index: 1; }
+  body form .ttb:hover .tt ul, body form .ttb:hover .tt ul {
+    margin: 0;
+    padding: 0 0.2em 0.2em 2em; }
+    body form .ttb:hover .tt ul li, body form .ttb:hover .tt ul li {
+      font-weight: normal; }
 
 body #header h1 {
   color: var(--accent);

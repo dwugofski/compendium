@@ -13,6 +13,8 @@
 	--accent-haze: #ba8672;
 	--accent-screen: rgba(122, 32, 12, 0.7);
 
+	--error: red;
+
 	--fg: black;
 	--fg-light: var(--bg);
 	--fg-dark: var(--accent);

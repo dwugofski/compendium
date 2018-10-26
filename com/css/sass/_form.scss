@@ -9,7 +9,7 @@ body form {
 		margin-top: 0.2em;
 	}
 
-	input[type=text]{
+	input[type=text], input[type=password]{
 		box-sizing: border-box;
 		border: 1px solid var(--accent-light);
 		border-radius: 0.2em;
@@ -30,4 +30,45 @@ body form {
 	.button:hover {
 		background-color: var(--accent-dark);
 	}
+	.button.disabled {
+		background-color: var(--accent-light);
+		cursor: default;
+	}
+
+	.ttb {
+		display: block;
+		position: relative;
+
+		.tt {
+			display: none;
+		}
+	}
+	.ttb:hover, .ttb:hover {
+		.tt {
+			background-color: var(--bg);
+			border: 0.1em solid var(--accent-light);
+			border-radius: 0.2em;
+			color: var(--accent);
+			display: inline-block;
+			font-family: var(--sans-font);
+			font-size: 90%;
+			font-weight: bold;
+			left: 100%;
+			padding: 0.2em;
+			position: absolute;
+			top: 0;
+			white-space: nowrap;
+			z-index: 1;
+
+			ul {
+				margin: 0;
+				padding: 0 0.2em 0.2em 2em;
+
+				li {
+					font-weight: normal;
+				}
+			}
+		}
+	}
+
 }
