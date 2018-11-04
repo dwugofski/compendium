@@ -12,6 +12,10 @@ Compendium.Login = {
 
 	switch_to_login : undefined,
 	signup_submit : undefined,
+	signup_form_username : undefined,
+	signup_form_email : undefined,
+	signup_form_password1 : undefined,
+	signup_form_password2 : undefined,
 
 	error_box : undefined,
 
@@ -28,6 +32,10 @@ Compendium.Login = {
 
 		this.switch_to_login = $("#signup_log_in");
 		this.signup_submit = $("#signup_form_submit");
+		this.signup_form_username = $("#signup_form_username");
+		this.signup_form_email = $("#signup_form_email");
+		this.signup_form_password1 = $("#signup_form_password1");
+		this.signup_form_password2 = $("#signup_form_password2");
 
 		this.error_box = $("#login_error");
 
@@ -38,6 +46,11 @@ Compendium.Login = {
 
 		this.login_form_username.on("input", this.update_login_field.bind(this));
 		this.login_form_password.on("input", this.update_login_field.bind(this));
+
+		this.signup_form_username.on("input", this.update_signup_field.bind(this));
+		this.signup_form_email.on("input", this.update_signup_field.bind(this));
+		this.signup_form_password1.on("input", this.update_signup_field.bind(this));
+		this.signup_form_password2.on("input", this.update_signup_field.bind(this));
 
 		this.disable_login();
 		this.disable_signup();
@@ -60,9 +73,17 @@ Compendium.Login = {
 		return re.test(String(password));
 	},
 
+	verify_password_match : function(password) {
+		return password == this.signup_form_password2;
+	},
+
 	verify_username : function(username) {
 		var re = /([a-zA-Z])([\w]{2,24})$/;
 		return re.test(String(username));
+	},
+
+	verify_username_or_email : function(username) {
+		return this.verify_username(username) || this.verify_email(username);
 	},
 
 	show_error : function(str) {
@@ -70,24 +91,43 @@ Compendium.Login = {
 		this.error_box.html(str);
 	},
 
+	verify_field : function(elem, val, eval_f) {
+		var okay = true;
+
+		if (val && 0 !== val.length) {
+			if (!eval_f(val)) {
+				okay = false;
+				if (!elem.hasClass("invalid")) elem.addClass("invalid");
+			} else if (elem.hasClass("invalid")) elem.removeClass("invalid");
+		} else {
+			okay = false;
+			if (elem.hasClass("invalid")) elem.removeClass("invalid");
+		}
+
+		return okay;
+	},
+
 	update_login_field : function(e) {
 		var okay = true;
 
-		console.log("Changed");
-
-		okay = okay && (this.login_form_username.val() && 0 !== this.login_form_username.val().length);
-		okay = okay && this.verify_username(this.login_form_username.val());
-		okay = okay && (this.login_form_password.val() && 0 !== this.login_form_password.val().length);
-		okay = okay && this.verify_password(this.login_form_password.val());
-		if (okay) {
-			console.log("password okay");
-		}
+		okay = okay && this.verify_field(this.login_form_username, this.login_form_username.val(), this.verify_username_or_email);
+		okay = okay && this.verify_field(this.login_form_password, this.login_form_password.val(), this.verify_password);
 
 		if (okay) {
 			this.enable_login();
 		} else {
 			this.disable_login();
 		}
+	},
+
+	update_signup_field : function(e) {
+		var okay = true;
+
+		okay = okay && this.verify_field(this.login_form_username, this.login_form_username.val(), this.verify_username_or_email);
+		okay = okay && this.verify_field(this.login_form_password, this.login_form_password.val(), this.verify_password);
+
+		if (okay) this.enable_signup();
+		else this.disable_signup();
 	},
 
 	disable_login : function() {

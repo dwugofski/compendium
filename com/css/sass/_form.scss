@@ -17,6 +17,13 @@ body form {
 		padding: 0.5em;
 		width: 100%;
 	}
+	input[type=text].invalid, input[type=password].invalid {
+		border: 1px solid var(--red);
+		background-color: var(--red-shade);
+	}
+	input[type=text].invalid:focus, input[type=password].invalid:focus {
+		outline: 1px solid var(--red);
+	}
 
 	.button {
 		background-color: var(--accent);

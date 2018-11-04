@@ -51,6 +51,11 @@ body form input[type=text], body form input[type=password] {
   display: block;
   padding: 0.5em;
   width: 100%; }
+body form input[type=text].invalid, body form input[type=password].invalid {
+  border: 1px solid var(--red);
+  background-color: var(--red-shade); }
+body form input[type=text].invalid:focus, body form input[type=password].invalid:focus {
+  outline: 1px solid var(--red); }
 body form .button {
   background-color: var(--accent);
   border-radius: 0.2em;
