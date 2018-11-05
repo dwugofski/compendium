@@ -5,11 +5,18 @@
 	<link rel="stylesheet" type="text/css" href="com/css/consts/sizes.css"/>
 	<link rel="stylesheet" type="text/css" href="com/css/main.css"/>
 	<script type="text/javascript" src="com/js/jquery.js"></script>
-	<script type="text/javascript" src="com/js/def.js"></script>
-	<script type="text/javascript" src="com/js/def.cookies.js"></script>
-	<script type="text/javascript" src="com/js/def.login.js"></script>
-	<script type="text/javascript" src="com/js/def.head.js"></script>
-	<script type="text/javascript" src="com/js/def.head.rendering.js"></script>
+	<script type="module" src="com/js/slate/immutable.min.js"></script>
+	<script type="module" src="com/js/slate/react.production.min.js"></script>
+	<script type="module" src="com/js/slate/react-dom.production.min.js"></script>
+	<script type="module" src="com/js/slate/react-dom-server.browser.production.min.js"></script>
+	<script type="module" src="com/js/slate/slate.js"></script>
+	<script type="module" src="com/js/def.js"></script>
+	<script type="module" src="com/js/def/cookies.js"></script>
+	<script type="module" src="com/js/def/login.js"></script>
+	<script type="module" src="com/js/def/head.js"></script>
+	<script type="module" src="com/js/def/head/rendering.js"></script>
+	<script type="module" src="com/js/def/edit.js"></script>
+	<script type="module" src="com/js/def/edit/editor.js"></script>
 <head>
 </head>
 <body>
@@ -81,7 +88,8 @@
 				<div id="text_entry">
 					<form id="page_form">
 						<input type="text" name="title" id="page_form_title" placeholder="Untitled" />
-						<textarea name="text" id="page_form_text" placeholder="Begin writing here..."></textarea>
+						<!--<textarea name="text" id="page_form_text" placeholder="Begin writing here..."></textarea>-->
+						<div id="page_form_text_div"></div>
 						<div id="page_form_review_sub"><span>Formatting guide</span></div>
 						<div id="page_form_submit" class="button">Submit</div>
 					</form>
@@ -166,9 +174,9 @@
 				<label>Email Address</label>
 				<input id="signup_form_email" type="text" name="email"/>
 				<label>Password</label>
-				<input id="signup_form_password1" type="password" name="login_form_password"/>
+				<input id="signup_form_password1" type="password" name="password1"/>
 				<label>Password (confirm)</label>
-				<input id="signup_form_password2" type="password" name="login_form_password"/>
+				<input id="signup_form_password2" type="password" name="password2"/>
 				<div id="login_form_submit" class="button">Sign up</div>
 				<hr/>
 				<h2>Already a user?<br/><a id="signup_log_in">Sign In</a></h2>
