@@ -3,9 +3,15 @@ var header = undefined;
 var navbar = undefined;
 var main = undefined;
 var sidebar = undefined;
-var content = undefined;
+var contnt = undefined;
 
 export function init() {
+	header = $("#header");
+	navbar = $("#navbar");
+	main = $("#main");
+	sidebar = $("#sidebar");
+	contnt = $("#content");
+
 	$(window).scroll(scrollnav);
 	setTimeout(function() {
 		window.scrollBy(0, 1);
@@ -24,13 +30,7 @@ function decodemedia(){
 	}
 }
 
-function scrollnav() {
-	const header = $("#header");
-	const navbar = $("#navbar");
-	const main = $("#main");
-	const sidebar = $("#sidebar");
-	const contnt = $("#content");
-
+function scrollnav() {	
 	var vwh = $(window).height();
 	var scrolled = $(window).scrollTop();
 	var headh = header.height();
