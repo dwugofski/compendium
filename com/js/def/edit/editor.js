@@ -1,8 +1,4 @@
 
-import React from '../../slate/react.production.min.js';
-import ReactDOM from '../../slate/react-dom.production.min.js';
-import { Editor, Value } from '../../slate/slate.js';
-
 const init_val = Value.fromJSON({
 	document: {
 		nodes: {
@@ -16,15 +12,9 @@ const init_val = Value.fromJSON({
 			}]
 		}
 	}
-});
+})
 
 class CompEditor extends React.Component {
-	state = {value: init_val};
-
-	onChange = ({value}) => {
-		this.setState({value});
-	}
-
 	render() {
 		return <CompEditor value={this.state.value} onChange={this.onChange} />;
 	}

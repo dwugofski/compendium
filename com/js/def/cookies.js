@@ -29,7 +29,7 @@ export function get(cname) {
 	return undefined;
 }
 
-export function delete(cname) {
+export function del(cname) {
 	set(cname, undefined);
 }
 

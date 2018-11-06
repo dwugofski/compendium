@@ -6,11 +6,12 @@ var sidebar = undefined;
 var content = undefined;
 
 export function init() {
-	header = $("#header");
-	navbar = $("#navbar");
-	main = $("#main");
-	sidebar = $("#sidebar");
-	contnt = $("#content");
+	$(window).scroll(scrollnav);
+	setTimeout(function() {
+		window.scrollBy(0, 1);
+		scrollnav();
+		window.scrollBy(0, -1);
+	}, 100);
 }
 
 
@@ -24,6 +25,12 @@ function decodemedia(){
 }
 
 function scrollnav() {
+	const header = $("#header");
+	const navbar = $("#navbar");
+	const main = $("#main");
+	const sidebar = $("#sidebar");
+	const contnt = $("#content");
+
 	var vwh = $(window).height();
 	var scrolled = $(window).scrollTop();
 	var headh = header.height();
@@ -61,16 +68,9 @@ function scrollnav() {
 
 window.print = function() {
   scrollnav();
-  // do stuff
   _print();
 }
 
 $(document).ready(function() {
-	init();	
-	$(window).scroll(scrollnav);
-	setTimeout(function() {
-		window.scrollBy(0, 1);
-		scrollnav();
-		window.scrollBy(0, -1);
-	}, 100);
+	init();
 });
