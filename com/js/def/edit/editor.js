@@ -3,6 +3,27 @@ import { Markup } from "./markup.js";
 
 const e = React.createElement;
 
+const initialValue = Slate.Value.fromJSON({
+  document: {
+    nodes: [
+      {
+        object: 'block',
+        type: 'paragraph',
+        nodes: [
+          {
+            object: 'text',
+            leaves: [
+              {
+                text: 'A line of text in a paragraph.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+})
+
 export class CompEditor extends React.Component {
 	constructor() {
 		super();
@@ -23,8 +44,8 @@ export class CompEditor extends React.Component {
 
 	render() {
 		return e(
-			"textarea",
-			{	value: this.state.value,
+			SlateReact.Editor,
+			{	value: initialValue,
 				onChange: this.onChange.bind(this),
 				onKeyDown: this.onKeyDown.bind(this),
 				id: "page_form_text"}
