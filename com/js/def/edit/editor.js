@@ -6,11 +6,13 @@ const e = React.createElement;
 export class CompEditor extends React.Component {
 	constructor() {
 		super();
-		this.state = {value: "Hello world!"};
+		this.state = {value: "#hello\n\nhello hello 2u	80ud-ca8mndm-08acsd7qm3-c4t\nhello hello  \nhelloh sdahfopsdojf\n\nheelsafdjpi"};
 	}
 
 	onChange(event) {
 		const value = event.target.value;
+		const mkup = new Markup(value);
+		console.log(mkup.parse());
 		this.setState({value: value});
 	}
 
