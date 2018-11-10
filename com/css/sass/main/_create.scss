@@ -18,7 +18,7 @@ body #text_entry {
 			background-color: var(--bg-light);
 		}
 
-		#page_form_text {
+		.mkdn_editor {
 			border-color: var(--bg-dark);
 			background-color: transparent;
 			border: none;
@@ -30,10 +30,12 @@ body #text_entry {
 			outline: none;
 			overflow-y: hidden;
 			padding: 1em;
+			padding-right: calc(1em + var(--scrollbar-width));
 			resize: none;
 			width: calc(100% - 2em);
 		}
-		#page_form_text:focus, #page_form_text:hover {
+		.mkdn_editor:hover, .mkdn_editor:focus {
+			padding-right: 1em;
 			background-color: var(--bg-light);
 			overflow-y: scroll;
 		}

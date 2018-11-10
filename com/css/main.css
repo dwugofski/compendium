@@ -399,7 +399,7 @@ body #text_entry #page_form #page_form_title {
   padding: 0.1em; }
 body #text_entry #page_form #page_form_title:focus, body #text_entry #page_form #page_form_title:hover {
   background-color: var(--bg-light); }
-body #text_entry #page_form #page_form_text {
+body #text_entry #page_form .mkdn_editor {
   border-color: var(--bg-dark);
   background-color: transparent;
   border: none;
@@ -411,9 +411,11 @@ body #text_entry #page_form #page_form_text {
   outline: none;
   overflow-y: hidden;
   padding: 1em;
+  padding-right: calc(1em + var(--scrollbar-width));
   resize: none;
   width: calc(100% - 2em); }
-body #text_entry #page_form #page_form_text:focus, body #text_entry #page_form #page_form_text:hover {
+body #text_entry #page_form .mkdn_editor:hover, body #text_entry #page_form .mkdn_editor:focus {
+  padding-right: 1em;
   background-color: var(--bg-light);
   overflow-y: scroll; }
 body #text_entry #page_form #page_form_submit {
