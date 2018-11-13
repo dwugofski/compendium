@@ -66,46 +66,48 @@ class Page {
 
 	public function __get($name) {
 		switch($name){
-			case "id":
-				return $this->id;
-			case "author":
-				return $this->get_author();
-			case "title":
-				return $this->get_title();
-			case "text":
-				return $this->get_text();
-			case "selector":
-				return $this->get_selector();
-			case "locked":
-				return $this->is_locked();
-			case "opened":
-				return $this->is_opened();
-			case "colabs":
-			case "collabs":
-			case "collaborators":
-				return $this->get_colabs();
-			case "whitelist":
-				return $this->get_whitelist();
-			case "blacklist":
-				return $this->get_blacklist();
-			case "level":
-				return $this->get_level();
-			case "parents":
-				return $this->get_parents(TRUE);
-			case "parent":
-				return $this->get_parent();
 			case "all_children":
 				return $this->get_children(TRUE);
-			case "children":
-				return $this->get_children(FALSE);
-			case "isBook":
-				return $this->is_book();
-			case "isChapter":
-				return $this->is_chapter();
+			case "author":
+				return $this->get_author();
+			case "blacklist":
+				return $this->get_blacklist();
 			case "book":
 				return $this->get_book();
 			case "chapter":
 				return $this->get_chapter();
+			case "children":
+				return $this->get_children(FALSE);
+			case "colabs":
+			case "collabs":
+			case "collaborators":
+				return $this->get_colabs();
+			case "description":
+				return $this->get_description();
+			case "id":
+				return $this->id;
+			case "isBook":
+				return $this->is_book();
+			case "isChapter":
+				return $this->is_chapter();
+			case "level":
+				return $this->get_level();
+			case "locked":
+				return $this->is_locked();
+			case "opened":
+				return $this->is_opened();
+			case "parent":
+				return $this->get_parent();
+			case "parents":
+				return $this->get_parents(TRUE);
+			case "selector":
+				return $this->get_selector();
+			case "text":
+				return $this->get_text();
+			case "title":
+				return $this->get_title();
+			case "whitelist":
+				return $this->get_whitelist();
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of page", $name);
 		}
@@ -113,32 +115,37 @@ class Page {
 
 	public function __set($name, $value) {
 		switch($name) {
-			case "title":
-				$this->set_title($value);
-			case "text":
-				$this->set_text($value);
 			case "locked":
 				if ($value) $this->lock();
 				else $this->unlock();
+				break;
 			case "opened":
 				if ($value) $this->open();
 				else $this->close();
-			case "id":
+				break;
+			case "text":
+				$this->set_text($value);
+				break;
+			case "title":
+				$this->set_title($value);
+				break;
+			case "all_children":
 			case "author":
-			case "selector":
+			case "book":
+			case "chapter":
+			case "children":
 			case "colabs":
 			case "collabs":
 			case "collaborators":
-			case "level":
-			case "parents":
-			case "parent":
-			case "all_children":
-			case "children":
+			case "id":
 			case "isBook":
 			case "isChapter":
-			case "book":
-			case "chapter":
+			case "level":
+			case "parent":
+			case "parents":
+			case "selector":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
+				break;
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of page", $name);
 		}
@@ -442,6 +449,21 @@ class Page {
 		if (Pages::validate_title($title) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Title format invalid:\n ---------- \n%s\n ---------- \n --> Pages::set_title()", $title));
 		$sql = "UPDATE pages SET title = ? WHERE id = ?";
 		MYSQL::run_query($sql, 'si', [&$title, &$this->id]);
+	}
+
+	public function get_description() {
+		$sql = "SELECT description FROM pages WHERE id = ?";
+		$rows = MYSQL::run_query($sql, 'i', [$this->id]);
+		if (empty($rows) == FALSE) {
+			return $rows[0]['description'];
+		}
+		else ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Could not find page '%d' --> Page::get_title()", $this->id));
+	}
+
+	public function set_description($desc) {
+		if (Pages::validate_text($desc) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Description format invalid:\n ---------- \n%s\n ---------- \n --> Pages::set_description()", $desc));
+		$sql = "UPDATE pages SET description = ? WHERE id = ?";
+		MYSQL::run_query($sql, 'si', [&$desc, $this->id]);
 	}
 
 	public function is_locked() {

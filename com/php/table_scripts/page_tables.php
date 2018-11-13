@@ -35,6 +35,7 @@ function page_tables($overwrite, $delete) {
 		CREATE TABLE pages (
 		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
 		title VARCHAR(255) NOT NULL, 
+		description VARCHAR(255) NOT NULL, 
 		content TEXT,
 		author_id INT(10) UNSIGNED NOT NULL, 
 		locked BOOLEAN DEFAULT FALSE, 
