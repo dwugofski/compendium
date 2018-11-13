@@ -41,9 +41,7 @@ class User {
 		if (self::check_user($username) == FALSE) {
 			ERRORS::log(ERRORS::USER_ERROR, sprintf("User '%s' not found", $username));
 		} else {
-			if (!self::validate_user($username, $password)) {
-				ERRORS::log($resp, sprintf("Invalid password entered", $password));
-			} else {
+			if (self::validate_user($username, $password)) {
 				$user = self::get_user($username);
 				if ($remember_me = TRUE) {
 					$user->generate_token();
@@ -242,7 +240,7 @@ class User {
 	}
 
 	static public function hash_password($password) {
-		return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+		return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 	}
 
 	public function __construct($id) {

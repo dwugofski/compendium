@@ -1,3 +1,20 @@
+<?php
+
+include_once(__DIR__."/com/php/user.php");
+include_once(__DIR__."/com/php/session.php");
+
+$loggedin = false;
+$user = NULL;
+
+error_log($_SESSION['user']->username);
+
+if(!empty($_SESSION['user'])) {
+	$loggedin = true;
+	$user = $_SESSION['user'];
+} else $loggedin = false;
+
+?>
+
 <!DOCTYPE html>
 <html>
 	<link rel="stylesheet" type="text/css" href="com/css/consts/default_colors.css"/>
@@ -22,6 +39,10 @@
 	<script type="module" src="com/js/def/head/rendering.js"></script>
 	<script type="module" src="com/js/def/edit.js"></script>
 	<script type="module" src="com/js/def/edit/editor.js"></script>-->
+	<script>
+		console.log("<?=$_SESSION['user']->username?>");
+	</script>
+
 <head>
 </head>
 <body>
@@ -36,7 +57,18 @@
 		</tr></table>
 
 		<table class="right"><tr>
+<?php
+
+			if ($loggedin) {?>
+			<td class="navopt" id="navopt_user">Hello, <?=$user->username?></td>
+<?php
+			} else {
+?>
 			<td class="navopt" id="navopt_sign_in">Log In / Sign Up</td>
+<?php
+			}
+?>
+
 		</tr></table>
 		
 		<div class="clearer"></div>

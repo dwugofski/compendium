@@ -42,10 +42,11 @@ try {
 	}
 
 	$_SESSION['user'] = $user;
-	json_ret($user->data);
+	json_ret($_SESSION['user']->data);
 }
 catch (CompendiumError $e) {
 	ERRORS::json_log($e);
+	http_response_code(403);
 }
 
 

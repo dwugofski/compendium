@@ -13,7 +13,7 @@ try {
 
 	$username = $_POST['username'];
 	$email = $_POST['email'];
-	$password = $_POST['pasword'];
+	$password = $_POST['password'];
 
 	if (!User::validate_username($username)) throw new CompendiumError("Username invalid", TRUE, ERRORS::USER_ERROR);
 	if (!User::validate_email($email)) throw new CompendiumError("Email invalid", TRUE, ERRORS::USER_ERROR);
@@ -26,6 +26,7 @@ try {
 	json_ret($user->data);
 } catch (CompendiumError $e) {
 	ERRORS::json_log($e);
+	http_response_code(403);
 }
 
 

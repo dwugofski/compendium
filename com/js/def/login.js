@@ -19,6 +19,8 @@ var signup_form_password2 = undefined;
 var error_box = undefined;
 
 export function init() {
+	if ($('#navopt_sign_in')[0] === undefined) return;
+
 	login_form = $("#login_form");
 	signup_form = $("#signup_form");
 	screen = $("#login_screen");
