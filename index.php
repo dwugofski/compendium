@@ -17,18 +17,28 @@ if(!empty($_SESSION['user'])) {
 
 <!DOCTYPE html>
 <html>
+	<!--<link rel="stylesheet" href="com/js/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="com/js/bootstrap/css/bootstrap-theme.min.css">-->
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
 	<link rel="stylesheet" type="text/css" href="com/css/consts/default_colors.css"/>
 	<link rel="stylesheet" type="text/css" href="com/css/consts/default_fonts.css"/>
 	<link rel="stylesheet" type="text/css" href="com/css/consts/sizes.css"/>
 	<link rel="stylesheet" type="text/css" href="com/css/main.css"/>
-	<script src="com/js/jquery.js"></script>
+
+	<!--<script src="com/js/jquery.js"></script>-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	<!--<script src="com/js/bootstrap/bootstrap.min.js"></script>-->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
 	<script src="com/js/slate/immutable.min.js"></script>
 	<script src="com/js/slate/react.production.min.js"></script>
 	<script src="com/js/slate/react-dom.production.min.js"></script>
 	<script src="com/js/slate/react-dom-server.browser.production.min.js"></script>
-	<script src="com/js/slate/prism.js"></script>
 	<script src="https://unpkg.com/slate/dist/slate.js"></script>
 	<script src="https://unpkg.com/slate-react/dist/slate-react.js"></script>
+
 	<script src="com/js/showdown/showdown.min.js"></script>
 	<!--<script src="https://unpkg.com/slate@0.43.7/lib/slate.js"></script>
 	<script src="https://unpkg.com/slate-react@0.21.4/lib/slate-react.js"></script>-->
@@ -60,7 +70,15 @@ if(!empty($_SESSION['user'])) {
 <?php
 
 			if ($loggedin) {?>
-			<td class="navopt" id="navopt_user">Hello, <?=$user->username?></td>
+			<td class="navopt">
+				<div class="dropdown">
+					<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, <?=$user->username?></span>
+					<ul class="dropdown-menu">
+						<li><a href="#">HTML</a></li>
+	    				<li><a href="#">CSS</a></li>
+					</ul>
+				</div>
+			</td>
 <?php
 			} else {
 ?>
@@ -132,6 +150,15 @@ if(!empty($_SESSION['user'])) {
 						<div id="page_form_review_sub"><span>Formatting guide</span></div>
 						<div id="page_form_submit" class="button">Submit</div>
 					</form>
+				</div>
+				<div class="dropdown">
+				  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+				  <span class="caret"></span></button>
+				  <ul class="dropdown-menu">
+				    <li><a href="#">HTML</a></li>
+				    <li><a href="#">CSS</a></li>
+				    <li><a href="#">JavaScript</a></li>
+				  </ul>
 				</div>
 				<!--
 				<h1>Chapter 1: Lorem</h1>

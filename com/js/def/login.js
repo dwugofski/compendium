@@ -18,7 +18,12 @@ var signup_form_password2 = undefined;
 
 var error_box = undefined;
 
+$(document).ready(function() {
+    $(".dropdown-toggle").dropdown();
+});
+
 export function init() {
+	$('.dropdown').dropdown();
 	if ($('#navopt_sign_in')[0] === undefined) return;
 
 	login_form = $("#login_form");
