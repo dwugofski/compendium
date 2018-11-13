@@ -37,9 +37,14 @@ if(!empty($_SESSION['user'])) {
 
 	<script src="com/js/showdown/showdown.min.js"></script>
 	<script type="module" src="com/js/def.js"></script>
+<?php if($loggedin) {
+?>
 	<script>
-		console.log("<?=$_SESSION['user']->username?>");
+		console.log("<?=User::perm_level_to_title($_SESSION['user']->get_perm_level())?>");
 	</script>
+<?php
+}
+?>
 
 <head>
 </head>
@@ -58,6 +63,7 @@ if ($loggedin) {?>
 				<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, <?=$user->username?> &#9660;</span>
 				<ul class="dropdown-menu dropdown-menu-right">
     				<li>Create a page</li>
+    				<li class="spacer"></li>
 					<li id="navopt_dd_logout">Log Out</li>
 				</ul>
 		</div>

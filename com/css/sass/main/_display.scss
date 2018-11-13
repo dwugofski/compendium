@@ -1,7 +1,7 @@
 
 body #main #display {
-	flex-grow: 1;
 	float: right;
+	overflow-x: auto;
 	position: relative;
 	width: calc(100% - var(--sidebar-width));
 }

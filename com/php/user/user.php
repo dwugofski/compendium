@@ -243,6 +243,10 @@ class User {
 		return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 	}
 
+	static public function perm_level_to_title($permission_level) {
+		return MYSQL::run_query("SELECT title FROM permissions WHERE id = ?", 'i', [&$permission_level])[0]['title'];
+	}
+
 	public function __construct($id) {
 		if (User::check_userid($id)) $this->id = $id;
 		else ERRORS::log(ERRORS::USER_ERROR, "User with id %d not found", $id);
@@ -332,7 +336,7 @@ class User {
 
 	public function get_permissions() {
 		$perm_level = $this->get_perm_level();
-		$actions = MYSQL::run_query("SELECT description FROM permission_actions WHERE permission_level = ?", 's', [&$perm_level]);
+		$actions = MYSQL::run_query("SELECT description FROM permission_actions WHERE permission_level = ?", 'i', [&$perm_level]);
 		$permissions = array();
 		foreach($actions as $i=>$action){
 			$permissions[$i] = $action['description'];

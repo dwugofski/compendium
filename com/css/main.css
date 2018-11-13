@@ -122,16 +122,16 @@ body #navbar {
     -webkit-transition: background-color 0.4s;
     transition: background-color 0.4s; }
     body #navbar .navopt .dropdown-menu {
-      background-color: var(--accent);
-      border: none;
+      background-color: var(--bg-light);
+      border: 2px solid var(--accent-dark);
       border-radius: 0.2em;
-      box-shadow: 0px 0px 10px var(--accent-dark);
+      box-shadow: 0px 2px 10px var(--accent-dark);
       margin-top: 0;
-      min-width: 100%;
-      padding: 0; }
+      min-width: 15em;
+      padding: 0.2em 0; }
       body #navbar .navopt .dropdown-menu li {
-        color: var(--fg-light);
-        padding: 0.7em;
+        color: var(--accent);
+        padding: 0.2em 0.7em;
         -moz-transition: background-color 0.4s;
         -webkit-transition: background-color 0.4s;
         transition: background-color 0.4s; }
@@ -140,10 +140,17 @@ body #navbar {
           color: inherit;
           padding: 0; }
       body #navbar .navopt .dropdown-menu li:hover {
-        background-color: var(--accent-dark); }
+        background-color: var(--accent-light); }
         body #navbar .navopt .dropdown-menu li:hover a {
           background-color: transparent; }
-  body #navbar .navopt:hover {
+      body #navbar .navopt .dropdown-menu li.spacer {
+        border-bottom: 0.1em solid var(--bg-dark);
+        height: 0;
+        margin: 1px 0;
+        padding: 0; }
+      body #navbar .navopt .dropdown-menu li.spacer:hover {
+        background-color: var(--bg-light); }
+  body #navbar .navopt:hover, body #navbar .navopt.open {
     background-color: var(--accent-dark); }
 
 body #main {
@@ -301,9 +308,12 @@ body #sidebar::-webkit-scrollbar {
   /* optional: just make scrollbar invisible */
   display: none; }
 
+body #main.no-sidebar #sidebar {
+  display: none; }
+
 body #main #display {
-  flex-grow: 1;
   float: right;
+  overflow-x: auto;
   position: relative;
   width: calc(100% - var(--sidebar-width)); }
 
@@ -345,12 +355,10 @@ body #main #display #content {
   box-sizing: border-box;
   box-shadow: 0 0 10px #000000;
   color: var(--fg);
-  margin: 0 auto;
   margin-bottom: 5em;
   padding: 3em;
   position: relative;
-  top: var(--content-adjust);
-  width: var(--content-width); }
+  top: var(--content-adjust); }
   body #main #display #content h1 {
     border-bottom: 0.1em solid var(--accent);
     color: var(--accent);

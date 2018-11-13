@@ -181,3 +181,7 @@ body #sidebar::-webkit-scrollbar {
     background: transparent;  /* optional: just make scrollbar invisible */
     display: none;
 }
+
+body #main.no-sidebar #sidebar {
+	display: none;
+}

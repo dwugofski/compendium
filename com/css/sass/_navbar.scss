@@ -22,17 +22,17 @@ body #navbar {
 		@include transition(background-color, 0.4s);
 
 		.dropdown-menu {
-			background-color: var(--accent);
-			border: none;
+			background-color: var(--bg-light);
+			border: 2px solid var(--accent-dark);
 			border-radius: 0.2em;
-			box-shadow: 0px 0px 10px var(--accent-dark);
+			box-shadow: 0px 2px 10px var(--accent-dark);
 			margin-top: 0;
-			min-width: 100%;
-			padding: 0;
+			min-width: 15em;
+			padding: 0.2em 0;
 
 			li {
-				color: var(--fg-light);
-				padding: 0.7em;
+				color: var(--accent);
+				padding: 0.2em 0.7em;
 
 				@include transition(background-color, 0.4s);
 
@@ -43,15 +43,24 @@ body #navbar {
 				}
 			}
 			li:hover {
-				background-color: var(--accent-dark);
+				background-color: var(--accent-light);
 
 				a {
 					background-color: transparent;
 				}
 			}
+			li.spacer {
+				border-bottom: 0.1em solid var(--bg-dark);
+				height: 0;
+				margin: 1px 0;
+				padding: 0;
+			}
+			li.spacer:hover {
+				background-color: var(--bg-light);
+			}
 		}
 	}
-	.navopt:hover {
+	.navopt:hover, .navopt.open {
 		background-color: var(--accent-dark);
 	}
 }
