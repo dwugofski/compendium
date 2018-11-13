@@ -12,6 +12,7 @@
 	<script src="com/js/slate/prism.js"></script>
 	<script src="https://unpkg.com/slate/dist/slate.js"></script>
 	<script src="https://unpkg.com/slate-react/dist/slate-react.js"></script>
+	<script src="com/js/showdown/showdown.min.js"></script>
 	<!--<script src="https://unpkg.com/slate@0.43.7/lib/slate.js"></script>
 	<script src="https://unpkg.com/slate-react@0.21.4/lib/slate-react.js"></script>-->
 	<script type="module" src="com/js/def.js"></script>
@@ -92,8 +93,10 @@
 				<div id="text_entry">
 					<form id="page_form">
 						<input type="text" name="title" id="page_form_title" placeholder="Untitled" />
-						<!--<textarea name="text" id="page_form_text" placeholder="Begin writing here..."></textarea>-->
-						<div id="page_form_text"></div>
+						<div id="page_form_switch_sub"><span>Preview</span></div>
+						<textarea name="text" class="mkdn_editor" id="page_form_text" placeholder="Begin writing here..."></textarea>
+						<div id="page_form_preview"></div>
+						<!--<div id="page_form_text"></div>-->
 						<div id="page_form_review_sub"><span>Formatting guide</span></div>
 						<div id="page_form_submit" class="button">Submit</div>
 					</form>
@@ -181,7 +184,7 @@
 				<input id="signup_form_password1" type="password" name="password1"/>
 				<label>Password (confirm)</label>
 				<input id="signup_form_password2" type="password" name="password2"/>
-				<div id="login_form_submit" class="button">Sign up</div>
+				<div id="signup_form_submit" class="button">Sign up</div>
 				<hr/>
 				<h2>Already a user?<br/><a id="signup_log_in">Sign In</a></h2>
 			</form>

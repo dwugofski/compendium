@@ -1,6 +1,8 @@
 
 import * as Markdown from "./markdown.js";
 
+var preview_mode = "edit";
+
 const e = React.createElement;
 
 const initialValue = Slate.Value.fromJSON({
@@ -168,7 +170,45 @@ export class CompEditor extends React.Component {
 	}
 }
 
+export function init() {
+	$("#page_form_switch_sub span").click(toggle_preview);
+}
+
+function toggle_preview() {
+	if (preview_mode == "edit") {
+		preview_mode = "preview";
+		hide_edit(show_preview);
+	} else {
+		preview_mode = "edit";
+		hide_preview(show_edit);
+	}
+}
+
+function hide_edit(callback) {
+	$("#page_form_text").hide(100, callback);
+}
+
+function hide_preview(callback) {
+	$("#page_form_preview").hide(100, callback);
+}
+
+function show_preview(callback) {
+	$("#page_form_preview").html(Markdown.parse($("#page_form_text").val()));
+	$("#page_form_switch_sub span").text("Edit");
+	$("#page_form_preview").show(100, callback);
+}
+
+function show_edit(callback) {
+	$("#page_form_switch_sub span").text("Preview");
+	$("#page_form_text").show(100, callback);
+}
+
+/*
 ReactDOM.render(
 	e(CompEditor),
 	$("#page_form_text")[0]
-);
+);*/
+
+$(document).ready(function(){
+	init();
+});

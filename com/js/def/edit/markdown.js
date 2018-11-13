@@ -84,6 +84,8 @@ export function parse(text){
 		ghMentions: true,
 		ghMentionsLink: "https://compendium.com/u/{u}"
 	});
+
+	return converter.makeHtml(text);
 }
 
 

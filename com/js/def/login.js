@@ -51,6 +51,8 @@ export function init() {
 	signup_form_password1.on("input", update_signup_field);
 	signup_form_password2.on("input", update_signup_field);
 
+	signup_submit.click(submit_signup_form);
+
 	disable_login();
 	disable_signup();
 
@@ -73,7 +75,7 @@ function verify_password(password) {
 }
 
 function verify_password_match(password) {
-	return password == signup_form_password2;
+	return password == signup_form_password1.val();
 }
 
 function verify_username(username) {
@@ -122,8 +124,10 @@ function update_login_field(e) {
 function update_signup_field(e) {
 	var okay = true;
 
-	okay = okay && verify_field(login_form_username, login_form_username.val(), verify_username_or_email);
-	okay = okay && verify_field(login_form_password, login_form_password.val(), verify_password);
+	okay = okay && verify_field(signup_form_username, signup_form_username.val(), verify_username);
+	okay = okay && verify_field(signup_form_email, signup_form_email.val(), verify_email);
+	okay = okay && verify_field(signup_form_password1, signup_form_password1.val(), verify_password);
+	okay = okay && verify_field(signup_form_password2, signup_form_password2.val(), verify_password_match);
 
 	if (okay) enable_signup();
 	else disable_signup();
@@ -206,6 +210,7 @@ function handle_php_login_error(data, status, jqxhr) {
 }
 
 function submit_signup_form(e) {
+	console.log("okay");
 	if (!signup_submit.disabled) {
 		var signup_data = signup_form.serializeArray().reduce((o, i) => { 
 			o[i.name] = i.value;
@@ -224,6 +229,7 @@ function submit_signup_form(e) {
 
 function handle_php_signup(data, status, jqxhr) {
 	console.log("Signup Success");
+	console.log(data);
 	console.log(JSON.parse(data));
 }
 

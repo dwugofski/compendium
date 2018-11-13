@@ -40,6 +40,11 @@ body #text_entry {
 			overflow-y: scroll;
 		}
 
+		#page_form_preview {
+			display: none;
+			min-height: 30em;
+		}
+
 		#page_form_submit {
 			margin: 0 auto;
 			width: 20em;
@@ -56,6 +61,21 @@ body #text_entry {
 			}
 		}
 		#page_form_review_sub span:hover {
+			color: var(--accent-dark);
+			text-decoration: underline;
+		}
+
+		#page_form_switch_sub {
+			color: var(--accent);
+			font-size: 80%;
+			font-weight: bold;
+			text-align: left;
+
+			span {
+				cursor: pointer;
+			}
+		}
+		#page_form_switch_sub span:hover {
 			color: var(--accent-dark);
 			text-decoration: underline;
 		}

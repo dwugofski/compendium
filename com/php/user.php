@@ -110,7 +110,6 @@ class User {
 
 		$selector = self::make_selector();
 		$sql = "INSERT INTO users (username, password, email, selector) VALUES (?, ?, ?, ?)";
-		echo(sprintf("Selector: %s\n", $selector));
 		MYSQL::run_query($sql, 'ssss', [&$username, &$passhash, &$email, &$selector]);
 		$id = MYSQL::get_index();
 		$user = self::login_user($username, $password, $remember_me);
@@ -147,7 +146,7 @@ class User {
 
 	static public function check_user_email($email) {
 		$sql = "SELECT id FROM users WHERE email = ?";
-		$users = MYSQL::run_query($sql, 'i', [&$email]);
+		$users = MYSQL::run_query($sql, 's', [&$email]);
 		return !empty($users);
 	}
 
@@ -266,7 +265,7 @@ class User {
 			case "permissions":
 				return $this->get_permissions();
 			case "data":
-				return ["username" => $this->get_username, "token" => $this->token, "email" => $this->email, "selector" => $this->get_selector()];
+				return ["username" => $this->get_username(), "token" => $this->token, "email" => $this->email, "selector" => $this->get_selector()];
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of user", $name);
 		}

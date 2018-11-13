@@ -418,6 +418,9 @@ body #text_entry #page_form .mkdn_editor:hover, body #text_entry #page_form .mkd
   padding-right: 1em;
   background-color: var(--bg-light);
   overflow-y: scroll; }
+body #text_entry #page_form #page_form_preview {
+  display: none;
+  min-height: 30em; }
 body #text_entry #page_form #page_form_submit {
   margin: 0 auto;
   width: 20em; }
@@ -429,6 +432,16 @@ body #text_entry #page_form #page_form_review_sub {
   body #text_entry #page_form #page_form_review_sub span {
     cursor: pointer; }
 body #text_entry #page_form #page_form_review_sub span:hover {
+  color: var(--accent-dark);
+  text-decoration: underline; }
+body #text_entry #page_form #page_form_switch_sub {
+  color: var(--accent);
+  font-size: 80%;
+  font-weight: bold;
+  text-align: left; }
+  body #text_entry #page_form #page_form_switch_sub span {
+    cursor: pointer; }
+body #text_entry #page_form #page_form_switch_sub span:hover {
   color: var(--accent-dark);
   text-decoration: underline; }
 
