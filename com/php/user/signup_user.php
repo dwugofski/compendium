@@ -1,9 +1,9 @@
 <?php
 
-include_once(__DIR__."/session.php");
-include_once(__DIR__."/errors.php");
+include_once(__DIR__."/../util/session.php");
+include_once(__DIR__."/../util/errors.php");
 include_once(__DIR__."/user.php");
-include_once(__DIR__."/json/json_head.php");
+include_once(__DIR__."/../util/json_head.php");
 
 // TODO: Limit login attempts -- gate login with capcha after certain # attempts
 // Will need to create login table for login attempts from ip address

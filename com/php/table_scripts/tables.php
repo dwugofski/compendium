@@ -1,6 +1,6 @@
 <?php
 
-include_once(__DIR__."/../mysql.php");
+include_once(__DIR__."/../util/mysql.php");
 include_once(__DIR__."/user_tables.php");
 include_once(__DIR__."/permissions_tables.php");
 include_once(__DIR__."/login_tokens_tables.php");

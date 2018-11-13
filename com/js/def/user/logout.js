@@ -10,9 +10,8 @@ export function init() {
 }
 
 function logout(e) {
-	console.log("YO!");
 	$.ajax({
-		url : "com/php/logout_user.php",
+		url : "com/php/user/logout_user.php",
 		success : logout_success,
 		error : logout_error
 	});

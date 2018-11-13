@@ -7,7 +7,7 @@ class MYSQL {
 	static private $prep_stmt;
 
 	static public function init() {
-		$mysql_login_config = parse_ini_file('ini/mysql.ini');
+		$mysql_login_config = parse_ini_file('mysql.ini');
 		self::$conn = new mysqli($mysql_login_config['address'], $mysql_login_config['username'], $mysql_login_config['password'], $mysql_login_config['database']);
 		if (self::$conn->connect_errno != 0){
 			ERRORS::log(ERRORS::MYSQL_ERROR, "Failed to connect to MySQL: " . self::$conn->connect_error);

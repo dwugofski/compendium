@@ -1,7 +1,7 @@
 <?php
 
-include_once(__DIR__."/com/php/user.php");
-include_once(__DIR__."/com/php/session.php");
+include_once(__DIR__."/com/php/user/user.php");
+include_once(__DIR__."/com/php/util/session.php");
 
 $loggedin = false;
 $user = NULL;
@@ -17,8 +17,6 @@ if(!empty($_SESSION['user'])) {
 
 <!DOCTYPE html>
 <html>
-	<!--<link rel="stylesheet" href="com/js/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="com/js/bootstrap/css/bootstrap-theme.min.css">-->
 	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
 	<link rel="stylesheet" type="text/css" href="com/css/consts/default_colors.css"/>
@@ -26,10 +24,8 @@ if(!empty($_SESSION['user'])) {
 	<link rel="stylesheet" type="text/css" href="com/css/consts/sizes.css"/>
 	<link rel="stylesheet" type="text/css" href="com/css/main.css"/>
 
-	<!--<script src="com/js/jquery.js"></script>-->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
-	<!--<script src="com/js/bootstrap/bootstrap.min.js"></script>-->
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
 	<script src="com/js/slate/immutable.min.js"></script>
@@ -40,15 +36,7 @@ if(!empty($_SESSION['user'])) {
 	<script src="https://unpkg.com/slate-react/dist/slate-react.js"></script>
 
 	<script src="com/js/showdown/showdown.min.js"></script>
-	<!--<script src="https://unpkg.com/slate@0.43.7/lib/slate.js"></script>
-	<script src="https://unpkg.com/slate-react@0.21.4/lib/slate-react.js"></script>-->
 	<script type="module" src="com/js/def.js"></script>
-	<!--<script type="module" src="com/js/def/cookies.js"></script>
-	<script type="module" src="com/js/def/login.js"></script>
-	<script type="module" src="com/js/def/head.js"></script>
-	<script type="module" src="com/js/def/head/rendering.js"></script>
-	<script type="module" src="com/js/def/edit.js"></script>
-	<script type="module" src="com/js/def/edit/editor.js"></script>-->
 	<script>
 		console.log("<?=$_SESSION['user']->username?>");
 	</script>
@@ -218,11 +206,30 @@ if ($loggedin) {?>
 			</form>
 			<form id="signup_form">
 				<label>Username</label>
-				<input id="signup_form_username" type="text" name="username"/>
+				<div class="ttb">
+					<input id="signup_form_username" type="text" name="username"/>
+					<div class="tt">
+						Username must
+						<ul>
+							<li>Be between 3-100 characters</li>
+							<li>Start with a letter</li>
+							<li>Contain only letters, numbers, and underscores</li>
+						</ul>
+					</div>
+				</div>
 				<label>Email Address</label>
 				<input id="signup_form_email" type="text" name="email"/>
 				<label>Password</label>
-				<input id="signup_form_password1" type="password" name="password1"/>
+				<div class="ttb">
+					<input id="signup_form_password1" type="password" name="password1"/>
+					<div class="tt">
+						Password must
+						<ul>
+							<li>Be between 8-100 characters</li>
+							<li>Contain only letters, numbers, spaces, and special characters</li>
+						</ul>
+					</div>
+				</div>
 				<label>Password (confirm)</label>
 				<input id="signup_form_password2" type="password" name="password2"/>
 				<div id="signup_form_submit" class="button">Sign up</div>

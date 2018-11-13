@@ -1,7 +1,4 @@
 
-import * as Logout from "./login/logout.js";
-export { Logout };
-
 var login_form = undefined;
 var signup_form = undefined;
 var screen = undefined;
@@ -189,13 +186,14 @@ function switch_login_screen(event) {
 
 function submit_login_form(e) {
 	if (!login_submit.disabled) {
+		disable_login();
 		var login_data = login_form.serializeArray().reduce(function(o, i){ 
 			o[i.name] = i.value;
 			return o;
 		}, {});
 		var php_data = {"userident": login_data.username, "password":login_data.password};
 		$.ajax({
-			url : "com/php/login_user.php",
+			url : "com/php/user/login_user.php",
 			type : "POST",
 			data : php_data,
 			success : handle_php_login,
@@ -206,25 +204,24 @@ function submit_login_form(e) {
 
 function handle_php_login(data, status, jqxhr) {
 	location.reload();
-	console.log("Login Success");
-	console.log(JSON.parse(data));
 }
 
-function handle_php_login_error(data, status, jqxhr) {
-	console.log("Login Error");
-	console.log(data);
+function handle_php_login_error(jqxhr, status, error) {
+	show_error(JSON.parse(jqxhr.responseText).error);
+	enable_login();
 }
 
 function submit_signup_form(e) {
 	console.log("okay");
 	if (!signup_submit.disabled) {
+		disable_signup();
 		var signup_data = signup_form.serializeArray().reduce((o, i) => { 
 			o[i.name] = i.value;
 			return o;
 		}, {});
 		var php_data = {"username": signup_data.username, "email": signup_data.email, "password": signup_data.password1};
 		$.ajax({
-			url : "com/php/signup_user.php",
+			url : "com/php/user/signup_user.php",
 			type : "POST",
 			data : php_data,
 			success : handle_php_signup,
@@ -235,14 +232,11 @@ function submit_signup_form(e) {
 
 function handle_php_signup(data, status, jqxhr) {
 	location.reload();
-	console.log("Signup Success");
-	console.log(data);
-	console.log(JSON.parse(data));
 }
 
-function handle_php_signup_error(data, status, jqxhr) {
-	console.log("Signup Error");
-	console.log(data);
+function handle_php_signup_error(jqxhr, status, error) {
+	show_error(JSON.parse(jqxhr.responseText).error);
+	enable_signup();
 }
 
 $(document).ready(function(){

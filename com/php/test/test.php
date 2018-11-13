@@ -10,10 +10,10 @@ function ob_file_callback($buffer)
 
 ob_start('ob_file_callback');
 
-include_once __DIR__."/table_scripts/tables.php";
-include_once __DIR__."/errors.php";
-include_once __DIR__."/user.php";
-include_once __DIR__."/page.php";
+include_once __DIR__."/../table_scripts/tables.php";
+include_once __DIR__."/../util/errors.php";
+include_once __DIR__."/../user/user.php";
+include_once __DIR__."/../page/page.php";
 
 tables(TRUE, FALSE);
 

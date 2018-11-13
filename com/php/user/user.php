@@ -1,7 +1,7 @@
 <?php
 
-include_once(__DIR__."/errors.php");
-include_once(__DIR__."/mysql.php");
+include_once(__DIR__."/../util/errors.php");
+include_once(__DIR__."/../util/mysql.php");
 
 class User {
 	const PERM_ROOT 	= 'root';

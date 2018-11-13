@@ -13,6 +13,9 @@ export function init() {
 	contnt = $("#content");
 
 	$(window).scroll(scrollnav);
+	$(window).resize(scrollnav);
+
+
 	setTimeout(function() {
 		window.scrollBy(0, 1);
 		scrollnav();
@@ -34,12 +37,12 @@ function decodemedia(){
 }
 
 function scrollnav() {	
-	var vwh = $(window).height();
-	var scrolled = $(window).scrollTop();
-	var headh = header.height();
-	var navh = navbar.height();
-	var ch = contnt.height();
-	var cm = parseInt(contnt.css("margin-bottom"), 10);
+	const vwh = $(window).height();
+	const scrolled = $(window).scrollTop();
+	const headh = header.outerHeight();
+	const navh = navbar.outerHeight();
+	const ch = contnt.outerHeight();
+	const cm = parseInt(contnt.css("margin-bottom"), 10);
 
 	if (scrolled > headh) {
 		navbar.css("position", "fixed");
@@ -53,6 +56,7 @@ function scrollnav() {
 	}
 
 	if (ch + cm < vwh - contnt.offset().top) contnt.css("margin-bottom", vwh - contnt.offset().top - ch);
+	if (ch + cm > vwh - contnt.offset().top) contnt.css("margin-bottom", Math.max( vwh - contnt.offset().top - ch, 25 ));
 
 	var sidedrop = navh + headh - scrolled;
 	if (sidedrop > navh) sidebar.css("top", sidedrop);
@@ -65,7 +69,7 @@ function scrollnav() {
 			if (offset > footer_start) footer_start = offset;
 		}
 	});
-	if (footer_start < sidebar.height() - 10) $("#sidebar_footer").css("height", sidebar.height() - footer_start - 10);
+	if (footer_start < sidebar.outerHeight()) $("#sidebar_footer").css("height", sidebar.outerHeight() - footer_start);
 	else $("#sidebar_footer").css("height", 0);
 }
 
@@ -74,6 +78,6 @@ window.print = function() {
   _print();
 }
 
-$(document).ready(function() {
+$(document).ready(() => {
 	init();
 });

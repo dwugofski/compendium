@@ -1,7 +1,7 @@
 
-import * as Login from "./def/login.js";
+import * as User from "./def/user.js";
 import * as Cookies from "./def/cookies.js";
-import * as Head from "./def/head.js";
+import * as Rendering from "./def/rendering.js";
 import * as Edit from "./def/edit.js";
 
-export { Login, Cookies, Head, Edit };
+export { User, Cookies, Rendering, Edit };
