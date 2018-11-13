@@ -18,6 +18,9 @@ export function init() {
 		scrollnav();
 		window.scrollBy(0, -1);
 	}, 100);
+
+	$('.dropdown-toggle').dropdown();
+	$('.dropdown').dropdown();
 }
 
 
@@ -49,7 +52,7 @@ function scrollnav() {
 		sidebar.css("height", vwh - headh - navh + scrolled);
 	}
 
-	if (ch + cm < vwh - contnt.offset().top) contnt.css("min-height", vwh - contnt.offset().top - cm);
+	if (ch + cm < vwh - contnt.offset().top) contnt.css("margin-bottom", vwh - contnt.offset().top - ch);
 
 	var sidedrop = navh + headh - scrolled;
 	if (sidedrop > navh) sidebar.css("top", sidedrop);

@@ -62,33 +62,24 @@ if(!empty($_SESSION['user'])) {
 
 	<div id="navbar">
 
-		<table class="left"><tr>
-			<td class="navopt">Compendium Home</td>
-		</tr></table>
+		<div class="navopt fl">Compendium Home</div>
 
-		<table class="right"><tr>
 <?php
-
-			if ($loggedin) {?>
-			<td class="navopt">
-				<div class="dropdown">
-					<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, <?=$user->username?></span>
-					<ul class="dropdown-menu">
-						<li><a href="#">HTML</a></li>
-	    				<li><a href="#">CSS</a></li>
-					</ul>
-				</div>
-			</td>
+if ($loggedin) {?>
+		<div class="navopt dropdown fr">
+				<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, <?=$user->username?> &#9660;</span>
+				<ul class="dropdown-menu dropdown-menu-right">
+    				<li>Create a page</li>
+					<li id="navopt_dd_logout">Log Out</li>
+				</ul>
+		</div>
 <?php
-			} else {
+} else {
 ?>
-			<td class="navopt" id="navopt_sign_in">Log In / Sign Up</td>
+		<div class="navopt fr" id="navopt_sign_in">Log In / Sign Up</div>
 <?php
-			}
-?>
-
-		</tr></table>
-		
+}
+?>		
 		<div class="clearer"></div>
 	</div>
 	<div class="clearer">
@@ -150,15 +141,6 @@ if(!empty($_SESSION['user'])) {
 						<div id="page_form_review_sub"><span>Formatting guide</span></div>
 						<div id="page_form_submit" class="button">Submit</div>
 					</form>
-				</div>
-				<div class="dropdown">
-				  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
-				  <span class="caret"></span></button>
-				  <ul class="dropdown-menu">
-				    <li><a href="#">HTML</a></li>
-				    <li><a href="#">CSS</a></li>
-				    <li><a href="#">JavaScript</a></li>
-				  </ul>
 				</div>
 				<!--
 				<h1>Chapter 1: Lorem</h1>

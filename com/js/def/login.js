@@ -1,4 +1,7 @@
 
+import * as Logout from "./login/logout.js";
+export { Logout };
+
 var login_form = undefined;
 var signup_form = undefined;
 var screen = undefined;
@@ -18,12 +21,7 @@ var signup_form_password2 = undefined;
 
 var error_box = undefined;
 
-$(document).ready(function() {
-    $(".dropdown-toggle").dropdown();
-});
-
 export function init() {
-	$('.dropdown').dropdown();
 	if ($('#navopt_sign_in')[0] === undefined) return;
 
 	login_form = $("#login_form");
@@ -207,6 +205,7 @@ function submit_login_form(e) {
 }
 
 function handle_php_login(data, status, jqxhr) {
+	location.reload();
 	console.log("Login Success");
 	console.log(JSON.parse(data));
 }
@@ -235,6 +234,7 @@ function submit_signup_form(e) {
 }
 
 function handle_php_signup(data, status, jqxhr) {
+	location.reload();
 	console.log("Signup Success");
 	console.log(data);
 	console.log(JSON.parse(data));
@@ -248,3 +248,4 @@ function handle_php_signup_error(data, status, jqxhr) {
 $(document).ready(function(){
 	init();
 });
+

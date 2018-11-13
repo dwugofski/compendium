@@ -97,38 +97,54 @@ body form .ttb:hover .tt, body form .ttb:hover .tt {
 
 body #header h1 {
   color: var(--accent);
-  font-family: var(--note-font);
+  font-family: var(--title-font);
   font-size: 3em;
   font-variant: small-caps;
+  font-weight: bold;
   margin: 0.2em 0 0 0.4em; }
 
 body #navbar {
   background-color: var(--accent);
   box-shadow: 0px 2px 5px var(--accent-dark);
   font-size: 100%;
-  height: var(--navbar-height);
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow: visible;
   width: 100%;
   z-index: 4; }
-  body #navbar table {
-    border-collapse: collapse;
-    height: 100%; }
-    body #navbar table .navopt {
-      color: var(--fg-light);
-      cursor: pointer;
-      height: 100%;
-      padding: 0 0.5em 0 0.5em;
-      vertical-align: middle;
-      -moz-transition: background-color 0.4s;
-      -webkit-transition: background-color 0.4s;
-      transition: background-color 0.4s; }
-    body #navbar table .navopt:hover {
-      background-color: var(--accent-dark); }
-  body #navbar table.right {
-    float: right; }
-  body #navbar table.left {
-    float: left; }
+  body #navbar .navopt {
+    color: var(--fg-light);
+    cursor: pointer;
+    display: inline-block;
+    height: 100%;
+    overflow-y: visible;
+    padding: 0.7em 0.5em;
+    vertical-align: middle;
+    -moz-transition: background-color 0.4s;
+    -webkit-transition: background-color 0.4s;
+    transition: background-color 0.4s; }
+    body #navbar .navopt .dropdown-menu {
+      background-color: var(--accent);
+      border: none;
+      border-radius: 0.2em;
+      box-shadow: 0px 0px 10px var(--accent-dark);
+      margin-top: 0;
+      min-width: 100%;
+      padding: 0; }
+      body #navbar .navopt .dropdown-menu li {
+        color: var(--fg-light);
+        padding: 0.7em;
+        -moz-transition: background-color 0.4s;
+        -webkit-transition: background-color 0.4s;
+        transition: background-color 0.4s; }
+        body #navbar .navopt .dropdown-menu li a {
+          background-color: transparent;
+          color: inherit;
+          padding: 0; }
+      body #navbar .navopt .dropdown-menu li:hover {
+        background-color: var(--accent-dark); }
+        body #navbar .navopt .dropdown-menu li:hover a {
+          background-color: transparent; }
+  body #navbar .navopt:hover {
+    background-color: var(--accent-dark); }
 
 body #main {
   background-color: black;

@@ -3,33 +3,55 @@ body #navbar {
 	background-color: var(--accent);
 	box-shadow: 0px 2px 5px var(--accent-dark);
 	font-size: 100%;
-	height: var(--navbar-height);
-	overflow-x: hidden;
-	overflow-y: hidden;
+	//height: var(--navbar-height);
+	//overflow-x: hidden;
+	//overflow-y: hidden;
+	overflow: visible;
 	width: 100%;
 	z-index: 4;
 
-	table {
-		border-collapse: collapse;
+	.navopt {
+		color: var(--fg-light);
+		cursor: pointer;
+		display: inline-block;
 		height: 100%;
+		overflow-y: visible;
+		padding: 0.7em 0.5em;
+		vertical-align: middle;
 
-		.navopt {
-			color: var(--fg-light);
-			cursor: pointer;
-			height: 100%;
-			padding: 0 0.5em 0 0.5em;
-			vertical-align: middle;
+		@include transition(background-color, 0.4s);
 
-			@include transition(background-color, 0.4s);
-		}
-		.navopt:hover {
-			background-color: var(--accent-dark);
+		.dropdown-menu {
+			background-color: var(--accent);
+			border: none;
+			border-radius: 0.2em;
+			box-shadow: 0px 0px 10px var(--accent-dark);
+			margin-top: 0;
+			min-width: 100%;
+			padding: 0;
+
+			li {
+				color: var(--fg-light);
+				padding: 0.7em;
+
+				@include transition(background-color, 0.4s);
+
+				a {
+					background-color: transparent;
+					color: inherit;
+					padding: 0;
+				}
+			}
+			li:hover {
+				background-color: var(--accent-dark);
+
+				a {
+					background-color: transparent;
+				}
+			}
 		}
 	}
-	table.right {
-		float: right;
-	}
-	table.left {
-		float: left;
+	.navopt:hover {
+		background-color: var(--accent-dark);
 	}
 }
