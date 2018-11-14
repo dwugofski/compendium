@@ -17,7 +17,6 @@ export function init() {
 	contnt = $("#content");
 
 	$(window).scroll(scrollnav);
-	$(window).resize(scrollnav);
 	$(window).resize(main_resize);
 
 	setTimeout(function() {
@@ -60,22 +59,28 @@ function scrollnav() {
 		sidebar.css("height", vwh - headh - navh + scrolled);
 	}
 
-	if (ch + cm < vwh - contnt.offset().top) contnt.css("margin-bottom", vwh - contnt.offset().top - ch);
-	if (ch + cm > vwh - contnt.offset().top) contnt.css("margin-bottom", Math.max( vwh - contnt.offset().top - ch, 25 ));
+	console.log(ch);
+	console.log(cm);
+	console.log(vwh);
+
+	if (ch + def_content_margin < vwh - contnt.offset().top) contnt.css("margin-bottom", vwh - contnt.offset().top - ch);
+	if (ch + def_content_margin > vwh - contnt.offset().top) contnt.css("margin-bottom", Math.max( vwh - contnt.offset().top - ch, def_content_margin ));
 
 	var sidedrop = navh + headh - scrolled;
 	if (sidedrop > navh) sidebar.css("top", sidedrop);
 	else sidebar.css("top", navh);
 
-	var footer_start = 0;
-	$.each($("#books").find("> li"), function(index, value){
-		if ($(value).attr("id") != "sidebar_footer") {
-			var offset = $(value).position().top + $(value).outerHeight() + parseInt($(value).css("margin-bottom"));
-			if (offset > footer_start) footer_start = offset;
-		}
-	});
-	if (footer_start < sidebar.outerHeight()) $("#sidebar_footer").css("height", sidebar.outerHeight() - footer_start);
-	else $("#sidebar_footer").css("height", 0);
+	if ($("#sidebar").css("display") != "none"){
+		var footer_start = 0;
+		$.each($("#books").find("> li"), function(index, value){
+			if ($(value).attr("id") != "sidebar_footer") {
+				var offset = $(value).position().top + $(value).outerHeight() + parseInt($(value).css("margin-bottom"));
+				if (offset > footer_start) footer_start = offset;
+			}
+		});
+		if (footer_start < sidebar.outerHeight()) $("#sidebar_footer").css("height", sidebar.outerHeight() - footer_start);
+		else $("#sidebar_footer").css("height", 0);
+	}
 }
 
 function main_resize() {
@@ -104,6 +109,8 @@ function disp_resize() {
 		$("#content").css("margin-left", def_content_margin);
 		$("#content").css("margin-right", def_content_margin);
 	}
+
+	scrollnav();
 }
 
 window.print = function() {
