@@ -5,7 +5,7 @@ $dom->goto("navbar");
 $dom->create("div", ["class"=>"navopt fl"], "Compendium Home");
 
 if ($loggedin) {
-	$dom->append_html(get_navopt_user());
+	$dom->append_html(get_navopt_user($user->username));
 	$dom->end();
 } else {
 	$dom->append_html(get_navopt_sign_in());
@@ -14,10 +14,10 @@ if ($loggedin) {
 
 $dom->create("div", ["class"=>"clearer"], "");
 
-function get_navopt_user() {
+function get_navopt_user($username) {
 	$html = <<<HTML
 		<div class="navopt dropdown fr">
-			<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, <?=$user->username?> &#9660;</span>
+			<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, $username &#9660;</span>
 			<ul class="dropdown-menu dropdown-menu-right">
 				<li>Create a page</li>
 				<li class="spacer"></li>

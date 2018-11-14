@@ -68,5 +68,6 @@ HTML;
 $dom = new MyDOM($html);
 
 include_once(__DIR__."/navbar.php");
+include_once(__DIR__."/screens.php");
 
 ?>
