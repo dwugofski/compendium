@@ -15,7 +15,8 @@ class ERRORS {
 	const USER_ERROR 			= 2;
 	const PERMISSIONS_ERROR 	= 3;
 	const PAGE_ERROR 			= 4;
-	const UNKNOWN_ERROR 		= 5;
+	const DOM_ERROR 			= 5;
+	const UNKNOWN_ERROR 		= 6;
 
 	const ERROR_STRINGS = [
 		'NO ERROR             ',
@@ -23,6 +24,7 @@ class ERRORS {
 		'USER ERROR           ',
 		'PERMISSIONS ERROR    ',
 		'PAGE ERROR           ',
+		'DOM ERROR            ',
 		'UNKNOWN ERROR        '
 	];
 

@@ -277,8 +277,10 @@ class User {
 		switch($name) {
 			case "email":
 				$this->set_email($value);
+				break;
 			case "username":
 				$this->set_username($value);
+				break;
 			case "permission":
 				return $this->grant_permissions($value);
 			case "id":
@@ -286,6 +288,7 @@ class User {
 			case "selector":
 			case "data":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of user", $name);
+				break;
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of user", $name);
 		}

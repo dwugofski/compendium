@@ -70,7 +70,7 @@ function scrollnav() {
 	var footer_start = 0;
 	$.each($("#books").find("> li"), function(index, value){
 		if ($(value).attr("id") != "sidebar_footer") {
-			var offset = $(value).position().top + $(value).height() + $(value).css("padding-bottom");
+			var offset = $(value).position().top + $(value).outerHeight() + parseInt($(value).css("margin-bottom"));
 			if (offset > footer_start) footer_start = offset;
 		}
 	});
