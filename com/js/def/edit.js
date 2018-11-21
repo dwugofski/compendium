@@ -1,3 +1,5 @@
 
 import * as Editor from "./edit/editor.js";
-export { Editor };
+import * as Create from "./edit/create.js";
+
+export { Editor, Create };

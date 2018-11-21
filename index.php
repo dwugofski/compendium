@@ -6,10 +6,14 @@ $page = "home";
 if (isset($_GET["page"])) {
 	switch($_GET["page"]) {
 		case "home":
-		case "edit":
 		case "view":
 			$page = $_GET["page"];
 			break;
+		case "edit":
+			if ($loggedin) {
+				$page = $_GET["page"];
+				break;
+			}
 		default:
 			$page = "home";
 	}

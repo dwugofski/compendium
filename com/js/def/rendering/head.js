@@ -59,10 +59,6 @@ function scrollnav() {
 		sidebar.css("height", vwh - headh - navh + scrolled);
 	}
 
-	console.log(ch);
-	console.log(cm);
-	console.log(vwh);
-
 	if (ch + def_content_margin < vwh - contnt.offset().top) contnt.css("margin-bottom", vwh - contnt.offset().top - ch);
 	if (ch + def_content_margin > vwh - contnt.offset().top) contnt.css("margin-bottom", Math.max( vwh - contnt.offset().top - ch, def_content_margin ));
 

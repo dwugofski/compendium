@@ -148,6 +148,12 @@ class User {
 		return !empty($users);
 	}
 
+	static public function check_user_sel($selector) {
+		$sql = "SELECT id FROM users WHERE selector = ?";
+		$users = MYSQL::run_query($sql, 's', [&$selector]);
+		return !empty($users);
+	}
+
 	static public function validate_user($username, $password) {
 		$sql = "SELECT password FROM users WHERE username = ?";
 		$hashes = MYSQL::run_query($sql, 's', [$username]);
@@ -184,7 +190,7 @@ class User {
 	static public function get_user($username) {
 		$sql = "SELECT id FROM users WHERE username = ?";
 		$users = MYSQL::run_query($sql, 's', [$username]);
-		if (empty($users)) return ['error' => ERRORS::USER_ERROR];
+		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find unser with name %s", $username);
 		else {
 			return new User($users[0]['id']);
 		}
@@ -193,7 +199,7 @@ class User {
 	static public function get_user_from_email($email) {
 		$sql = "SELECT id FROM users WHERE email = ?";
 		$users = MYSQL::run_query($sql, 's', [$email]);
-		if (empty($users)) return ['error' => ERRORS::USER_ERROR];
+		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find unser with email %s", $email);
 		else {
 			return new User($users[0]['id']);
 		}
@@ -207,6 +213,13 @@ class User {
 		catch(Exception $e) {}
 
 		return $newuser;
+	}
+
+	static public function get_user_from_sel($selector) {
+		$sql = "SELECT id FROM users WHERE selector = ?";
+		$users = MYSQL::run_query($sql, 's', [$selector]);
+		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find unser with selector %s", $selector);
+		else return new User($users[0]['id']);
 	}
 
 	static public function check_login_token($selector) {

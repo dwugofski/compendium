@@ -39,8 +39,8 @@ HTML;
 $dom->goto("books");
 $dom->append_html($sidebar_html);
 
-$dom->goto("display_h1")->text = "Create a Page";
-$dom->goto("display_h2")->text = "Use the form below to create a page";
+$dom->goto("display_h1")->text = "View a Page";
+$dom->goto("display_h2")->text = "This is what it would look like to look at a page";
 
 $content_html = <<<HTML
 				<h1>Chapter 1: Lorem</h1>

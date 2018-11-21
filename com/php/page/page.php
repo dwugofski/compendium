@@ -44,6 +44,22 @@ class Page {
 		return new Page(MYSQL::get_index());
 	}
 
+	public static function check_selector($selec) {
+		$rows = MYSQL::run_query("SELECT id FROM pages WHERE selector = ?", "s", [&$selector]);
+		return !empty($rows);
+	}
+
+	public static function check_title($title) {
+		$rows = MYSQL::run_query("SELECT id FROM pages WHERE title = ?", "s", [&$title]);
+		return !empty($rows);
+	}
+
+	public static function get_page_from_sel($selector) {
+		$rows = MYSQL::run_query("SELECT id FROM pages WHERE selector = ?", "s", [&$selector]);
+		if (!empty($rows)) return new Page($rows[0]['id']);
+		else ERRORS::log(ERRORS::PAGE_ERROR, "Cannot find page with selector %s", $selector);
+	}
+
 	private function make_selector() {
 		$selector = bin2hex(openssl_random_pseudo_bytes(12));
 		$unique = TRUE;
