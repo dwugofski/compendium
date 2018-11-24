@@ -41,10 +41,15 @@ function page_tables($overwrite, $delete) {
 		locked BOOLEAN DEFAULT FALSE, 
 		opened BOOLEAN DEFAULT FALSE, 
 		selector CHAR(24) NOT NULL, 
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+		modified DATETIME NOT NULL ON UPDATE CURRENT_TIMESTAMP, 
+		parent_id INT(10) UNSIGNED DEFAULT NULL, 
 		PRIMARY KEY (id), 
 		INDEX PAGE (title), 
 		UNIQUE INDEX SEL (selector), 
 		FOREIGN KEY (author_id) REFERENCES users(id) 
+		ON DELETE CASCADE ON UPDATE CASCADE, 
+		FOREIGN KEY (parent_id) REFERENCES pages(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
@@ -78,22 +83,6 @@ function page_tables($overwrite, $delete) {
 		FOREIGN KEY (page_id) REFERENCES pages(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
 		FOREIGN KEY (user_id) REFERENCES users(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE)
-		ENGINE = INNODB";
-		MYSQL::run_query($sql);
-
-		echo("Creating sub_pages\n");
-
-		$sql = "
-		CREATE TABLE sub_pages (
-		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		parent_id INT(10) UNSIGNED NOT NULL, 
-		child_id INT(10) UNSIGNED NOT NULL, 
-		PRIMARY KEY (id), 
-		INDEX PARENT (parent_id), 
-		FOREIGN KEY (parent_id) REFERENCES pages(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (child_id) REFERENCES pages(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);

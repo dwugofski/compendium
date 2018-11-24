@@ -100,6 +100,10 @@ class Page {
 				return $this->get_colabs();
 			case "description":
 				return $this->get_description();
+			case "created":
+				return $this->get_created();
+			case "edited":
+				return $this->get_edited();
 			case "id":
 				return $this->id;
 			case "isBook":
@@ -139,6 +143,9 @@ class Page {
 				if ($value) $this->open();
 				else $this->close();
 				break;
+			case "parent":
+				$this->set_parent($value);
+				break;
 			case "text":
 				$this->set_text($value);
 				break;
@@ -153,6 +160,8 @@ class Page {
 			case "colabs":
 			case "collabs":
 			case "collaborators":
+			case "created":
+			case "edited":
 			case "id":
 			case "isBook":
 			case "isChapter":
@@ -332,7 +341,7 @@ class Page {
 	}
 
 	public function get_parents($recursive=FALSE) {
-		$sql = "SELECT parent_id FROM sub_pages WHERE child_id = ?";
+		$sql = "SELECT parent_id FROM pages WHERE id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
 		$parent_ids = array();
 		if (empty($rows) == FALSE) {
@@ -357,6 +366,10 @@ class Page {
 		else return NULL;
 	}
 
+	public function set_parent($parent) {
+		MYSQL::run_query("UPDATE pages SET parent_id = ? WHERE id = ?", 'ii', [&$parent->id, &$this->id]);
+	}
+
 	public function is_parent($page, $recursive=FALSE) {
 		$parents = $this->get_parents($recursive);
 		foreach ($parents as $i => $parent) {
@@ -371,7 +384,7 @@ class Page {
 	}
 
 	public function get_children($recursive=FALSE) {
-		$sql = "SELECT child_id FROM sub_pages WHERE parent_id = ?";
+		$sql = "SELECT id FROM pages WHERE parent_id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
 		$child_ids = array();
 		if (empty($rows) == FALSE) {
@@ -400,7 +413,7 @@ class Page {
 
 	public function add_child($child) {
 		if ($child->has_parent()) ERRORS::log(ERRORS::PAGE_ERROR, "Child page %d already has parent\n", $child->id);
-		MYSQL::run_query("INSERT INTO sub_pages (parent_id, child_id) VALUES (?, ?)", 'ii', [&$this->id, &$child->id]);
+		MYSQL::run_query("UPDATE pages SET parent_id = ? WHERE id = ?", 'ii', [&$this->id, &$child->id]);
 	}
 
 	public function has_children(){
@@ -527,6 +540,14 @@ class Page {
 	public function get_selector() {
 		$selector = MYSQL::run_query("SELECT selector FROM pages WHERE id = ?", 'i', [&$this->id])[0]["selector"];
 		return $selector;
+	}
+
+	public function get_created() {
+		return MYSQL::run_query("SELECT created FROM pages WHERE id = ?", 'i', [&$this->id])[0]['created'];
+	}
+
+	public function get_edited() {
+		return MYSQL::run_query("SELECT edited FROM pages WHERE id = ?", 'i', [&$this->id])[0]['edited'];
 	}
 
 	// Hashable functions
