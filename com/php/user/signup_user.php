@@ -1,6 +1,7 @@
 <?php
 
 include_once(__DIR__."/../util/session.php");
+include_once(__DIR__."/../util/mysql.php");
 include_once(__DIR__."/../util/errors.php");
 include_once(__DIR__."/user.php");
 include_once(__DIR__."/../util/json_head.php");
@@ -8,6 +9,27 @@ include_once(__DIR__."/../util/json_head.php");
 // TODO: Limit login attempts -- gate login with capcha after certain # attempts
 // Will need to create login table for login attempts from ip address
 // Probably will want three levels: immediate access, delayed access, capcha verification
+
+function generate_email_vefication_token($userid) {
+	$selector = bin2hex(openssl_random_pseudo_bytes(12));
+	$found = TRUE;
+	$count = 0;
+	MYSQL::prepare("SELECT id FROM email_verification_tokens WHERE selector = ?", 's', [&$selector]);
+	while ($found) {
+		$entries = MYSQL::execute();
+		if (empty($entries)) $found = FALSE;
+		else $selector = bin2hex(openssl_random_pseudo_bytes(12));
+
+		if ($count > 100) break;
+		$count += 1;
+	}
+	if (!$found) {
+		MYSQL::run_query("INSERT INTO email_verification_tokens (selector, userid) VALUES (?, ?)", 'si', [$selector, $userid]);
+		return $selector;
+	} else ERRORS::log(ERRORS::USER_ERROR, "Failed to find an unclaimed selector for email verification in 100 tries");
+
+	return NULL;
+}
 
 try {
 
@@ -21,6 +43,7 @@ try {
 	if (User::check_user_email($email)) throw new CompendiumError("Email already taken", TRUE, ERRORS::USER_ERROR);
 
 	$user = User::create_new_user($username, $password, $email);
+	$user->grant_permissions(User::PERM_USER);
 
 	$_SESSION['user'] = $user;
 	json_ret($user->data);

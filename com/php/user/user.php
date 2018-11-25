@@ -204,7 +204,7 @@ class User {
 	static public function get_user($username) {
 		$sql = "SELECT id FROM users WHERE username = ?";
 		$users = MYSQL::run_query($sql, 's', [$username]);
-		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find unser with name %s", $username);
+		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find user with name %s", $username);
 		else {
 			return new User($users[0]['id']);
 		}
@@ -213,7 +213,7 @@ class User {
 	static public function get_user_from_email($email) {
 		$sql = "SELECT id FROM users WHERE email = ?";
 		$users = MYSQL::run_query($sql, 's', [$email]);
-		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find unser with email %s", $email);
+		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find user with email %s", $email);
 		else {
 			return new User($users[0]['id']);
 		}
@@ -232,7 +232,7 @@ class User {
 	static public function get_user_from_sel($selector) {
 		$sql = "SELECT id FROM users WHERE selector = ?";
 		$users = MYSQL::run_query($sql, 's', [$selector]);
-		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find unser with selector %s", $selector);
+		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find user with selector %s", $selector);
 		else return new User($users[0]['id']);
 	}
 
@@ -408,7 +408,7 @@ class User {
 
 	public function get_username() {
 		$usernames = MYSQL::run_query("SELECT username FROM users WHERE id = ?", "i", [&$this->id]);
-		if (empty($usernames)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to get username of unknown user '%d'", $this->id);
+		if (empty($usernames)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to get username of unknown user id '%d'", $this->id);
 		return $usernames[0]['username'];
 	}
 

@@ -1,44 +1,30 @@
 <?php
 
-include_once(__DIR__."/com/php/util/dom.php");
+	$headers = "MIME-Version: 1.0" . "\r\n";
+	$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+	$headers .= 'From: <no-reply@compendium.com>' . "\r\n";
 
-$dom = new MyDOM();
+	$email_subject = "Compendium: Verify User";
+	$message = <<<HTML
+<html>
+	<head>
+		<title>Compendium: Verify User</title>
+	</head>
+	<body>
+		<h1>Welcome to the Compendium!</h1>
+		<p>Hello, $user->username!</p>
+		<p>
+			Thank you for joining the Compendium! We look forward to your contribution to our community. Before you can access all the features and services we provide for you, however, you will need to verify you email address. To verify your identy, please click here.
+		</p>
+		<p>
+			Thank you!<br/>
+			The Compendium Team
+		</p>
+	</body>
+</html>
 
-$dom->create("head", NULL, "");
-$dom->create("body");
-
-$dom->create("h1", NULL, "Hello World!");
-
-$dom->create("div");
-$dom->create("div", ["id"=>"foo"]);
-$dom->end();
-$dom->create("div", ["id"=>"bar"]);
-$dom->text = "bar";
-$dom->goto("foo");
-$dom->text = "foo";
-$dom->goto("bar");
-$dom->text = "foo";
-$dom->end();
-
-$new_html = <<<HTML
-<div id="groot">
-	<div id="foobar">Foobar</div>
-</div>
-<div id="root2">
-	<div id="foobar2"></div>
-</div>
 HTML;
-//$newdom = new MyDOM($new_html);
-//$newdom->goto("root", TRUE);
 
-$dom->append_html($new_html);
-$dom->goto("root2");
-$dom->text = "Foobar2";
-$dom->add_class("foo");
-$dom->add_class("bar foobar");
-$dom->add_class("barfoo barbar");
-$dom->remove_class("foo foobar barbar");
-
-echo($dom->html);
+	mail($user->email, $subject, $message, $headers);
 
 ?>
