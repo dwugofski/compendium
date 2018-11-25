@@ -37,6 +37,7 @@ function tables($overwrite, $delete, $tables=NULL) {
 		if (empty($tables) || in_array("user", $tables) || in_array("users", $tables)) user_tables(TRUE, TRUE);
 	}
 	if (!$delete) {
+		echo("writing tables\n");
 		if (empty($tables) || in_array("user", $tables) || in_array("users", $tables)) user_tables(FALSE, FALSE);
 		if (empty($tables) || in_array("tokens", $tables) || in_array("login_tokens", $tables)) login_tokens_tables(FALSE, FALSE);
 		if (empty($tables) || in_array("email", $tables) || in_array("emails", $tables)) email_verification_tables(FALSE, FALSE);
@@ -59,8 +60,9 @@ if ($argc && strpos($argv[0], "tables.php") !== FALSE) {
 			$argc -= 1;
 		}
 		$tables = array();
-		for ($i = $argc; $i > 0; $i -= 1) {
+		for ($i = $argc - 1; $i > 0; $i -= 1) {
 			$tables[] = $argv[$i];
+			echo($argv[$i]);
 		}
 		tables($overwrite, $delete, $tables);
 	}

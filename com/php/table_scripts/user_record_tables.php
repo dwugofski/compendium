@@ -2,7 +2,7 @@
 
 include_once(dirname(__DIR__)."../util/mysql.php");
 
-function display_page_usage(){
+function display_user_record_usage(){
 	echo("\nUsage:\n");
 	echo("    php user_record_tables.php [-x | -xx]\n");
 	echo("\n");

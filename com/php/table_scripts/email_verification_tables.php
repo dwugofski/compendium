@@ -28,10 +28,8 @@ function email_verification_tables($overwrite, $delete) {
 		userid integer(11) UNSIGNED NOT NULL,
 		PRIMARY KEY (id),
 		INDEX sel (selector),
-		CONSTRAINT fk_user FOREIGN KEY (userid)
-		REFERENCES users(id)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE)
+		FOREIGN KEY (userid) REFERENCES users(id)
+		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 
 		MYSQL::run_query($sql);
