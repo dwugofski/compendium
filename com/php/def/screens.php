@@ -5,6 +5,9 @@ $dom->goto("screens");
 if (!$loggedin) {
 	$dom->append_html(get_login_screen());
 	$dom->end();
+} else {
+	$dom->append_html(get_user_delete_screen());
+	$dom->end();
 }
 
 $dom->create("div", ["class"=>"clearer"], "");
@@ -75,6 +78,33 @@ function get_login_screen() {
 				<h2>Already a user?<br/><a id="signup_log_in">Sign In</a></h2>
 			</form>
 			<div id="login_error" class="error">This is an error message</div>
+		</div>
+	</div>
+HTML;
+		return $html;
+}
+
+function get_user_delete_screen() {
+	$html = <<<HTML
+	<div id="user_delete_screen" class="screen">
+		<div id="user_delete">
+			<h1>Delete Your Account</h1>
+			<form id="user_delete_form">
+				<label>Please enter your password</label>
+				<div class="ttb">
+					<input id="user_delete_form_password" type="password" name="password"/>
+					<div class="tt">
+						Password must
+						<ul>
+							<li>Be between 8-100 characters</li>
+							<li>Contain only letters, numbers, spaces, or special characters</li>
+						</ul>
+					</div>
+				</div>
+				<div class="error" style="display: block;">WARNING: This action is permanent</div>
+				<div id="user_delete_form_submit" class="button">Delete Account</div>
+			</form>
+			<div id="user_delete_error" class="error">This is an error message</div>
 		</div>
 	</div>
 HTML;

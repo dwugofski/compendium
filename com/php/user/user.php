@@ -115,6 +115,20 @@ class User {
 		return $user;
 	}
 
+	static public function delete_user($username) {
+		if (!self::check_user($username)) ERRORS::log(ERRORS::USER_ERROR, "User with username '%s' not found. Cannot delete.", $username);
+		else {
+			MYSQL::run_query("DELETE FROM users WHERE username = ?", 's', [$username]);
+		}
+	}
+
+	static public function delete_userid($userid) {
+		if (!self::check_userid($userid)) ERRORS::log(ERRORS::USER_ERROR, "User with id %d not found. Cannot delete.", $userid);
+		else {
+			MYSQL::run_query("DELETE FROM users WHERE id = ?", 'i', [$userid]);
+		}
+	}
+
 	private function make_selector() {
 		$selector = bin2hex(openssl_random_pseudo_bytes(12));
 		$unique = TRUE;
@@ -297,9 +311,9 @@ class User {
 			case "permission":
 				return $this->grant_permissions($value);
 			case "id":
+			case "data":
 			case "token":
 			case "selector":
-			case "data":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of user", $name);
 				break;
 			default:

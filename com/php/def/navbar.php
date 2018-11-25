@@ -22,6 +22,7 @@ function get_navopt_user($username) {
 				<li>Create a page</li>
 				<li class="spacer"></li>
 				<li id="navopt_dd_logout">Log Out</li>
+				<li id="navopt_dd_user_delete">Delete Account</li>
 			</ul>
 		</div>
 HTML;
