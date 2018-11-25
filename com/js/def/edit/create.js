@@ -1,6 +1,12 @@
 
 export function init(){
+	console.log("Hello");
 	$("#page_form_submit").click(submit_form);
+
+	$("#page_form_title").on("input", verify_form);
+	$("#page_form_text").on("input", verify_form);
+
+	disable_submit();
 }
 
 function verify_usersel(usersel) {
@@ -13,7 +19,7 @@ function verify_text(text) {
 }
 
 function verify_title(title) {
-	const re = /^[a-fA-F0-9][\w]*$/;
+	const re = /^[a-zA-Z0-9][\S ]*$/;
 	return re.test(String(title));
 }
 
@@ -27,12 +33,12 @@ function hide_error() {
 }
 
 function disable_submit() {
-	const $submit = $("page_form_submit");
+	const $submit = $("#page_form_submit");
 	if (!$submit.hasClass("disabled")) $submit.addClass("disabled");
 }
 
 function enable_submit() {
-	const $submit = $("page_form_submit");
+	const $submit = $("#page_form_submit");
 	if ($submit.hasClass("disabled")) $submit.removeClass("disabled");
 }
 
@@ -59,10 +65,14 @@ function verify_field(elem, val, eval_f) {
 }
 
 function verify_form() {
+	console.log("Verify");
 	var valid = true;
 	valid &= verify_field($("#page_form_user"), undefined, verify_usersel);
+	console.log("Usersel is " + valid);
 	valid &= verify_field($("#page_form_title"), undefined, verify_title);
+	console.log("Title is " + valid);
 	valid &= verify_field($("#page_form_text"), undefined, verify_text);
+	console.log("Text is " + valid);
 
 	if (valid) enable_submit();
 	else disable_submit();
@@ -78,7 +88,7 @@ function submit_form(e){
 			return o;
 		}, {});
 		console.log(create_data.user);
-		var php_data = {"usersel": create_data.user, "title": create_data.title, "text": create_data.text};
+		var php_data = {"usersel": create_data.user, "title": create_data.title, "description": create_data.subtitle, "text": create_data.text};
 		$.ajax({
 			url : "com/php/page/create.php",
 			type : "POST",

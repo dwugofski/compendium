@@ -6,8 +6,17 @@ include_once(__DIR__."/../util/mysql.php");
 class Page {
 	private $id;
 
+	public static function compare($page1, $page2) {
+		if ($page1->title == $page2->title) return 0;
+		return ($page1->title < $page2->title) ? -1 : 1;
+	}
+
 	public static function validate_title($title) {
 		return is_string($title);
+	}
+
+	public static function validate_description($description) {
+		return is_string($description);
 	}
 
 	public static function validate_text($text) {
@@ -16,7 +25,19 @@ class Page {
 
 	public static function get_user_pages($user) {
 		$sql = "SELECT id FROM pages WHERE author_id = ?";
-		$rows = MYSQL::run_query($sql, 'i', [&$userid]);
+		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
+		$ret = array();
+		if (is_array($rows)) {
+			foreach($rows as $i=>$row) {
+				$ret[] = new Page($row['id']);
+			}
+		}
+		return $ret;
+	}
+
+	public static function get_user_books($user) {
+		$sql = "SELECT id FROM pages WHERE author_id = ? AND parent_id IS NULL";
+		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
 		$ret = array();
 		if (is_array($rows)) {
 			foreach($rows as $i=>$row) {
@@ -33,14 +54,15 @@ class Page {
 		else return FALSE;
 	}
 
-	public static function create_new_page($author, $title="Untitled", $text=""){
-		if ($author->has_permission('epo') == FALSE) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("User '%d' cannot create pages --> Page::create_new_page()", $author->id));
-		if (self::validate_title($title) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page title:\n --------- \n%s\n ---------- \n --> Page::create_new_page()", $title));
-		if (self::validate_text($text) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page text:\n --------- \n%s\n ---------- \n --> Page::create_new_page()", $text));
+	public static function create_new_page($author, $title="Untitled", $description="", $text=""){
+		if ($author->has_permission('epo') == FALSE) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("User '%d' cannot create pages", $author->id));
+		if (self::validate_title($title) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page title: %s", $title));
+		if (self::validate_description($description) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page description: %s", $description));
+		if (self::validate_text($text) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page text", $text));
 
 		$selector = self::make_selector();
-		$sql = "INSERT INTO pages (author_id, title, content, selector) VALUES (?, ?, ?, ?)";
-		MYSQL::run_query($sql, 'isss', [$author->id, &$title, &$text, &$selector]);
+		$sql = "INSERT INTO pages (author_id, title, description, content, selector) VALUES (?, ?, ?, ?, ?)";
+		MYSQL::run_query($sql, 'issss', [$author->id, &$title, &$description, &$text, &$selector]);
 		return new Page(MYSQL::get_index());
 	}
 
@@ -344,7 +366,7 @@ class Page {
 		$sql = "SELECT parent_id FROM pages WHERE id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
 		$parent_ids = array();
-		if (empty($rows) == FALSE) {
+		if (empty($rows) == FALSE && $rows[0]['parent_id'] !== NULL) {
 			foreach ($rows as $i => $row) {
 				$parent_ids[$row['parent_id']] = $row['parent_id'];
 				if ($recursive){

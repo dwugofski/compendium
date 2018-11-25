@@ -97,7 +97,6 @@ class MyDOM {
 	}
 
 	public function add_class($class) {
-		error_log("adding class");
 		if ($this->current->hasAttribute("class")) {
 			$classes = $this->current->getAttribute("class");
 			$class_list = explode(" ", $class);

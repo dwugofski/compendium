@@ -18,6 +18,23 @@ body #text_entry {
 			background-color: var(--bg-light);
 		}
 
+		#page_form_subtitle {
+			background-color: transparent;
+			border: none;
+			border-radius: 0;
+			color: var(--accent);
+			font-family: var(--title-font);
+			font-size: 150%;
+			font-variant: small-caps;
+			font-weight: bold;
+			margin: 0.1em 0 0.4em 0;
+			outline: none;
+			padding: 0.1em;
+		}
+		#page_form_subtitle:focus, #page_form_subtitle:hover {
+			background-color: var(--bg-light);
+		}
+
 		.mkdn_editor {
 			border-color: var(--bg-dark);
 			background-color: transparent;

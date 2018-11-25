@@ -10,6 +10,7 @@ try {
 	$usersel = $_POST["usersel"];
 	error_log($_POST);
 	$title = $_POST["title"];
+	$description = $_POST["description"];
 	$text = $_POST["text"];
 
 	if (!User::check_user_sel($usersel)) throw new CompendiumError("Invalid user selector", TRUE, ERRORS::USER_ERROR);
@@ -17,9 +18,10 @@ try {
 
 	if ($user->has_permission('epo') == FALSE) throw new CompendiumError("User does not have permission to create pages", TRUE, ERRORS::USER_ERROR);
 	if (Page::validate_title($title) == FALSE) throw new CompendiumError("Title is not valid", TRUE, ERRORS::USER_ERROR);
+	if (Page::validate_description($description) == FALSE) throw new CompendiumError("Subtitle is not valid", TRUE, ERRORS::USER_ERROR);
 	if (Page::validate_text($text)   == FALSE) throw new CompendiumError("Text is not valid", TRUE, ERRORS::USER_ERROR);
 
-	$page = Page::create_new_page($user, $title, $text);
+	$page = Page::create_new_page($user, $title, $description, $text);
 
 	json_ret($page->selector);
 }

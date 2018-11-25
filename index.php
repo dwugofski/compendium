@@ -9,7 +9,7 @@ if (isset($_GET["page"])) {
 		case "view":
 			$page = $_GET["page"];
 			break;
-		case "edit":
+		case "create":
 			if ($loggedin) {
 				$page = $_GET["page"];
 				break;

@@ -19,7 +19,7 @@ function get_navopt_user($username) {
 		<div class="navopt dropdown fr">
 			<span class="dropdown-toggle" type="button" id="navopt_user" data-toggle="dropdown">Hello, $username &#9660;</span>
 			<ul class="dropdown-menu dropdown-menu-right">
-				<li>Create a page</li>
+				<li id="navopt_dd_create">Create a page</li>
 				<li class="spacer"></li>
 				<li id="navopt_dd_logout">Log Out</li>
 				<li id="navopt_dd_user_delete">Delete Account</li>
