@@ -36,11 +36,11 @@ function swap(event) {
 }
 
 function display(event) {
-	$('#login_screen').css('display', 'block');
+	$('#login_screen').fadeIn("fast");
 }
 
 function hide(event) {
-	$('#login_screen').css('display', 'none');
+	$('#login_screen').fadeOut("fast");
 }
 
 $(document).ready(init);
