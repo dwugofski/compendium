@@ -14,9 +14,24 @@ function create_navbar($dom) {
 		$dom->end();
 	}
 
-	$dom->create("div", ["class"=>"clearer"], "");
+	$dom->create("div", ["class"=>"clearer", "id" => "navbar_clearer"], "");
 }
 
+function add_navopt($dom, $id, $text="", $right=false, $attrs=null) {
+	if (empty($attrs)) $attrs = [];
+	if (!isset($text)) $text = "";
+
+	$attrs["id"] = $id;
+
+	$dom->goto("navbar");
+	$dom->insert_before("navbar_clearer", "div", $attrs, $text);
+	$dom->add_class("navopt");
+	$dom->add_class( ($right) ? "fr" : "fl" );
+}
+
+function add_navopt_create($dom) {
+	add_navopt($dom, "navopt_create", "Create", false, ["parent" => $page_id]);
+}
 
 
 ?>

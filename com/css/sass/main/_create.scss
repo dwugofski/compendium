@@ -1,6 +1,13 @@
 
 body #text_entry {
 	#page_form {
+		label {
+			color: black;
+			font-size: 120%;
+			font-weight: normal;
+			margin-bottom: 0;
+		}
+
 		#page_form_title {
 			background-color: transparent;
 			border: none;
@@ -94,6 +101,19 @@ body #text_entry {
 		}
 		#page_form_switch_sub span:hover {
 			color: var(--accent-dark);
+			text-decoration: underline;
+		}
+
+		#page_form_path {
+			color: var(--accent);
+			cursor: pointer;
+			font-style: italic;
+			font-size: 120%;
+			margin-top: 0 !important;
+			padding-left: 2em;
+			text-indent: -1em;
+		}
+		#page_form_path:hover {
 			text-decoration: underline;
 		}
 	}

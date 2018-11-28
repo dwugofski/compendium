@@ -6,9 +6,13 @@ $loggedin = false;
 if(!empty($_SESSION['user'])) {
 	try {
 		if (User::check_userid($_SESSION['user']->id)) $loggedin = true;
-		else unset($_SESSION['user']);
+		else {
+			$loggedin = false;
+			unset($_SESSION['user']);
+		}
 	} catch (Exception $e) {
 		unset($_SESSION['user']);
+		$loggedin = false;
 	}
 } else $loggedin = false;
 

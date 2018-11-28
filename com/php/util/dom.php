@@ -49,13 +49,19 @@ class MyDOM {
 		}
 	}
 
-	public function create($tag, $attributes=NULL, $text=NULL) {
+	private function _create($tag, $attributes=NULL, $text=NULL) {
 		$newnode = $this->doc->createElement($tag);
 		if (is_array($attributes) && !empty($attributes)){
 			foreach ($attributes as $attr => $value) {
 				$newnode->setAttribute($attr, $value);
 			}
 		}
+
+		return $newnode;
+	}
+
+	public function create($tag, $attributes=NULL, $text=NULL) {
+		$newnode = $this->_create($tag, $attributes, $text);
 
 		$this->current->appendChild($newnode);
 		$this->current = $newnode;
@@ -183,6 +189,30 @@ class MyDOM {
 		$html = "<!DOCTYPE html><html><head></head><body>".$html."</body>";
 		$newdoc->loadHTML($html);
 		return $this->copy_children($newdoc->getElementsByTagName("body")->item(0));
+	}
+
+	public function insert_before($before_id, $tag, $attributes=NULL, $text=NULL) {
+		$newnode = $this->_create($tag, $attributes, $text);
+		$elem = $this->find($before_id, false);
+		$found = false;
+
+		if (isset($this->current->childNodes)) {
+			foreach ($this->current->childNodes as $key => $child) {
+				if ($child == $elem) {
+					$found = true;
+					break;
+				}
+			}
+		}
+
+		if ($found) $this->current->insertBefore($newnode, $elem);
+		else $this->current->appendChild($newnode);
+
+		if (isset($text)) $newnode->textContent = $text;
+
+		$this->current = $newnode;
+
+		return $this;
 	}
 
 	public function clear() {

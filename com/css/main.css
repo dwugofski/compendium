@@ -29,10 +29,6 @@ body {
     font-family: var(--code-font);
     margin-top: 0.5em;
     text-align: center; }
-  body hr {
-    background-color: var(--accent);
-    border-style: none;
-    height: 0.2em; }
 
 body > * {
   flex-shrink: 0; }
@@ -117,7 +113,7 @@ body #navbar {
     display: inline-block;
     height: 100%;
     overflow-y: visible;
-    padding: 0.7em 0.5em;
+    padding: 0.7em;
     vertical-align: middle;
     -moz-transition: background-color 0.4s;
     -webkit-transition: background-color 0.4s;
@@ -361,7 +357,7 @@ body #main #display #content {
   position: relative;
   top: var(--content-adjust); }
   body #main #display #content h1 {
-    border-bottom: 0.1em solid var(--accent);
+    border-bottom: 0.09em solid var(--accent);
     color: var(--accent);
     font-family: var(--title-font);
     font-variant: small-caps;
@@ -410,9 +406,18 @@ body #main #display #content {
       color: var(--accent);
       font-style: italic;
       font-weight: bold; }
+  body #main #display #content hr {
+    background-color: var(--accent);
+    border-style: none;
+    height: 0.2em; }
   body #main #display #content h2 + p, body #main #display #content h3 + p, body #main #display #content h4 + p, body #main #display #content h5 + p, body #main #display #content h6 + p {
     margin-top: 0; }
 
+body #text_entry #page_form label {
+  color: black;
+  font-size: 120%;
+  font-weight: normal;
+  margin-bottom: 0; }
 body #text_entry #page_form #page_form_title {
   background-color: transparent;
   border: none;
@@ -485,6 +490,16 @@ body #text_entry #page_form #page_form_switch_sub {
     cursor: pointer; }
 body #text_entry #page_form #page_form_switch_sub span:hover {
   color: var(--accent-dark);
+  text-decoration: underline; }
+body #text_entry #page_form #page_form_path {
+  color: var(--accent);
+  cursor: pointer;
+  font-style: italic;
+  font-size: 120%;
+  margin-top: 0 !important;
+  padding-left: 2em;
+  text-indent: -1em; }
+body #text_entry #page_form #page_form_path:hover {
   text-decoration: underline; }
 
 body #login_screen #login {

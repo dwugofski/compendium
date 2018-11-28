@@ -13,7 +13,7 @@ body #main #display #content {
 	//width: var(--content-width);
 
 	h1 {
-		border-bottom: 0.1em solid var(--accent);
+		border-bottom: 0.09em solid var(--accent);
 		color: var(--accent);
 		font-family: var(--title-font);
 		font-variant: small-caps;
@@ -80,6 +80,12 @@ body #main #display #content {
 			font-style: italic;
 			font-weight: bold;
 		}
+	}
+
+	hr {
+		background-color: var(--accent);
+		border-style: none;
+		height: 0.2em;
 	}
 
 	h2+p, h3+p, h4+p, h5+p, h6+p {

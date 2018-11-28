@@ -76,6 +76,7 @@ function display_page($pagesel, $target_user) {
 	$dom->goto("content")->append_html($Parsedown->text($target_page->text));
 	$dom->goto("display_h1")->text = htmlentities($target_page->title);
 	$dom->goto("display_h2")->text = htmlentities($target_page->description);
+	return $target_page->selector;
 }
 
 function display_error() {
@@ -93,14 +94,17 @@ HTML;
 
 function set_context($dom) {
 	$page_user = NULL;
+	$target_page = (isset($_GET['page_id'])) ? $_GET['page_id'] : null;
 	if (!isset($_GET['user']) && isset($_SESSION['user'])) {
 		$page_user = $_SESSION['user'];
 	} elseif (isset($_GET['user'])) {
 		$page_user = User::get_user_from_sel($_GET['user']);
-	} else throw new CompendiumError("404: User not found.", FALSE, ERRORS::USER_ERROR, 404);
+	} else throw new CompendiumError("404: User not found.", false, ERRORS::USER_ERROR, 404);
 
 	fill_sidebar($page_user);
-	display_page($_GET['page_id'], $page_user);
+	$page_id = display_page($target_page, $page_user);
+
+	add_navopt_create($dom);
 }
 
 ?>

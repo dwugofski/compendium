@@ -9,6 +9,10 @@ function set_context($dom) {
 
 	$dom->goto("main");
 	$dom->add_class("no-sidebar");
+
+	if (isset($_SESSION['user'])) {
+		add_navopt_create($dom);
+	}
 }
 
 ?>

@@ -54,6 +54,13 @@ class Page {
 		else return FALSE;
 	}
 
+	public static function is_page_selector($pagesel) {
+		$sql = "SELECT id FROM pages WHERE selector = ?";
+		$rows = MYSQL::run_query($sql, 'i', [&$pagesel]);
+		if (is_array($rows) && count($rows) > 0) return TRUE;
+		else return FALSE;
+	}
+
 	public static function create_new_page($author, $title="Untitled", $description="", $text=""){
 		if ($author->has_permission('epo') == FALSE) ERRORS::log(ERRORS::PERMISSIONS_ERROR, sprintf("User '%d' cannot create pages", $author->id));
 		if (self::validate_title($title) == FALSE) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Invalid page title: %s", $title));
@@ -483,6 +490,9 @@ class Page {
 			$parent_path = $this->get_parent()->path;
 			$titles = $parent_path->titles . "/" . $titles;
 			array_splice($selectors, 0, 0, $parent_path->selectors);
+		} else {
+			$author = new User($this->get_author());
+			$titles = "u/" . $author->username . "/" . $titles;
 		}
 
 		return ['titles' => $titles, 'selectors' => $selectors];
