@@ -184,6 +184,14 @@ class MyDOM {
 		$newdoc->loadHTML($html);
 		return $this->copy_children($newdoc->getElementsByTagName("body")->item(0));
 	}
+
+	public function clear() {
+		foreach ($this->current->childNodes as $key => $child) {
+			$this->current->removeChild($child);
+		}
+
+		return $this;
+	}
 }
 
 ?>

@@ -62,22 +62,17 @@ function display_page($pagesel, $target_user) {
 			$target_page = $pages[0];
 		}
 
-		if (!isset($target_page)) {
-			display_error();
-			return;
-		}
+		if (!isset($target_page)) throw new CompendiumError("404: Page not found.", FALSE, ERRORS::USER_ERROR, 404);
 	}
 
 	if (!isset($target_page)) {
 		if (isset($pagesel)) {
 			$target_page = Page::get_page_from_sel($pagesel);
-		} else {
-			display_error();
-			return;
-		}
+		} else throw new CompendiumError("404: Page not found.", FALSE, ERRORS::USER_ERROR, 404);
 	}
 
 	$Parsedown = new Parsedown();
+	$Parsedown->setBreaksEnabled(true);
 	$dom->goto("content")->append_html($Parsedown->text($target_page->text));
 	$dom->goto("display_h1")->text = htmlentities($target_page->title);
 	$dom->goto("display_h2")->text = htmlentities($target_page->description);
@@ -102,7 +97,7 @@ function set_context($dom) {
 		$page_user = $_SESSION['user'];
 	} elseif (isset($_GET['user'])) {
 		$page_user = User::get_user_from_sel($_GET['user']);
-	} else display_error();
+	} else throw new CompendiumError("404: User not found.", FALSE, ERRORS::USER_ERROR, 404);
 
 	fill_sidebar($page_user);
 	display_page($_GET['page_id'], $page_user);

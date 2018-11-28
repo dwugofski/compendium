@@ -1,6 +1,6 @@
 
-import * as Login from "./user/login.js";
+import * as Logging from "./user/logging.js";
 import * as Logout from "./user/logout.js";
 import * as Delete from "./user/delete.js";
 
-export {Login, Logout, Delete};
+export {Logging, Logout, Delete};

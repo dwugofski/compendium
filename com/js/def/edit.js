@@ -7,7 +7,7 @@ export function init() {
 	if ($("#navopt_dd_create")[0] === undefined) return;
 
 	$("#navopt_dd_create").click(() => {
-		window.location.href = "http://www.akatosh.com/compendium/?context=create";
+		window.location.href = "?context=create";
 	});
 }
 

@@ -1,6 +1,5 @@
 
 export function init(){
-	console.log("Hello");
 	$("#page_form_submit").click(submit_form);
 
 	$("#page_form_title").on("input", verify_form);
@@ -65,14 +64,10 @@ function verify_field(elem, val, eval_f) {
 }
 
 function verify_form() {
-	console.log("Verify");
 	var valid = true;
 	valid &= verify_field($("#page_form_user"), undefined, verify_usersel);
-	console.log("Usersel is " + valid);
 	valid &= verify_field($("#page_form_title"), undefined, verify_title);
-	console.log("Title is " + valid);
 	valid &= verify_field($("#page_form_text"), undefined, verify_text);
-	console.log("Text is " + valid);
 
 	if (valid) enable_submit();
 	else disable_submit();
@@ -88,7 +83,7 @@ function submit_form(e){
 			return o;
 		}, {});
 		console.log(create_data.user);
-		var php_data = {"usersel": create_data.user, "title": create_data.title, "description": create_data.subtitle, "text": create_data.text};
+		var php_data = {usersel: create_data.user, title: create_data.title, description: create_data.subtitle, text: create_data.text};
 		$.ajax({
 			url : "com/php/page/create.php",
 			type : "POST",
@@ -100,15 +95,13 @@ function submit_form(e){
 }
 
 function handle_php_created(data, status, jqxhr) {
-	console.log(JSON.parse(data));
-	enable_submit();
-
-	//location.reload();
+	const sel = JSON.parse(data)
+	location.href = getUrlFromJson({context: 'view', page_id: sel});
 }
 
 function handle_php_create_error(jqxhr, status, error) {
 	show_error(JSON.parse(jqxhr.responseText).error);
-	enable_submit();
+	verify_form();
 }
 
 $(document).ready(function(){

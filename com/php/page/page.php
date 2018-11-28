@@ -142,6 +142,8 @@ class Page {
 				return $this->get_parent();
 			case "parents":
 				return $this->get_parents(TRUE);
+			case "path":
+				return $this->get_path();
 			case "selector":
 				return $this->get_selector();
 			case "text":
@@ -190,6 +192,7 @@ class Page {
 			case "level":
 			case "parent":
 			case "parents":
+			case "path":
 			case "selector":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of page", $name);
 				break;
@@ -470,6 +473,19 @@ class Page {
 
 	public function is_chapter() {
 		return ($this->get_level() == 1);
+	}
+
+	public function get_path() {
+		$titles = $this->get_title();
+		$selectors = [$this->get_selector()];
+
+		if ($this->has_parent()) {
+			$parent_path = $this->get_parent()->path;
+			$titles = $parent_path->titles . "/" . $titles;
+			array_splice($selectors, 0, 0, $parent_path->selectors);
+		}
+
+		return ['titles' => $titles, 'selectors' => $selectors];
 	}
 
 	public function get_text() {

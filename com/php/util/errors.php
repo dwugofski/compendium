@@ -2,10 +2,12 @@
 
 class CompendiumError extends Exception {
 	public $can_show;
+	public $html_response_code;
 
-	public function __construct($message = "", $can_show = FALSE, $code = ERRORS::NO_ERROR, $previous = NULL) {
+	public function __construct($message = "", $can_show = FALSE, $code = ERRORS::NO_ERROR, $html_code = 500, $previous = NULL) {
 		parent::__construct($message, $code, $previous);
 		$this->can_show = $can_show;
+		$this->html_response_code = $html_code;
 	}
 }
 

@@ -62,6 +62,7 @@ body #main #display #content {
 	}
 
 	p {
+		margin-top: 1em;
 		margin-bottom: 0;
 
 		a {
@@ -79,5 +80,9 @@ body #main #display #content {
 			font-style: italic;
 			font-weight: bold;
 		}
+	}
+
+	h2+p, h3+p, h4+p, h5+p, h6+p {
+		margin-top: 0;
 	}
 }

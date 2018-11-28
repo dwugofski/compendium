@@ -18,7 +18,7 @@ function logout(e) {
 }
 
 function logout_success(data, status, jqxhr) {
-	location.reload();
+	location.href = getUrlFromJson({context: "home"});
 }
 
 function logout_error(data, status, jqxhr) {

@@ -397,6 +397,7 @@ body #main #display #content {
     font-weight: bold;
     margin: 1em 0 0 0; }
   body #main #display #content p {
+    margin-top: 1em;
     margin-bottom: 0; }
     body #main #display #content p a {
       color: var(--blue-light); }
@@ -408,6 +409,8 @@ body #main #display #content {
       color: var(--accent);
       font-style: italic;
       font-weight: bold; }
+  body #main #display #content h2 + p, body #main #display #content h3 + p, body #main #display #content h4 + p, body #main #display #content h5 + p, body #main #display #content h6 + p {
+    margin-top: 0; }
 
 body #text_entry #page_form #page_form_title {
   background-color: transparent;
