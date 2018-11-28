@@ -1,24 +1,8 @@
-<?php
-
-include_once(__DIR__."/../user/user.php");
-include_once(__DIR__."/../page/page.php");
-include_once(__DIR__."/../util/session.php");
-include_once(__DIR__."/../util/dom.php");
-include_once(__DIR__."/../util/parsedown.php");
-
-$loggedin = false;
-$user = NULL;
-
-if(!empty($_SESSION['user'])) {
-	$loggedin = true;
-	$user = $_SESSION['user'];
-} else $loggedin = false;
-
-$html = <<<HTML
-
 <!DOCTYPE html>
 <html>
 <head>
+	<title>The Compendium</title>
+
 	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
 	<link rel="stylesheet" type="text/css" href="com/css/consts/default_colors.css"/>
@@ -30,14 +14,15 @@ $html = <<<HTML
 
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-	<script src="com/js/slate/immutable.min.js"></script>
+	<!--<script src="com/js/slate/immutable.min.js"></script>
 	<script src="com/js/slate/react.production.min.js"></script>
 	<script src="com/js/slate/react-dom.production.min.js"></script>
 	<script src="com/js/slate/react-dom-server.browser.production.min.js"></script>
 	<script src="https://unpkg.com/slate/dist/slate.js"></script>
-	<script src="https://unpkg.com/slate-react/dist/slate-react.js"></script>
+	<script src="https://unpkg.com/slate-react/dist/slate-react.js"></script>-->
 
 	<script src="com/js/showdown/showdown.min.js"></script>
+	<script src="com/js/global_util.js"></script>
 	<script type="module" src="com/js/def.js"></script>
 </head>
 <body>
@@ -64,12 +49,3 @@ $html = <<<HTML
 	</div>
 </body>
 </html>
-
-HTML;
-
-$dom = new MyDOM($html);
-
-include_once(__DIR__."/navbar.php");
-include_once(__DIR__."/screens.php");
-
-?>
