@@ -33,6 +33,10 @@ function getUrlFromJson(obj, original_url=undefined) {
 	var composed_url = "";
 
 	const pos = original_url.indexOf("?");
+	if (obj === undefined) {
+		if (pos == -1) return original_url;
+		else return original_url.substring(0, pos);
+	}
 	if (pos == -1) composed_url = original_url + "?";
 	else composed_url = original_url.substring(0, pos+1);
 

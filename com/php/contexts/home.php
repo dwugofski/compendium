@@ -1,8 +1,8 @@
 <?php
 
 function set_context($dom) {
-	$dom->goto("display_h1")->text = "Create a Page";
-	$dom->goto("display_h2")->text = "Use the form below to create a page";
+	$dom->goto("display_h1")->text = "The Compendium";
+	$dom->goto("display_h2")->text = "A place where worlds meet";
 
 	$dom->goto("content");
 	$dom->append_html(file_get_contents(__DIR__."/../../html/contexts/home.html"));

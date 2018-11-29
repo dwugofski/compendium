@@ -104,7 +104,7 @@ function set_context($dom) {
 	fill_sidebar($page_user);
 	$page_id = display_page($target_page, $page_user);
 
-	add_navopt_create($dom);
+	add_navopt_create($dom, $page_id);
 }
 
 ?>

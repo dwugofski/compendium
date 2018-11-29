@@ -10,8 +10,10 @@ export function init() {
 	$("#navopt_create").click(goto_create);
 }
 
-export function goto_create(){
-	location.href = getUrlFromJson({context: "create"});
+export function goto_create(event){
+	var obj = {context: "create"};
+	if ($(event.target).attr("parent") !== undefined) obj.page_id = $(event.target).attr("parent");
+	location.href = getUrlFromJson(obj);
 }
 
 export { Create, View };

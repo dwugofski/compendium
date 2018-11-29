@@ -149,6 +149,14 @@ body #navbar {
         background-color: var(--bg-light); }
   body #navbar .navopt:hover, body #navbar .navopt.open {
     background-color: var(--accent-dark); }
+  body #navbar .navopt.button {
+    background-color: var(--accent-shade);
+    border-radius: 0.3em;
+    margin: 0.2em 0.3em;
+    padding: 0.5em 0.4em; }
+  body #navbar .navopt.button:hover {
+    background-color: var(--bg);
+    color: var(--accent); }
 
 body #main {
   background-color: black;

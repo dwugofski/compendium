@@ -29,8 +29,12 @@ function add_navopt($dom, $id, $text="", $right=false, $attrs=null) {
 	$dom->add_class( ($right) ? "fr" : "fl" );
 }
 
-function add_navopt_create($dom) {
-	add_navopt($dom, "navopt_create", "Create", false, ["parent" => $page_id]);
+function add_navopt_create($dom, $page_id=null) {
+	if (isset($page_id)){
+		add_navopt($dom, "navopt_create", "Create a Page", false, ["parent" => $page_id, "class" => "button"]);
+	} else {
+		add_navopt($dom, "navopt_create", "Create a Page", false, ["class" => "button"]);
+	}
 }
 
 
