@@ -24,7 +24,7 @@ class Page {
 	}
 
 	public static function get_user_pages($user) {
-		$sql = "SELECT id FROM pages WHERE author_id = ?";
+		$sql = "SELECT id FROM pages WHERE author_id = ? ORDER BY created";
 		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
 		$ret = array();
 		if (is_array($rows)) {
@@ -421,9 +421,9 @@ class Page {
 		$child_ids = array();
 		if (empty($rows) == FALSE) {
 			foreach ($rows as $i => $row) {
-				$child_ids[$row['child_id']] = $row['child_id'];
+				$child_ids[$row['id']] = $row['id'];
 				if ($recursive){
-					$new_child = new Page($row['child_id']);
+					$new_child = new Page($row['id']);
 					foreach ($new_child->get_children($recursive) as $j=>$grandchild){
 						$child_ids[$grandchild->id] = $grandchild->id;
 					}
@@ -488,8 +488,8 @@ class Page {
 
 		if ($this->has_parent()) {
 			$parent_path = $this->get_parent()->path;
-			$titles = $parent_path->titles . "/" . $titles;
-			array_splice($selectors, 0, 0, $parent_path->selectors);
+			$titles = $parent_path['titles'] . "/" . $titles;
+			array_splice($selectors, 0, 0, $parent_path['selectors']);
 		} else {
 			$author = new User($this->get_author());
 			$titles = "u/" . $author->username . "/" . $titles;

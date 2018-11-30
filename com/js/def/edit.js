@@ -12,7 +12,7 @@ export function init() {
 
 export function goto_create(event){
 	var obj = {context: "create"};
-	if ($(event.target).attr("parent") !== undefined) obj.page_id = $(event.target).attr("parent");
+	if ($(event.target).attr("parent") !== undefined) obj.parent_id = $(event.target).attr("parent");
 	location.href = getUrlFromJson(obj);
 }
 

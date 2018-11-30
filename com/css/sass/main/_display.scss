@@ -3,5 +3,5 @@ body #main #display {
 	float: right;
 	overflow-x: auto;
 	position: relative;
-	width: calc(100% - var(--sidebar-width));
+	//width: calc(100% - var(--sidebar-width));
 }

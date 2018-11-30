@@ -6,7 +6,7 @@ function fill_sidebar($target_user) {
 
 	if (isset($target_user)) {
 		$books = Page::get_user_books($target_user);
-		usort($books, ['Page', 'compare']);
+		//usort($books, ['Page', 'compare']);
 
 		$do_restart = FALSE;
 		foreach ($books as $book_index => $book) {
@@ -26,9 +26,11 @@ function add_page($page, $list_size=1, $index=0, $restart=FALSE) {
 	if ($index == 0) $dom->add_class("first");
 	if ($index == $list_size - 1) $dom->add_class("last");
 	if ($restart) $dom->add_class("restart");
-	if ($page->has_parent()) {
+	if ($page->has_children()) {
 		$had_children = TRUE;
 		$dom->add_class("parent");
+		$dom->remove_class("last");
+		$dom->end();
 
 		$children = $page->children;
 		$dom->create("ul", []);
@@ -39,8 +41,7 @@ function add_page($page, $list_size=1, $index=0, $restart=FALSE) {
 		}
 
 		$dom->end();
-	}
-	$dom->end();
+	} else $dom->end();
 
 	return $had_children;
 }

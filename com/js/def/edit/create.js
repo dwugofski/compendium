@@ -83,7 +83,7 @@ function submit_form(e){
 			return o;
 		}, {});
 		console.log(create_data.user);
-		var php_data = {usersel: create_data.user, title: create_data.title, description: create_data.subtitle, text: create_data.text};
+		var php_data = {usersel: create_data.user, title: create_data.title, description: create_data.subtitle, text: create_data.text, parent: create_data.parent};
 		$.ajax({
 			url : "com/php/page/create.php",
 			type : "POST",
