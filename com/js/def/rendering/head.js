@@ -19,6 +19,17 @@ export function init() {
 	$(window).scroll(scrollnav);
 	$(window).resize(main_resize);
 
+	$("#sidebar_adjust").on('mousedown', (me) => {
+		_sidebar_x_start = me.pageX;
+		_sidebar_start_width = $("#sidebar").width();
+		$("#sidebar").addClass("hover");
+		$(document).on('mousemove', sidebar_resize);
+		$(document).on('mouseup', (e) => {
+			$("#sidebar").removeClass("hover");
+			$(document).off('mousemove', null, sidebar_resize);
+		});
+	});
+
 	setTimeout(function() {
 		window.scrollBy(0, 1);
 		scrollnav();
@@ -107,6 +118,27 @@ function disp_resize() {
 	}
 
 	scrollnav();
+}
+
+var _sidebar_x_start;
+var _sidebar_start_width;
+const SIDEBAR_MAX_WIDTH = 450;
+const SIDEBAR_MIN_WIDTH = 250;
+
+function sidebar_resize(me) {
+	me.preventDefault();
+	var dx = (_sidebar_x_start - me.pageX);
+	const next_width = _sidebar_start_width - dx;
+
+	if (next_width <= SIDEBAR_MAX_WIDTH && next_width >= SIDEBAR_MIN_WIDTH) {
+		$("#sidebar").css('width', next_width);
+	} else if (next_width > SIDEBAR_MAX_WIDTH) {
+		$("#sidebar").css('width', SIDEBAR_MAX_WIDTH);
+	} else if (next_width < SIDEBAR_MIN_WIDTH) {
+		$("#sidebar").css('width', SIDEBAR_MIN_WIDTH);
+	}
+
+	main_resize();
 }
 
 window.print = function() {

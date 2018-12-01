@@ -4,6 +4,8 @@ export function init(){
 
 	$("#page_form_title").on("input", verify_form);
 	$("#page_form_text").on("input", verify_form);
+	
+	$("#page_form_switch_sub span").click(toggle_preview);
 
 	disable_submit();
 }
@@ -102,6 +104,35 @@ function handle_php_created(data, status, jqxhr) {
 function handle_php_create_error(jqxhr, status, error) {
 	show_error(JSON.parse(jqxhr.responseText).error);
 	verify_form();
+}
+
+function toggle_preview() {
+	if (preview_mode == "edit") {
+		preview_mode = "preview";
+		hide_edit(show_preview);
+	} else {
+		preview_mode = "edit";
+		hide_preview(show_edit);
+	}
+}
+
+function hide_edit(callback) {
+	$("#page_form_text").hide(100, callback);
+}
+
+function hide_preview(callback) {
+	$("#page_form_preview").hide(100, callback);
+}
+
+function show_preview(callback) {
+	$("#page_form_preview").html(Markdown.parse($("#page_form_text").val()));
+	$("#page_form_switch_sub span").text("Edit");
+	$("#page_form_preview").show(100, callback);
+}
+
+function show_edit(callback) {
+	$("#page_form_switch_sub span").text("Preview");
+	$("#page_form_text").show(100, callback);
 }
 
 $(document).ready(function(){

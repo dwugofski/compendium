@@ -55,11 +55,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6568542"
-     inkscape:cx="383.07368"
-     inkscape:cy="784.54827"
+     inkscape:zoom="16"
+     inkscape:cx="36.181239"
+     inkscape:cy="717.42996"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
@@ -106,8 +106,7 @@
   <g
      inkscape:label="colors"
      inkscape:groupmode="layer"
-     id="layer1"
-     sodipodi:insensitive="true">
+     id="layer1">
     <rect
        style="opacity:0.181;fill:url(#pattern2288);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.18133825;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect825"
@@ -553,5 +552,50 @@
          x="101.07083"
          id="tspan898"
          sodipodi:role="line">i</tspan></text>
+    <circle
+       style="opacity:1;fill:#7a200d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.14497717;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path891"
+       cx="94.059372"
+       cy="103.85417"
+       r="1.3229166" />
+    <circle
+       r="1.3229166"
+       cy="107.87253"
+       cx="94.059372"
+       id="circle893"
+       style="opacity:1;fill:#7a200d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.14497717;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <circle
+       style="opacity:1;fill:#7a200d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.14497717;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="circle895"
+       cx="94.059372"
+       cy="111.89088"
+       r="1.3229166" />
+    <circle
+       r="0.60132575"
+       cy="103.06601"
+       cx="3.7703087"
+       id="circle4600"
+       style="opacity:1;fill:#7a200d;fill-opacity:1;fill-rule:evenodd;stroke:#d9b6a2;stroke-width:0.12026516;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="E:\David\Personal Documents\Web\compendium\res\icons\adjust_slider.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <circle
+       style="opacity:1;fill:#7a200d;fill-opacity:1;fill-rule:evenodd;stroke:#d9b6a2;stroke-width:0.12026516;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="circle4602"
+       cx="3.7703087"
+       cy="104.89256"
+       r="0.60132575"
+       inkscape:export-filename="E:\David\Personal Documents\Web\compendium\res\icons\adjust_slider.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <circle
+       r="0.60132575"
+       cy="106.71906"
+       cx="3.7703087"
+       id="circle4604"
+       style="opacity:1;fill:#7a200d;fill-opacity:1;fill-rule:evenodd;stroke:#d9b6a2;stroke-width:0.12026516;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="E:\David\Personal Documents\Web\compendium\res\icons\adjust_slider.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>

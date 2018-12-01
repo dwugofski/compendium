@@ -310,9 +310,16 @@ body #sidebar {
             body #sidebar #sidebar_items ul ul ul ul li.last:hover {
               padding: 0.2em 0 0.2em 0; }
   body #sidebar #sidebar_adjust {
-    background-color: black;
+    background-color: var(--accent);
+    background-image: url("../../res/icons/adjust_slider.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    border-left: 1px solid var(--accent-dark);
+    border-right: 1px solid var(--accent-dark);
+    cursor: col-resize;
     float: right;
     height: 100%;
+    opacity: 0;
     width: 10px; }
 
 body #sidebar::-webkit-scrollbar {
@@ -321,6 +328,11 @@ body #sidebar::-webkit-scrollbar {
   background: transparent;
   /* optional: just make scrollbar invisible */
   display: none; }
+
+body #sidebar:hover, body #sidebar.hover {
+  background-color: var(--accent-screen); }
+  body #sidebar:hover #sidebar_adjust, body #sidebar.hover #sidebar_adjust {
+    opacity: 1; }
 
 body #main.no-sidebar #sidebar {
   display: none; }
