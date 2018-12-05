@@ -56,15 +56,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="16"
-     inkscape:cx="36.181239"
-     inkscape:cy="717.42996"
+     inkscape:cx="34.048706"
+     inkscape:cy="719.98155"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer4"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1017"
+     inkscape:window-height="1137"
      inkscape:window-x="1912"
-     inkscape:window-y="-8"
+     inkscape:window-y="-4"
      inkscape:window-maximized="1"
      inkscape:snap-global="true">
     <inkscape:grid
@@ -597,5 +597,32 @@
        inkscape:export-filename="E:\David\Personal Documents\Web\compendium\res\icons\adjust_slider.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
+    <circle
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Users\dwugofsk\Documents\git\compendium\res\icons\adjust_slider.png"
+       style="opacity:1;fill:#3c1710;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07937501;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="circle897"
+       cx="5.9980106"
+       cy="103.27046"
+       r="0.39687499" />
+    <circle
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Users\dwugofsk\Documents\git\compendium\res\icons\adjust_slider.png"
+       r="0.39687499"
+       cy="105.09702"
+       cx="5.9980106"
+       id="circle899"
+       style="opacity:1;fill:#3c1710;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07937501;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <circle
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Users\dwugofsk\Documents\git\compendium\res\icons\adjust_slider.png"
+       style="opacity:1;fill:#3c1710;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07937501;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="circle901"
+       cx="5.9980106"
+       cy="106.9236"
+       r="0.39687499" />
   </g>
 </svg>

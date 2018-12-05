@@ -213,8 +213,9 @@ body #sidebar {
         background-color: var(--accent-dark);
         margin-right: -0.3em; }
       body #sidebar #sidebar_items ul #sidebar_footer {
-        padding: 0 0 0 0;
-        margin: 0 0 0 0; }
+        cursor: default;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0; }
       body #sidebar #sidebar_items ul #sidebar_footer:hover {
         background-color: var(--accent);
         margin-right: 0em; }
@@ -310,16 +311,14 @@ body #sidebar {
             body #sidebar #sidebar_items ul ul ul ul li.last:hover {
               padding: 0.2em 0 0.2em 0; }
   body #sidebar #sidebar_adjust {
-    background-color: var(--accent);
-    background-image: url("../../res/icons/adjust_slider.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    border-left: 1px solid var(--accent-dark);
-    border-right: 1px solid var(--accent-dark);
+    /*background-image: url('../../res/icons/adjust_slider.png');
+    background-position: center; 
+    background-repeat: no-repeat;*/
+    /*border-left: 1px solid var(--accent-dark);
+    border-right: 1px solid var(--accent-dark);*/
     cursor: col-resize;
     float: right;
     height: 100%;
-    opacity: 0;
     width: 10px; }
 
 body #sidebar::-webkit-scrollbar {

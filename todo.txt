@@ -1,0 +1,27 @@
+
+TODO
+- User Profile
+	- Picture
+	- Personal
+		- Description Page
+		- Comments
+	- Recent Activity
+		- Liked pages
+		- Edited pages
+		- Comments
+	- User-only
+		- Saved pages
+		- Edit picture
+- Social Media
+	- Add friendship/following mechanism
+	- Add "watching" mechanism
+	- Add PM and notification mechanism
+	- Add rating/liking mechanism
+		- Pages
+		- Comments
+	- Add saving mechanism
+	- Comments
+- Search
+- Front Page
+- Implement View/Edit history
+- Edit Pages

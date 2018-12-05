@@ -4,7 +4,9 @@ export function init(){
 
 	$.each($('#books li'), (i, obj) => {
 		$(obj).click({id: $(obj).attr("id")}, (e) => {
-			goto_page(e.data.id);
+			if (e.data.id != "sidebar_footer") {
+				goto_page(e.data.id);
+			}
 		});
 	});
 }

@@ -14,6 +14,8 @@ function display_user_usage(){
 function user_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting followings\n");
+			MYSQL::run_query("DROP TABLE IF EXISTS followings CASCADE");
 			echo("Deleting users\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS users CASCADE");
 			if ($delete) return;
@@ -28,9 +30,27 @@ function user_tables($overwrite, $delete) {
 		password VARCHAR(100) NOT NULL,
 		email VARCHAR(255) NULL DEFAULT NULL,
 		selector CHAR(24) NOT NULL, 
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+		modified DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
 		PRIMARY KEY (id),
 		INDEX USER (username), 
 		UNIQUE INDEX SEL (selector))
+		ENGINE = INNODB";
+		MYSQL::run_query($sql);
+
+		echo("Creating followings\n");
+
+		$sql = "
+		CREATE TABLE followings (
+		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
+		followed VARCHAR(75) NOT NULL, 
+		follower VARCHAR(100) NOT NULL,
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+		PRIMARY KEY (id), 
+		FOREIGN KEY (followed) REFERENCES users(id) 
+		ON DELETE CASCADE ON UPDATE CASCADE, 
+		FOREIGN KEY (follower) REFERENCES pages(id) 
+		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
 

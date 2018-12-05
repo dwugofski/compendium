@@ -50,8 +50,9 @@ body #sidebar {
 				margin-right: -0.3em;
 			}
 			#sidebar_footer {
-				padding: 0 0 0 0;
+				cursor: default;
 				margin: 0 0 0 0;
+				padding: 0 0 0 0;
 			}
 			#sidebar_footer:hover {
 				background-color: var(--accent);
@@ -183,16 +184,16 @@ body #sidebar {
 	}
 
 	#sidebar_adjust {
-		background-color: var(--accent);
-		background-image: url('../../res/icons/adjust_slider.png');
+		//background-color: var(--accent);
+		/*background-image: url('../../res/icons/adjust_slider.png');
 		background-position: center; 
-		background-repeat: no-repeat;
-		border-left: 1px solid var(--accent-dark);
-		border-right: 1px solid var(--accent-dark);
+		background-repeat: no-repeat;*/
+		/*border-left: 1px solid var(--accent-dark);
+		border-right: 1px solid var(--accent-dark);*/
 		cursor: col-resize;
 		float: right;
 		height: 100%;
-		opacity: 0;
+		//opacity: 0;
 		width: 10px;
 	}
 }
