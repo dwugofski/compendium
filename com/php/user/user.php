@@ -243,6 +243,10 @@ class User extends CompAccessor {
 
 	public function __get($name) {
 		switch($name){
+			case "blockeds":
+				return $this->get_followeds();
+			case "blockers":
+				return $this->get_followers();
 			case "id":
 				return $this->id;
 			case "username":
@@ -276,6 +280,8 @@ class User extends CompAccessor {
 				break;
 			case "permission":
 				return $this->grant_permissions($value);
+			case "blockeds":
+			case "blockers":
 			case "id":
 			case "data":
 			case "followers":
