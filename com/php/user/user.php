@@ -39,6 +39,15 @@ class User extends CompAccessor {
 	// user actions
 	const ACT_VIEW_UNLOCKED_PAGES 	= 'vpu';
 
+	const TGT_PAGE = 'page';
+	const TGT_PAGE_ID = 'page_id';
+	const TGT_COMMENT = 'comment';
+	const TGT_COMMENT_ID = 'comment_id';
+
+	const INTRCTN_VIEW = 'view';
+	const INTRCTN_EDIT = 'edit';
+	const INTRCTN_SAVE = 'save';
+
 	const TABLE_NAME = 'users';
 	const PRIMARY_KEY = 'id';
 
@@ -486,6 +495,47 @@ class User extends CompAccessor {
 
 	public function unblock($user) {
 		if ($this->is_blocked($user)) MYSQL::run_query("DELETE FROM user_blocks WHERE blocker = ? AND blocked = ?", 'ii', [$this->id, $user->id]);
+	}
+
+	public function log_generic_interaction($target_id, $target_id_colname, $interaction_type, $target_type) {
+		MYSQL::run_query(
+			"INSERT INTO user_interactions (user_id, ".$target_id_colname.", interaction_type, target_type) VALUES (?, ?, ?, ?)",
+			'iiss',
+			[$this->id, $target_id, $interaction_type, $target_type]
+		);
+	}
+
+	public function log_page_interaction($page_id, $interaction_type) {
+		return $this->log_generic_interaction($page_id, self::TGT_PAGE_ID, $interaction_type, self::TGT_PAGE);
+	}
+
+	public function log_comment_interaction($comment_id, $interaction_type) {
+		return $this->log_generic_interaction($comment_id, self::TGT_COMMENT_ID, $interaction_type, self::TGT_COMMENT);
+	}
+
+	public function log_page_visit($page_id) {
+		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
+		return $this->log_page_interaction($page_id, self::INTRCTN_VIEW);
+	}
+
+	public function log_page_edit($page_id) {
+		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
+		return $this->log_page_interaction($page_id, self::INTRCTN_EDIT);
+	}
+
+	public function log_page_save($page_id) {
+		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
+		return $this->log_page_interaction($page_id, self::INTRCTN_SAVE);
+	}
+
+	public function log_comment_visit($comment_id) {
+		if (is_a($comment_id, 'Comment')) $comment_id = $comment_id->id;
+		return $this->log_page_interaction($comment_id, self::INTRCTN_VIEW);
+	}
+
+	public function log_comment_edit($comment_id) {
+		if (is_a($comment_id, 'Comment')) $comment_id = $comment_id->id;
+		return $this->log_page_interaction($comment_id, self::INTRCTN_EDIT);
 	}
 }
 
