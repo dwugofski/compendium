@@ -615,16 +615,6 @@ class Page {
 	public function close() {
 		$this->set_opened(false);
 	}
-
-	// Hashable functions
-
-	public function equals($other_page) {
-		return ($this->id == $other_page->id);
-	}
-
-	public function hash() {
-		return $this->selector;
-	}
 }
 
 ?>

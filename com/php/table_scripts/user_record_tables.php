@@ -14,95 +14,28 @@ function display_user_record_usage(){
 function user_record_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
-			echo("Deleting user_saves\n");
-			MYSQL::run_query("DROP TABLE IF EXISTS user_saves CASCADE");
-			echo("Deleting user_comment_likes\n");
-			MYSQL::run_query("DROP TABLE IF EXISTS user_comment_likes CASCADE");
-			echo("Deleting user_page_likes\n");
-			MYSQL::run_query("DROP TABLE IF EXISTS user_page_likes CASCADE");
-			echo("Deleting user_views\n");
-			MYSQL::run_query("DROP TABLE IF EXISTS user_views CASCADE");
-			echo("Deleting user_edits\n");
-			MYSQL::run_query("DROP TABLE IF EXISTS user_edits CASCADE");
+			echo("Deleting user_interactions\n");
+			MYSQL::run_query("DROP TABLE IF EXISTS user_interactions CASCADE");
 			if ($delete) return;
 		}
 
-		echo("Creating user_edits\n");
+		echo("Creating user_interactions\n");
 
 		$sql = "
-		CREATE TABLE user_edits (
+		CREATE TABLE user_interactions (
 		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
 		user_id INT(10) UNSIGNED NOT NULL, 
-		page_id INT(10) UNSIGNED NOT NULL, 
+		page_id INT(10) UNSIGNED DEFAULT NULL, 
+		comment_id INT(10) UNSIGNED DEFAULT NULL, 
+		interaction_type ENUM('view', 'edit', 'save') NOT NULL, 
+		target_type ENUM('page', 'comment') NOT NULL, 
 		event DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		PRIMARY KEY (id), 
 		FOREIGN KEY (user_id) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
 		FOREIGN KEY (page_id) REFERENCES pages(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE)
-		ENGINE = INNODB";
-		MYSQL::run_query($sql);
-
-		echo("Creating user_views\n");
-
-		$sql = "
-		CREATE TABLE user_views (
-		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		user_id INT(10) UNSIGNED NOT NULL, 
-		page_id INT(10) UNSIGNED NOT NULL, 
-		event DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-		PRIMARY KEY (id), 
-		FOREIGN KEY (user_id) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (page_id) REFERENCES pages(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE)
-		ENGINE = INNODB";
-		MYSQL::run_query($sql);
-
-		echo("Creating user_page_likes\n");
-
-		$sql = "
-		CREATE TABLE user_page_likes (
-		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		user_id INT(10) UNSIGNED NOT NULL, 
-		page_id INT(10) UNSIGNED NOT NULL, 
-		event DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-		PRIMARY KEY (id), 
-		FOREIGN KEY (user_id) REFERENCES users(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (page_id) REFERENCES pages(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE)
-		ENGINE = INNODB";
-		MYSQL::run_query($sql);
-
-		echo("Creating user_page_likes\n");
-
-		$sql = "
-		CREATE TABLE user_comment_likes (
-		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		user_id INT(10) UNSIGNED NOT NULL, 
-		comment_id INT(10) UNSIGNED NOT NULL, 
-		event DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-		PRIMARY KEY (id), 
-		FOREIGN KEY (user_id) REFERENCES users(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (comment_id) REFERENCES comment(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE)
-		ENGINE = INNODB";
-		MYSQL::run_query($sql);
-
-		echo("Creating user_saves\n");
-
-		$sql = "
-		CREATE TABLE user_saves (
-		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		user_id INT(10) UNSIGNED NOT NULL, 
-		page_id INT(10) UNSIGNED NOT NULL, 
-		event DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-		PRIMARY KEY (id), 
-		FOREIGN KEY (user_id) REFERENCES users(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (page_id) REFERENCES pages(id) 
+		FOREIGN KEY (comment_id) REFERENCES comments(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
