@@ -2,8 +2,13 @@
 
 include_once(__DIR__."/../util/errors.php");
 include_once(__DIR__."/../util/mysql.php");
+include_once(__DIR__."/../util/comp_accessor.php");
 
-class User {
+class User extends CompAccessor {
+
+// --------------------------------------------------
+// Begin static features
+// --------------------------------------------------
 	const PERM_ROOT 	= 'root';
 	const PERM_ADMIN 	= 'admin';
 	const PERM_USER 	= 'user';
@@ -34,8 +39,48 @@ class User {
 	// user actions
 	const ACT_VIEW_UNLOCKED_PAGES 	= 'vpu';
 
-	private $id;
+	const TABLE_NAME = 'users';
+	const PRIMARY_KEY = 'id';
+
+	const COLUMN_NAMES =[
+		'id',
+		'username',
+		'password',
+		'email',
+		'selector',
+		'created',
+		'modified'
+	];
+
+	const COLUMN_TYPES = [
+		'id' => 'i',
+		'username' => 's',
+		'password' => 's',
+		'email' => 's',
+		'selector' => 's',
+		'created' => 's',
+		'modified' => 's'
+
+	];
+
+	const IDENTIFIERS = [
+		'id' => 'id',
+		'selector' => 'selector',
+		'sel' => 'selector',
+		'username' => 'username',
+		'user' => 'username',
+		'email' => 'email'
+	];
+
 	private $token;
+
+	static private function _find_by($colname, $val) {
+		return self::_accessor_find_by($colname, $val, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
+	}
+
+	static private function _find($value, $identifier='id') {
+		return self::_accessor_find($value, $identifier, self::IDENTIFIERS, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
+	}
 
 	static public function login_user($username, $password, $remember_me=FALSE) {
 		if (self::check_user($username) == FALSE) {
@@ -52,32 +97,6 @@ class User {
 	}
 
 	static public function login_from_token($selector, $validator) {
-		/*$tokens = self::check_login_token($selector);
-		if (!empty($tokens)) {
-			$token = $tokens[0];
-			if (hash_equals($token['valhash'], hash('sda256', $validator))) {
-				$expires = new DateTime($token['expires']);
-				$now = new DateTime();
-				if ($expires < $now) {
-					self::delete_login_token($selector);
-					ERRORS::log(ERRORS::USER_ERROR, "Login token expired");
-				} else {
-					$sql = "SELECT id FROM users WHERE id = ?";
-					$users = MYSQL::run_query($sql, 'i', [&$token['userid']]);
-					if (empty($users)) {
-						ERRORS::log(ERRORS::USER_ERROR, "Login token's user not found");
-						self::delete_login_token($selector);
-					}
-					$user = new User($token['userid']);
-					$user->token = ['selector' => $selector, 'validator' => $validator];
-					return $user;
-				}
-			}
-			self::delete_login_token($selector);
-		}
-
-		ERRORS::log(ERRORS::USER_ERROR, 'Attempt to use invalid login token detected!');*/
-
 		if (self::validate_token($selector, $validator)) {
 			$sql = "SELECT id FROM users WHERE id = ?";
 			$users = MYSQL::run_query($sql, 'i', [&$token['userid']]);
@@ -115,7 +134,7 @@ class User {
 		return $user;
 	}
 
-	static public function delete_user($username) {
+	static public function delete_user($vlaue, $identifier='id') {
 		if (!self::check_user($username)) ERRORS::log(ERRORS::USER_ERROR, "User with username '%s' not found. Cannot delete.", $username);
 		else {
 			MYSQL::run_query("DELETE FROM users WHERE username = ?", 's', [$username]);
@@ -274,11 +293,23 @@ class User {
 		return MYSQL::run_query("SELECT title FROM permissions WHERE id = ?", 'i', [&$permission_level])[0]['title'];
 	}
 
-	public function __construct($id) {
-		if (User::check_userid($id)) $this->id = $id;
-		else ERRORS::log(ERRORS::USER_ERROR, "User with id %d not found", $id);
+	public function __construct($value, $identifier='id') {
+		$rows = $this->_find($value, $identifier);
+		if (!empty($rows)) {
+			$this->id = $rows[0]['id'];
+		}
+		else ERRORS::log(
+			ERRORS::PAGE_ERROR, 
+			"User::__construct() could not find user '%s' => '%s'", 
+			json_encode($identifier), 
+			json_encode($value)
+		);
 	}
 
+
+// --------------------------------------------------
+// Begin non-static features
+// --------------------------------------------------
 	public function __get($name) {
 		switch($name){
 			case "id":

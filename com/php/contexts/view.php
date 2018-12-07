@@ -68,7 +68,7 @@ function display_page($pagesel, $target_user) {
 
 	if (!isset($target_page)) {
 		if (isset($pagesel)) {
-			$target_page = new Page(['selector' => $pagesel]);
+			$target_page = new Page($pagesel, 'sel');
 		} else throw new CompendiumError("Page not found.", FALSE, ERRORS::USER_ERROR, 404);
 	}
 

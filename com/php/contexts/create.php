@@ -15,9 +15,8 @@ function set_context($dom) {
 	$dom->goto("page_form_user")->set_attr("value", $_SESSION['user']->selector);
 
 	if (isset($_GET['parent_id'])) {
-		$selector = ['selector' => $_GET['parent_id']];
-		if (Page::is_page($selector)) {
-			$parent = new Page($selector);
+		if (Page::is_page($_GET['parent_id'], 'sel')) {
+			$parent = new Page($_GET['parent_id'], 'sel');
 			$dom->goto("page_form_path")->text = $parent->path['titles'];
 			$dom->goto("page_form_parent")->set_attr("value", $parent->selector);
 		} else throw new CompendiumError("Parent page not found", FALSE, ERRORS::USER_ERROR, 404);

@@ -2,13 +2,17 @@
 
 include_once(__DIR__."/../util/errors.php");
 include_once(__DIR__."/../util/mysql.php");
+include_once(__DIR__."/../util/comp_accessor.php");
 
-class Page {
+class Page extends CompAccessor {
 
 // --------------------------------------------------
 // Begin static features
 // --------------------------------------------------
-	public static $columns = [
+	const TABLE_NAME = 'pages';
+	const PRIMARY_KEY = 'id';
+
+	const COLUMN_NAMES = [
 		"id",
 		"title",
 		"description",
@@ -22,103 +26,35 @@ class Page {
 		"parent_id"
 	];
 
-	private static function _find_by($colname, $val, $type="i") {
-		if (empty($colname)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find_by() No column name entered");
-		if (is_null($val)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find_by() No value entered");
-		if (empty($type)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find_by() No type entered");
-		if (in_array($colname, self::$columns)) {
-			$sql = "SELECT id FROM pages WHERE ".$colname." = ?";
-			return MYSQL::run_query($sql, $type, [&$val]);
-		} else ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find_by() column \"%s\" not recognized", $colname);
+	const COLUMN_TYPES = [
+		"id" => 'i',
+		"title" => 's',
+		"description" => 's',
+		"content" => 'b',
+		"author_id" => 'i',
+		"locked" => 'i',
+		"opened" => 'i',
+		"selector" => 's',
+		"created" => 's',
+		"modified" => 's',
+		"parent_id" => 'i'
+	];
+	
+	const IDENTIFIERS = [
+		'id' => 'id',
+		'selector' => 'selector',
+		'sel' => 'selector'
+	];
+
+	static private function _find_by($colname, $val) {
+		return self::_accessor_find_by($colname, $val, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
 	}
 
-	private static function _find($page_ident) {
-		$page_identifiers = [
-			['ident' => ["id"], 'colname' => "id", 'type' => 'i'],
-			['ident' => ["selector", "sel"], 'colname' => "selector", 'type' => 's'],
-			['ident' => ["title"], 'colname' => "title", 'type' => 's']
-		];
-		$rows = null;
-
-		if (empty($page_ident)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find() No page_ident entered");
-		if (is_array($page_ident) && !empty($page_ident)) {
-			foreach ($page_ident as $identifier_request => $value) {
-				foreach ($page_identifiers as $identifier) {
-					if (in_array($identifier_request, $identifier['ident'])) {
-						$rows = self::_find_by($identifier['colname'], $value, $identifier['type']);
-						break;
-					}
-				}
-				if (isset($rows)) break;
-			}
-			if (is_null($rows)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find() Cannot find an identifier for page_ident of %s", json_encode($page_ident));
-		} else {
-			$rows = self::_find_by("id", $page_ident, 'i');
-		}
-
-		return $rows;
+	static private function _find($value, $identifier='id') {
+		return self::_accessor_find($value, $identifier, self::IDENTIFIERS, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
 	}
 
-	public static function compare($page1, $page2) {
-		if ($page1->title == $page2->title) return 0;
-		return ($page1->title < $page2->title) ? -1 : 1;
-	}
-
-	public static function validate_title($title) {
-		return is_string($title);
-	}
-
-	public static function validate_description($description) {
-		return is_string($description);
-	}
-
-	public static function validate_text($text) {
-		return is_string($text);
-	}
-
-	public static function get_user_pages($user) {
-		$sql = "SELECT id FROM pages WHERE author_id = ? ORDER BY created";
-		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
-		$ret = array();
-		if (is_array($rows)) {
-			foreach($rows as $i=>$row) {
-				$ret[] = new Page($row['id']);
-			}
-		}
-		return $ret;
-	}
-
-	public static function get_user_books($user) {
-		$sql = "SELECT id FROM pages WHERE author_id = ? AND parent_id IS NULL";
-		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
-		$ret = array();
-		if (is_array($rows)) {
-			foreach($rows as $i=>$row) {
-				$ret[] = new Page($row['id']);
-			}
-		}
-		return $ret;
-	}
-
-	public static function is_page($page_ident) {
-		$rows = self::_find($page_ident);
-		if (!empty($rows) && is_array($rows)) return true;
-		else return false;
-	}
-
-	public static function create_new_page($author, $title="Untitled", $description="", $text=""){
-		if ($author->has_permission('epo') == false) ERRORS::log(ERRORS::PERMISSIONS_ERROR, "User '%d' cannot create pages", $author->id);
-		if (self::validate_title($title) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Invalid page title: %s", $title);
-		if (self::validate_description($description) == false) ERRORS::log(ERRORS::PAGE_ERROR,"Invalid page description: %s", $description);
-		if (self::validate_text($text) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Invalid page text \n%s", $text);
-
-		$selector = self::make_selector();
-		$sql = "INSERT INTO pages (author_id, title, description, content, selector) VALUES (?, ?, ?, ?, ?)";
-		MYSQL::run_query($sql, 'issss', [$author->id, &$title, &$description, &$text, &$selector]);
-		return new Page(MYSQL::get_index());
-	}
-
-	private static function make_selector() {
+	static private function _make_selector() {
 		$selector = bin2hex(openssl_random_pseudo_bytes(12));
 		$unique = true;
 		MYSQL::prepare("SELECT id FROM pages WHERE selector = ?", "s", [&$selector]);
@@ -133,50 +69,99 @@ class Page {
 		else ERRORS::log(ERRORS::PAGE_ERROR, "Page:make_selector() Could not establish a unique selector for pages");
 	}
 
-// --------------------------------------------------
-// Begin non-static features
-// --------------------------------------------------
-	private $id;
+	static public function compare($page1, $page2) {
+		if ($page1->title == $page2->title) return 0;
+		return ($page1->title < $page2->title) ? -1 : 1;
+	}
 
-	private function _get($colname, $count=null) {
-		$ret = null;
-		if (empty($colname)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_get() No column name entered");
+	static public function validate_title($title) {
+		return is_string($title);
+	}
 
-		if (in_array($colname, $this::$columns)) {
-			$rows = MYSQL::run_query("SELECT ".$colname." FROM pages WHERE id = ?", 'i', [$this->id]);
-			if (is_array($rows) && count($rows) > 0) {
-				if (isset($count)) {
-					$count = (($count <= count($rows)) && ($count > 0)) ? $count : count($rows);
-					$ret = [];
-					for ($i=0; $i<$count; $i=$i+1) {
-						$ret[] = $rows[$i][$colname];
-					}
-				} else {
-					$ret = $rows[0][$colname];
-				}
+	static public function validate_description($description) {
+		return is_string($description);
+	}
+
+	static public function validate_text($text) {
+		return is_string($text);
+	}
+
+	static public function get_user_pages($user) {
+		$sql = "SELECT id FROM pages WHERE author_id = ? ORDER BY created";
+		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
+		$ret = array();
+		if (is_array($rows)) {
+			foreach($rows as $i=>$row) {
+				$ret[] = new Page($row['id']);
 			}
-			else ERRORS::log(ERRORS::PAGE_ERROR, "Page::_get() Page '%d' not found when trying to get '%s'", $this->id, $colname);
-		} else ERRORS::log(ERRORS::PAGE_ERROR, "Page::_get() Column '%s' not recognized", $colname);
-
+		}
 		return $ret;
 	}
 
-	private function _set($colname, $val, $type) {
-		if (empty($colname)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() No column name entered");
-		if (is_null($val)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() No value entered");
-		if (empty($type)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() No type entered");
-
-		if (in_array($colname, $this::$columns)) {
-			$rows = MYSQL::run_query("UPDATE pages SET ".$col_name." = ? WHERE id = ?", $type.'i', [$val, $this->id]);
-		} else ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() Column '%s' not recognized", $colname);
+	static public function get_user_books($user) {
+		$sql = "SELECT id FROM pages WHERE author_id = ? AND parent_id IS NULL";
+		$rows = MYSQL::run_query($sql, 'i', [$user->id]);
+		$ret = array();
+		if (is_array($rows)) {
+			foreach($rows as $i=>$row) {
+				$ret[] = new Page($row['id']);
+			}
+		}
+		return $ret;
 	}
 
-	public function __construct($page_ident) {
-		$rows = $this->_find($page_ident);
+	static public function is_page($value, $identifier='id') {
+		$rows = self::_find($value, $identifier);
+		if (!empty($rows) && is_array($rows)) return true;
+		else return false;
+	}
+
+	static public function create_new_page($author, $title="Untitled", $description="", $text=""){
+		if ($author->has_permission('epo') == false) ERRORS::log(ERRORS::PERMISSIONS_ERROR, "User '%d' cannot create pages", $author->id);
+		if (self::validate_title($title) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Invalid page title: %s", $title);
+		if (self::validate_description($description) == false) ERRORS::log(ERRORS::PAGE_ERROR,"Invalid page description: %s", $description);
+		if (self::validate_text($text) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Invalid page text \n%s", $text);
+
+		$selector = self::_make_selector();
+		$sql = "INSERT INTO pages (author_id, title, description, content, selector) VALUES (?, ?, ?, ?, ?)";
+		MYSQL::run_query($sql, 'issss', [$author->id, &$title, &$description, &$text, &$selector]);
+		return new Page(MYSQL::get_index());
+	}
+
+	static public function delete_page($value, $identifier='id') {
+		if (is_null($value)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::delete_page() No value entered");
+		elseif (empty($identifier)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::delete_page() No identifier entered");
+
+		$rows = self::_find($value, $identifier);
+		if (empty($rows)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::delete_page() page '%s' => '%s' not found", $identifier, $value);
+		else {
+			$page_id = $rows[0]['id'];
+			MYSQL::run_query("DELETE FROM pages WHERE id = ?", 'i', [$page_id]);
+		}
+	}
+
+// --------------------------------------------------
+// Begin non-static features
+// --------------------------------------------------
+	private function _get($colname, $count=null) {
+		return self::_accessor_get($colname, $count, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
+	}
+
+	private function _set($colname, $val) {
+		return self::_accessor_set($colname, $val, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
+	}
+
+	public function __construct($value, $identifier='id') {
+		$rows = $this->_find($value, $identifier);
 		if (!empty($rows)) {
 			$this->id = $rows[0]['id'];
 		}
-		else ERRORS::log(ERRORS::PAGE_ERROR, "Page::__construct() could not find page with identifier %s", json_encode($page_ident));
+		else ERRORS::log(
+			ERRORS::PAGE_ERROR, 
+			"Page::__construct() could not find page with identifier '%s' => '%s'", 
+			json_encode($identifier), 
+			json_encode($value)
+		);
 	}
 
 	public function __get($name) {
@@ -437,13 +422,12 @@ class Page {
 	}
 
 	public function get_parents($recursive=false) {
-		$parent_id = $this->_get("parent_id");
 		$parent_ids = array();
-		if (isset($parent_id)) {
-			$parent_ids[$parent_id] = $parent_id;
-			if ($recursive){
-				$new_parent = new Page($parent_id);
-				foreach ($new_parent->get_parents($recursive) as $j=>$grandparent){
+		if ($this->has_parent()) {
+			$parent = $this->parent;
+			$parent_ids[$parent->id] = $parent->id;
+			if ($recursive && $parent->has_parent()) {
+				foreach ($parent->get_parents($recursive) as $j=>$grandparent){
 					$parent_ids[$grandparent->id] = $grandparent->id;
 				}
 			}
@@ -454,9 +438,9 @@ class Page {
 	}
 
 	public function get_parent() {
-		$parents = $this->get_parents(false);
-		if (!empty($parents)) return $parents[0];
-		else return NULL;
+		$parent_id = $this->_get("parent_id");
+		if (isset($parent_id)) return new Page($parent_id);
+		else return null;
 	}
 
 	public function set_parent($parent) {
@@ -472,8 +456,7 @@ class Page {
 	}
 
 	public function has_parent(){
-		$parents = $this->get_parents(false);
-		return !empty($parents);
+		return $this->get_parent() !== null;
 	}
 
 	public function get_children($recursive=false) {
@@ -521,7 +504,7 @@ class Page {
 
 	public function get_book(){
 		$book = $this;
-		while($book && !$book->is_book()){
+		while(isset($book) && !$book->is_book()){
 			$book = $book->get_parent();
 		}
 		return $book;
@@ -529,8 +512,8 @@ class Page {
 
 	public function get_chapter(){
 		$chapter = $this;
-		while($chapter && !$chapter->is_chapter()){
-			$chapter = $chapter->get_parent();
+		while(isset($chapter) && !$chapter->is_chapter()){
+			$chapter = $chapter->parent;
 		}
 		return $chapter;
 	}
@@ -548,10 +531,11 @@ class Page {
 		$selectors = [$this->selector];
 
 		if ($this->has_parent()) {
-			$parent_path = $this->get_parent()->path;
+			$parent_path = $this->parent->path;
 			$titles = $parent_path['titles'] . "/" . $titles;
 			array_splice($selectors, 0, 0, $parent_path['selectors']);
 		} else {
+			error_log($this->title . " does not have a parent");
 			$author = new User($this->author);
 			$titles = "u/" . $author->username . "/" . $titles;
 		}
@@ -561,17 +545,17 @@ class Page {
 
 	public function set_text($text) {
 		if (Pages::validate_text($text) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_text() Text format invalid for \n%s", $text);
-		else $this->_set("content", $text, 'b');
+		else $this->_set("content", $text);
 	}
 
 	public function set_title($title) {
 		if (Pages::validate_title($title) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_title() Title format invalid for %s", $title);
-		else $this->_set("title", $title, 's');
+		else $this->_set("title", $title);
 	}
 
 	public function set_description($desc) {
 		if (Pages::validate_description($desc) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_description() Description format invalid for %s", $desc);
-		else $this->_set("description", $desc, 's');
+		else $this->_set("description", $desc);
 	}
 
 	public function is_locked() {

@@ -22,18 +22,14 @@ try {
 	if (Page::validate_description($description) == FALSE) throw new CompendiumError("Subtitle is not valid", TRUE, ERRORS::PAGE_ERROR, 400);
 	if (Page::validate_text($text)   == FALSE) throw new CompendiumError("Text is not valid", TRUE, ERRORS::PAGE_ERROR, 400);
 	if (isset($_POST['parent']) && $_POST['parent'] != "") {
-		$pagesel = ['selector' => $_POST['parent']];
-		if (!Page::is_page($pagesel)) throw new CompendiumError("Invalid path to page", TRUE, ERRORS::PAGE_ERROR, 401);
-		$parent = new Page($pagesel);
+		if (!Page::is_page($_POST['parent'], 'sel')) throw new CompendiumError("Invalid path to page", TRUE, ERRORS::PAGE_ERROR, 401);
+		$parent = new Page($_POST['parent'], 'sel');
 
 		if (!$parent->can_edit($user)) throw new CompendiumError("You do not have permission to add to the parent page", TRUE, ERRORS::USER_ERROR, 401);
 	}
 
 	$page = Page::create_new_page($user, $title, $description, $text);
-	if ($parent !== null) {
-		error_log("Making child");
-		$page->parent = $parent;
-	}
+	if ($parent !== null) $page->parent = $parent;
 
 	json_ret($page->selector);
 }
