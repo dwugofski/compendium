@@ -42,15 +42,16 @@ class Page {
 
 		if (empty($page_ident)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find() No page_ident entered");
 		if (is_array($page_ident) && !empty($page_ident)) {
-			foreach ($page_identifiers as $identifier) {
-				foreach ($identifier->ident as $ident_name) {
-					if (array_key_exists($ident_name, $page_ident)) {
-						$rows = self::_find_by($identifier->colname, $page_ident[$ident_name], $identifier->type);
+			foreach ($page_ident as $identifier_request => $value) {
+				foreach ($page_identifiers as $identifier) {
+					if (in_array($identifier_request, $identifier['ident'])) {
+						$rows = self::_find_by($identifier['colname'], $value, $identifier['type']);
 						break;
 					}
 				}
+				if (isset($rows)) break;
 			}
-			ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find() Cannot find an identifier for page_ident of %s", json_encode($page_ident));
+			if (is_null($rows)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_find() Cannot find an identifier for page_ident of %s", json_encode($page_ident));
 		} else {
 			$rows = self::_find_by("id", $page_ident, 'i');
 		}
@@ -119,7 +120,7 @@ class Page {
 
 	private static function make_selector() {
 		$selector = bin2hex(openssl_random_pseudo_bytes(12));
-		$unique = false;
+		$unique = true;
 		MYSQL::prepare("SELECT id FROM pages WHERE selector = ?", "s", [&$selector]);
 		for ($i=0; $i<10; $i+=1) {
 			if (!empty(MYSQL::execute())) {
@@ -141,8 +142,8 @@ class Page {
 		$ret = null;
 		if (empty($colname)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_get() No column name entered");
 
-		if (in_array($colname), $this::$columns) {
-			$rows = MYSQL::run_query("SELECT ".$col_name." FROM pages WHERE id = ?", 'i', [$this->id]);
+		if (in_array($colname, $this::$columns)) {
+			$rows = MYSQL::run_query("SELECT ".$colname." FROM pages WHERE id = ?", 'i', [$this->id]);
 			if (is_array($rows) && count($rows) > 0) {
 				if (isset($count)) {
 					$count = (($count <= count($rows)) && ($count > 0)) ? $count : count($rows);
@@ -165,13 +166,13 @@ class Page {
 		if (is_null($val)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() No value entered");
 		if (empty($type)) ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() No type entered");
 
-		if (in_array($colname), $this::$columns) {
+		if (in_array($colname, $this::$columns)) {
 			$rows = MYSQL::run_query("UPDATE pages SET ".$col_name." = ? WHERE id = ?", $type.'i', [$val, $this->id]);
 		} else ERRORS::log(ERRORS::PAGE_ERROR, "Page::_set() Column '%s' not recognized", $colname);
 	}
 
 	public function __construct($page_ident) {
-		$rows = _find($page_ident);
+		$rows = $this->_find($page_ident);
 		if (!empty($rows)) {
 			$this->id = $rows[0]['id'];
 		}
@@ -218,7 +219,7 @@ class Page {
 			case "parent":
 				return $this->get_parent();
 			case "parents":
-				return $this->get_parents(false);
+				return $this->get_parents(true);
 			case "path":
 				return $this->get_path();
 			case "selector":
@@ -279,37 +280,37 @@ class Page {
 	}
 
 	public function can_see($user) {
-		if ($user->has_permission(User::ACT_VIEW_ALL_PAGES)) return false;
-		if ($this->get_author() == $user->id && $user->has_permission(User::ACT_VIEW_OWN_PAGES)) return false;
+		if ($user->has_permission(User::ACT_VIEW_ALL_PAGES)) return true;
+		if ($this->author == $user->id && $user->has_permission(User::ACT_VIEW_OWN_PAGES)) return true;
 		if ($this->is_blacklisted_user($user)) return false;
-		if ($this->is_locked() == false && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return false;
-		if ($this->is_colab($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return false;
-		if ($this->is_whitelisted_user($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return false;
+		if ($this->is_locked() == true && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
+		if ($this->is_colab($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
+		if ($this->is_whitelisted_user($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
 
 		return false;
 	}
 
 	public function can_edit($user) {
-		if ($user->has_permission(User::ACT_EDIT_ALL_PAGES)) return false;
-		if ($this->get_author() == $user->id && $user->has_permission(User::ACT_EDIT_OWN_PAGES)) return false;
-		if ($this->is_blacklisted_user($user)) return false;
-		if ($this->is_opened() && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return false;
-		if ($this->is_colab($user) && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return false;
+		if ($user->has_permission(User::ACT_EDIT_ALL_PAGES)) return true;
+		if ($this->author == $user->id && $user->has_permission(User::ACT_EDIT_OWN_PAGES)) return true;
+		if ($this->is_blacklisted_user($user)) return true;
+		if ($this->is_opened() && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return true;
+		if ($this->is_colab($user) && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return true;
 		elseif ($this->is_colab($user)) echo(sprintf("Collaborator %s cannot edit the page\n"));
 
 		return false;
 	}
 
 	public function can_lock($user) {
-		if ($user->has_permission(User::ACT_LOCK_ALL_PAGES)) return false;
-		if ($this->get_author() == $user->id && $user->has_permission(User::ACT_LOCK_OWN_PAGES)) return false;
+		if ($user->has_permission(User::ACT_LOCK_ALL_PAGES)) return true;
+		if ($this->author == $user->id && $user->has_permission(User::ACT_LOCK_OWN_PAGES)) return true;
 
 		return false;
 	}
 
 	public function can_open($user) {
-		if ($user->has_permission(User::ACT_OPEN_ALL_PAGES)) return false;
-		if ($this->get_author() == $user->id && $user->has_permission(User::ACT_OPEN_OWN_PAGES)) return false;
+		if ($user->has_permission(User::ACT_OPEN_ALL_PAGES)) return true;
+		if ($this->author == $user->id && $user->has_permission(User::ACT_OPEN_OWN_PAGES)) return true;
 
 		return false;
 	}
@@ -329,7 +330,7 @@ class Page {
 	public function is_colab($user) {
 		$colabs = $this->get_colabs();
 		foreach ($colabs as $i => $colab) {
-			if ($colab->id == $user->id) return false;
+			if ($colab->id == $user->id) return true;
 		}
 		return false;
 	}
@@ -361,7 +362,7 @@ class Page {
 	public function is_listed_user($user) {
 		$listed_users = $this->get_listed_users();
 		foreach ($listed_users as $i => $listed_user) {
-			if ($listed_user->$id == $user->$id) return false;
+			if ($listed_user->$id == $user->$id) return true;
 		}
 		return false;
 	}
@@ -378,7 +379,7 @@ class Page {
 
 	public function get_whitelist() {
 		$sql = "SELECT user_id FROM page_whitelists WHERE page_id = ? AND color = ?";
-		$rows = MYSQL::run_query($sql, 'ii', [$this->id, false]);
+		$rows = MYSQL::run_query($sql, 'ii', [$this->id, true]);
 		$users = array();
 		if (is_array($rows) && count($rows) > 0) {
 			foreach($rows as $i=>$user) {
@@ -391,14 +392,14 @@ class Page {
 	public function is_whitelisted_user($user){
 		$listed_users = $this->get_whitelist();
 		foreach ($listed_users as $i => $listed_user) {
-			if ($listed_user->id == $user->id) return false;
+			if ($listed_user->id == $user->id) return true;
 		}
 		return false;
 	}
 
 	public function whitelist_user($user) {
 		$this->unblacklist_user($user);
-		if ($this->is_whitelisted_user($user) == false) $this->list_user($user, false);
+		if ($this->is_whitelisted_user($user) == false) $this->list_user($user, true);
 	}
 
 	public function unwhitelist_user($user) {
@@ -420,7 +421,7 @@ class Page {
 	public function is_blacklisted_user($user){
 		$listed_users = $this->get_blacklist();
 		foreach ($listed_users as $i => $listed_user) {
-			if ($listed_user->id == $user->id) return false;
+			if ($listed_user->id == $user->id) return true;
 		}
 		return false;
 	}
@@ -438,14 +439,12 @@ class Page {
 	public function get_parents($recursive=false) {
 		$parent_id = $this->_get("parent_id");
 		$parent_ids = array();
-		if (empty($parent_id) == false) {
-			foreach ($rows as $i => $row) {
-				$parent_ids[$parent_id] = $parent_id;
-				if ($recursive){
-					$new_parent = new Page($parent_id);
-					foreach ($new_parent->get_parents($recursive) as $j=>$grandparent){
-						$parent_ids[$grandparent->id] = $grandparent->id;
-					}
+		if (isset($parent_id)) {
+			$parent_ids[$parent_id] = $parent_id;
+			if ($recursive){
+				$new_parent = new Page($parent_id);
+				foreach ($new_parent->get_parents($recursive) as $j=>$grandparent){
+					$parent_ids[$grandparent->id] = $grandparent->id;
 				}
 			}
 		}
@@ -467,7 +466,7 @@ class Page {
 	public function is_parent($page, $recursive=false) {
 		$parents = $this->get_parents($recursive);
 		foreach ($parents as $i => $parent) {
-			if ($parent->id == $page->id) return false;
+			if ($parent->id == $page->id) return true;
 		}
 		return false;
 	}
@@ -481,7 +480,7 @@ class Page {
 		$sql = "SELECT id FROM pages WHERE parent_id = ?";
 		$rows = MYSQL::run_query($sql, 'i', [&$this->id]);
 		$child_ids = array();
-		if (empty($rows) == false) {
+		if (!empty($rows)) {
 			foreach ($rows as $i => $row) {
 				$child_ids[$row['id']] = $row['id'];
 				if ($recursive){
@@ -498,9 +497,9 @@ class Page {
 	}
 
 	public function is_child($page, $recursive=false) {
-		$children = $this->get_parents($recursive);
+		$children = $this->get_children($recursive);
 		foreach ($children as $i => $child) {
-			if ($child->id == $page->id) return false;
+			if ($child->id == $page->id) return true;
 		}
 		return false;
 	}
@@ -516,7 +515,7 @@ class Page {
 	}
 
 	public function get_level(){
-		$parents = $this->get_parents(false);
+		$parents = $this->get_parents(true);
 		return count($parents);
 	}
 
@@ -545,15 +544,15 @@ class Page {
 	}
 
 	public function get_path() {
-		$titles = $this->get_title();
-		$selectors = [$this->get_selector()];
+		$titles = $this->title;
+		$selectors = [$this->selector];
 
 		if ($this->has_parent()) {
 			$parent_path = $this->get_parent()->path;
 			$titles = $parent_path['titles'] . "/" . $titles;
 			array_splice($selectors, 0, 0, $parent_path['selectors']);
 		} else {
-			$author = new User($this->get_author());
+			$author = new User($this->author);
 			$titles = "u/" . $author->username . "/" . $titles;
 		}
 
@@ -567,26 +566,12 @@ class Page {
 
 	public function set_title($title) {
 		if (Pages::validate_title($title) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_title() Title format invalid for %s", $title);
-		else {
-
-		}
-		$sql = "UPDATE pages SET title = ? WHERE id = ?";
-		MYSQL::run_query($sql, 'si', [&$title, &$this->id]);
-	}
-
-	public function get_description() {
-		$sql = "SELECT description FROM pages WHERE id = ?";
-		$rows = MYSQL::run_query($sql, 'i', [$this->id]);
-		if (empty($rows) == false) {
-			return $rows[0]['description'];
-		}
-		else ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Could not find page '%d' --> Page::get_title()", $this->id));
+		else $this->_set("title", $title, 's');
 	}
 
 	public function set_description($desc) {
-		if (Pages::validate_text($desc) == false) ERRORS::log(ERRORS::PAGE_ERROR, sprintf("Description format invalid:\n ---------- \n%s\n ---------- \n --> Pages::set_description()", $desc));
-		$sql = "UPDATE pages SET description = ? WHERE id = ?";
-		MYSQL::run_query($sql, 'si', [&$desc, $this->id]);
+		if (Pages::validate_description($desc) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_description() Description format invalid for %s", $desc);
+		else $this->_set("description", $desc, 's');
 	}
 
 	public function is_locked() {
@@ -603,7 +588,7 @@ class Page {
 	}
 
 	public function lock() {
-		$this->set_locked(false);
+		$this->set_locked(true);
 	}
 
 	public function unlock() {
@@ -624,24 +609,11 @@ class Page {
 	}
 
 	public function open() {
-		$this->set_opened(false);
+		$this->set_opened(true);
 	}
 
 	public function close() {
 		$this->set_opened(false);
-	}
-
-	public function get_selector() {
-		$selector = MYSQL::run_query("SELECT selector FROM pages WHERE id = ?", 'i', [&$this->id])[0]["selector"];
-		return $selector;
-	}
-
-	public function get_created() {
-		return MYSQL::run_query("SELECT created FROM pages WHERE id = ?", 'i', [&$this->id])[0]['created'];
-	}
-
-	public function get_edited() {
-		return MYSQL::run_query("SELECT edited FROM pages WHERE id = ?", 'i', [&$this->id])[0]['edited'];
 	}
 
 	// Hashable functions

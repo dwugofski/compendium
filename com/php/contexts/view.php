@@ -63,13 +63,13 @@ function display_page($pagesel, $target_user) {
 			$target_page = $pages[0];
 		}
 
-		if (!isset($target_page)) throw new CompendiumError("404: Page not found.", FALSE, ERRORS::USER_ERROR, 404);
+		if (!isset($target_page)) throw new CompendiumError("Page not found.", FALSE, ERRORS::USER_ERROR, 404);
 	}
 
 	if (!isset($target_page)) {
 		if (isset($pagesel)) {
-			$target_page = Page::get_page_from_sel($pagesel);
-		} else throw new CompendiumError("404: Page not found.", FALSE, ERRORS::USER_ERROR, 404);
+			$target_page = new Page(['selector' => $pagesel]);
+		} else throw new CompendiumError("Page not found.", FALSE, ERRORS::USER_ERROR, 404);
 	}
 
 	$Parsedown = new Parsedown();
@@ -80,19 +80,6 @@ function display_page($pagesel, $target_user) {
 	return $target_page->selector;
 }
 
-function display_error() {
-	global $dom;
-
-	$content_html = <<<HTML
-		<h1>Oops!</h1>
-		<p>Something has gone wrong, and we were unable to locate the page you requested. We apologize for the inconvenience.</p>
-HTML;
-
-	$dom->goto("content")->append_html($content_html);
-	$dom->goto("display_h1")->text = "Error Finding Page";
-	$dom->goto("display_h2")->text = "There was a problem trying to find the page";
-}
-
 function set_context($dom) {
 	$page_user = NULL;
 	$target_page = (isset($_GET['page_id'])) ? $_GET['page_id'] : null;
@@ -100,7 +87,7 @@ function set_context($dom) {
 		$page_user = $_SESSION['user'];
 	} elseif (isset($_GET['user'])) {
 		$page_user = User::get_user_from_sel($_GET['user']);
-	} else throw new CompendiumError("404: User not found.", false, ERRORS::USER_ERROR, 404);
+	} else throw new CompendiumError("User not found.", false, ERRORS::USER_ERROR, 404);
 
 	fill_sidebar($page_user);
 	$page_id = display_page($target_page, $page_user);
