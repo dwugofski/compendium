@@ -56,6 +56,10 @@ class CompAccessor {
 		return (!empty($rows) && is_array($rows));
 	}
 
+	static public function equals($a, $b) {
+		return $a->id == $b->id;
+	}
+
 	protected function _get($colname, $count=null) {
 		$ret = null;
 

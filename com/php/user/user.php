@@ -251,6 +251,10 @@ class User extends CompAccessor {
 				return $this->token;
 			case "email":
 				return $this->get_email();
+			case "followeds":
+				return $this->get_followeds();
+			case "followers":
+				return $this->get_followers();
 			case "selector":
 				return $this->get_selector();
 			case "permissions":
@@ -274,6 +278,8 @@ class User extends CompAccessor {
 				return $this->grant_permissions($value);
 			case "id":
 			case "data":
+			case "followers":
+			case "followeds":
 			case "token":
 			case "selector":
 				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of user", $name);
@@ -379,6 +385,101 @@ class User extends CompAccessor {
 		if (!User::validate_username($username)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to invalid value '%s'", $username);
 
 		MYSQL::run_query("UPDATE users SET username = ? WHERE id = ?", 'si', [&$username, &$this->id]);
+	}
+
+	public function get_followers() {
+		$rows = MYSQL::run_query("SELECT follower FROM followings WHERE followed = ?", 'i', $this->id);
+		$followers = array();
+		foreach ($rows as $follower) {
+			$followers[] = new User($follower['follower']);
+		}
+		return $followers;
+	}
+
+	public function get_followeds() {
+		$rows = MYSQL::run_query("SELECT followed FROM followings WHERE follower = ?", 'i', $this->id);
+		$followeds = array();
+		foreach ($rows as $followed) {
+			$followeds[] = new User($followed['followed']);
+		}
+		return $followeds;
+	}
+
+	public function is_follower($user) {
+		foreach ($this->followers as $follower) {
+			if (self::equals($user, $follower)) return true;
+		}
+		return false;
+	}
+
+	public function is_followed($user) {
+		foreach ($this->followeds as $followed) {
+			if (self::equals($user, $followed)) return true;
+		}
+		return false;
+	}
+
+	public function follow($user) {
+		if (!is_followed($user) && !is_blocker($user)) {
+			MYSQL::run_query("INSERT INTO followings (follower, followed) VALUES (?, ?)", 'ii', [$this->id, $user->id]);
+		} else ERRORS::log(
+			ERRORS::USER_ERROR,
+			"User::follow() User '%s' cannot follower user '%s' as they either already do, or are blocked",
+			$this->username;
+			$user->username;
+		);
+	}
+
+	public function unfollow($user) {
+		if ($this->is_followed($user)) MYSQL::run_query("DELETE FROM followings WHERE follower = ? AND followed = ?", 'ii', [$this->id, $user->id]);
+	}
+
+	public function get_blockers() {
+		$rows = MYSQL::run_query("SELECT blocker FROM user_blocks WHERE blocked = ?", 'i', [$this->id]);
+		$blockers = array();
+		foreach ($blockers as $blocker) {
+			$blockers[] = new User($blocker['blocker']);
+		}
+		return $blockers;
+	}
+
+	public function get_blockeds() {
+		$rows = MYSQL::run_query("SELECT blocked FROM user_blocks WHERE blocker = ?", 'i', [$this->id]);
+		$blockeds = array();
+		foreach ($blockeds as $blocked) {
+			$blockeds[] = new User($blocked['blocked']);
+		}
+		return $blockeds;
+	}
+
+	public function is_blocker($user) {
+		foreach ($this->blockers as $blocker) {
+			if (self::equals($user, $blocker)) return true;
+		}
+		return false;
+	}
+
+	public function is_blocked($user) {
+		foreach ($this->blockeds as $blocked) {
+			if (self::equals($user, $blocked)) return true;
+		}
+		return false;
+	}
+
+	public function block($user) {
+		if (!$this->is_blocked($user)) {
+			if ($this->is_followed($user)) $this->unfollow($user);
+			MYSQL::run_query("INSERT INTO user_blocks (blocker, blocked) VALUES (?, ?)", 'ii', [$this->id, $user->id]);
+		} else ERRORS::log(
+			ERRORS::USER_ERROR,
+			"User::follow() User '%s' cannot block user '%s' as they do",
+			$this->username;
+			$user->username;
+		);
+	}
+
+	public function unblock($user) {
+		if ($this->is_blocked($user)) MYSQL::run_query("DELETE FROM user_blocks WHERE blocker = ? AND blocked = ?", 'ii', [$this->id, $user->id]);
 	}
 }
 

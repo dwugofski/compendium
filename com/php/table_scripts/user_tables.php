@@ -14,6 +14,8 @@ function display_user_usage(){
 function user_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting user_blocks\n");
+			MYSQL::run_query("DROP TABLE IF EXISTS user_blocks CASCADE");
 			echo("Deleting followings\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS followings CASCADE");
 			echo("Deleting users\n");
@@ -43,13 +45,27 @@ function user_tables($overwrite, $delete) {
 		$sql = "
 		CREATE TABLE followings (
 		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		followed VARCHAR(75) NOT NULL, 
-		follower VARCHAR(100) NOT NULL,
+		followed INT(10) NOT NULL, 
+		follower INT(10) NOT NULL,
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		PRIMARY KEY (id), 
 		FOREIGN KEY (followed) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
 		FOREIGN KEY (follower) REFERENCES pages(id) 
+		ON DELETE CASCADE ON UPDATE CASCADE)
+		ENGINE = INNODB";
+		MYSQL::run_query($sql);
+
+		$sql = "
+		CREATE TABLE user_blocks (
+		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
+		blocked INT(10) NOT NULL, 
+		blocker INT(10) NOT NULL,
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+		PRIMARY KEY (id), 
+		FOREIGN KEY (blocked) REFERENCES users(id) 
+		ON DELETE CASCADE ON UPDATE CASCADE, 
+		FOREIGN KEY (blocker) REFERENCES pages(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
