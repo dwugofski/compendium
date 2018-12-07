@@ -53,14 +53,16 @@ function display_page($pagesel, $target_user) {
 	if (isset($target_user)) {
 		$pages = Page::get_user_pages($target_user);
 
-		if (isset($pagesel)) {
-			foreach ($pages as $key => $page) {
-				if ($page->selector == $pagesel) {
-					$target_page = $page;
+		if (count($pages) > 0) {
+			if (isset($pagesel)) {
+				foreach ($pages as $key => $page) {
+					if ($page->selector == $pagesel) {
+						$target_page = $page;
+					}
 				}
+			} else {
+				$target_page = $pages[0];
 			}
-		} else {
-			$target_page = $pages[0];
 		}
 
 		if (!isset($target_page)) throw new CompendiumError("Page not found.", FALSE, ERRORS::USER_ERROR, 404);
@@ -86,7 +88,7 @@ function set_context($dom) {
 	if (!isset($_GET['user']) && isset($_SESSION['user'])) {
 		$page_user = $_SESSION['user'];
 	} elseif (isset($_GET['user'])) {
-		$page_user = User::get_user_from_sel($_GET['user']);
+		$page_user = new User($_GET['user'], 'sel');
 	} else throw new CompendiumError("User not found.", false, ERRORS::USER_ERROR, 404);
 
 	fill_sidebar($page_user);

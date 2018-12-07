@@ -72,28 +72,34 @@ class User extends CompAccessor {
 		'email' => 'email'
 	];
 
-	private $token;
-
-	static private function _find_by($colname, $val) {
-		return self::_accessor_find_by($colname, $val, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
+	static private function make_selector() {
+		$selector = bin2hex(openssl_random_pseudo_bytes(12));
+		$unique = TRUE;
+		MYSQL::prepare("SELECT id FROM users WHERE selector = ?", "s", [&$selector]);
+		for ($i=0; $i<10; $i+=1) {
+			if (!empty(MYSQL::execute())) {
+				$unique = TRUE;
+			} else {
+				$selector = bin2hex(openssl_random_pseudo_bytes(12));
+			}
+		}
+		if ($unique) return $selector;
+		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector for users\n"));
 	}
 
-	static private function _find($value, $identifier='id') {
-		return self::_accessor_find($value, $identifier, self::IDENTIFIERS, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
-	}
-
-	static public function login_user($username, $password, $remember_me=FALSE) {
-		if (self::check_user($username) == FALSE) {
+	static public function login_user($user, $password, $remember_me=FALSE) {
+		if (self::is_user($user->id) == FALSE) {
 			ERRORS::log(ERRORS::USER_ERROR, sprintf("User '%s' not found", $username));
 		} else {
-			if (self::validate_user($username, $password)) {
-				$user = self::get_user($username);
+			if (self::validate_user($user, $password)) {
 				if ($remember_me = TRUE) {
 					$user->generate_token();
 				}
 				return $user;
 			}
 		}
+
+		return null;
 	}
 
 	static public function login_from_token($selector, $validator) {
@@ -129,68 +135,28 @@ class User extends CompAccessor {
 		$sql = "INSERT INTO users (username, password, email, selector) VALUES (?, ?, ?, ?)";
 		MYSQL::run_query($sql, 'ssss', [&$username, &$passhash, &$email, &$selector]);
 		$id = MYSQL::get_index();
-		$user = self::login_user($username, $password, $remember_me);
+		$user = new User($username, 'username');
+		$user = self::login_user($user, $password, $remember_me);
 		$user->grant_permissions(User::PERM_GUEST);
 		return $user;
 	}
 
-	static public function delete_user($vlaue, $identifier='id') {
-		if (!self::check_user($username)) ERRORS::log(ERRORS::USER_ERROR, "User with username '%s' not found. Cannot delete.", $username);
+	static public function delete_user($value, $identifier='id') {
+		$rows = self::_find($value, $identifier);
+		if (empty($rows)) ERRORS::log(ERRORS::USER_ERROR, "User::delete_user() Cannot find user '%s' => '%s'", $identifier, $value);
 		else {
-			MYSQL::run_query("DELETE FROM users WHERE username = ?", 's', [$username]);
+			MYSQL::run_query("DELETE FROM users WHERE id = ?", 'i', [$rows[0]['id']]);
 		}
 	}
 
-	static public function delete_userid($userid) {
-		if (!self::check_userid($userid)) ERRORS::log(ERRORS::USER_ERROR, "User with id %d not found. Cannot delete.", $userid);
-		else {
-			MYSQL::run_query("DELETE FROM users WHERE id = ?", 'i', [$userid]);
-		}
+	static public function is_user($value, $identifier='id') {
+		return self::is($value, $identifier);
 	}
 
-	private function make_selector() {
-		$selector = bin2hex(openssl_random_pseudo_bytes(12));
-		$unique = TRUE;
-		MYSQL::prepare("SELECT id FROM users WHERE selector = ?", "s", [&$selector]);
-		for ($i=0; $i<10; $i+=1) {
-			if (!empty(MYSQL::execute())) {
-				$unique = TRUE;
-			} else {
-				$selector = bin2hex(openssl_random_pseudo_bytes(12));
-			}
-		}
-		if ($unique) return $selector;
-		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector for users\n"));
-	}
-
-	static public function check_user($username) {
-		$sql = "SELECT id FROM users WHERE username = ?";
-		$users = MYSQL::run_query($sql, 's', [$username]);
-		return !empty($users);
-	}
-
-	static public function check_userid($userid) {
-		$sql = "SELECT id FROM users WHERE id = ?";
-		$users = MYSQL::run_query($sql, 'i', [$userid]);
-		return !empty($users);
-	}
-
-	static public function check_user_email($email) {
-		$sql = "SELECT id FROM users WHERE email = ?";
-		$users = MYSQL::run_query($sql, 's', [&$email]);
-		return !empty($users);
-	}
-
-	static public function check_user_sel($selector) {
-		$sql = "SELECT id FROM users WHERE selector = ?";
-		$users = MYSQL::run_query($sql, 's', [&$selector]);
-		return !empty($users);
-	}
-
-	static public function validate_user($username, $password) {
-		$sql = "SELECT password FROM users WHERE username = ?";
-		$hashes = MYSQL::run_query($sql, 's', [$username]);
-		if (empty($hashes)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to validate unknown user '%s'", $username);
+	static public function validate_user($user, $password) {
+		$sql = "SELECT password FROM users WHERE id = ?";
+		$hashes = MYSQL::run_query($sql, 's', [$user->id]);
+		if (empty($hashes)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to validate unknown user '%s'", $user->id);
 		else {
 			if (password_verify($password, $hashes[0]['password'])) return TRUE;
 			else return FALSE;
@@ -218,41 +184,6 @@ class User extends CompAccessor {
 		}
 
 		return FALSE;
-	}
-
-	static public function get_user($username) {
-		$sql = "SELECT id FROM users WHERE username = ?";
-		$users = MYSQL::run_query($sql, 's', [$username]);
-		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find user with name %s", $username);
-		else {
-			return new User($users[0]['id']);
-		}
-	}
-
-	static public function get_user_from_email($email) {
-		$sql = "SELECT id FROM users WHERE email = ?";
-		$users = MYSQL::run_query($sql, 's', [$email]);
-		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find user with email %s", $email);
-		else {
-			return new User($users[0]['id']);
-		}
-	}
-
-	static public function get_user_from_id($userid) {
-		$newuser = NULL;
-		try {
-			$newuser = new User($userid);
-		}
-		catch(Exception $e) {}
-
-		return $newuser;
-	}
-
-	static public function get_user_from_sel($selector) {
-		$sql = "SELECT id FROM users WHERE selector = ?";
-		$users = MYSQL::run_query($sql, 's', [$selector]);
-		if (empty($users)) ERRORS::log(ERRORS::USER_ERROR, "Cannot find user with selector %s", $selector);
-		else return new User($users[0]['id']);
 	}
 
 	static public function check_login_token($selector) {
@@ -292,6 +223,10 @@ class User extends CompAccessor {
 	static public function perm_level_to_title($permission_level) {
 		return MYSQL::run_query("SELECT title FROM permissions WHERE id = ?", 'i', [&$permission_level])[0]['title'];
 	}
+// --------------------------------------------------
+// Begin non-static features
+// --------------------------------------------------
+	private $token;
 
 	public function __construct($value, $identifier='id') {
 		$rows = $this->_find($value, $identifier);
@@ -306,10 +241,6 @@ class User extends CompAccessor {
 		);
 	}
 
-
-// --------------------------------------------------
-// Begin non-static features
-// --------------------------------------------------
 	public function __get($name) {
 		switch($name){
 			case "id":
@@ -444,7 +375,7 @@ class User extends CompAccessor {
 	}
 
 	public function set_username($username) {
-		if (User::check_user($username)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to '%s' despite already being in use", $username);
+		if (User::is_user($username, 'username')) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to '%s' despite already being in use", $username);
 		if (!User::validate_username($username)) ERRORS::log(ERRORS::USER_ERROR, "Attempted to set username to invalid value '%s'", $username);
 
 		MYSQL::run_query("UPDATE users SET username = ? WHERE id = ?", 'si', [&$username, &$this->id]);

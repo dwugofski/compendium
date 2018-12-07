@@ -8,6 +8,7 @@ class CompendiumError extends Exception {
 		parent::__construct($message, $code, $previous);
 		$this->can_show = $can_show;
 		$this->html_response_code = $html_code;
+		error_log($this->getTraceAsString());
 	}
 }
 
@@ -48,7 +49,6 @@ class ERRORS {
 		$msg = call_user_func_array('sprintf', $msg_args);
 		$log_string = self::error_to_string($error).": ".$msg;
 		error_log($log_string);
-		error_log(json_encode(debug_backtrace()));
 		throw(new CompendiumError($log_string, FALSE, $error));
 	}
 

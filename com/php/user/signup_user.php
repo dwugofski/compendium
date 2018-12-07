@@ -39,11 +39,11 @@ try {
 
 	if (!User::validate_username($username)) throw new CompendiumError("Username invalid", TRUE, ERRORS::USER_ERROR);
 	if (!User::validate_email($email)) throw new CompendiumError("Email invalid", TRUE, ERRORS::USER_ERROR);
-	if (User::check_user($username)) throw new CompendiumError("Username already taken", TRUE, ERRORS::USER_ERROR);
-	if (User::check_user_email($email)) throw new CompendiumError("Email already taken", TRUE, ERRORS::USER_ERROR);
+	if (User::is_user($username, 'username')) throw new CompendiumError("Username already taken", TRUE, ERRORS::USER_ERROR);
+	if (User::is_user($email, 'email')) throw new CompendiumError("Email already taken", TRUE, ERRORS::USER_ERROR);
 
 	$user = User::create_new_user($username, $password, $email);
-	$user->grant_permissions(User::PERM_USER);
+	$user->grant_permissions(User::PERM_USER); // Going to want to verify email later on
 
 	$_SESSION['user'] = $user;
 	json_ret($user->data);

@@ -11,11 +11,12 @@ $user = $_SESSION['user'];
 
 try {
 	if (!isset($user)) throw new CompendiumError("No user logged in. Cannot delete.");
-	if (!User::validate_user($user->username, $password)) throw new CompendiumError("Incorrect password");
+	if (!User::validate_user($user, $password)) throw new CompendiumError("Incorrect password");
 
 	unset($_SESSION['user']);
-	User::delete_userid($user->id);
+	User::delete_user($user->id);
 	json_ret(["msg" => "User successfully deleted"]);
+	error_log("User ".$user->username." deleted");
 }
 catch (CompendiumError $e) {
 	ERRORS::json_log($e);

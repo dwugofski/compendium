@@ -13,32 +13,32 @@ try {
 
 	$userident = $_POST['userident'];
 	$password = $_POST['password'];
-	$token_val = $_POST['token_val'];
-	$token_sel = $_POST['token_sel'];
-	$user = NULL;
-	$username = NULL;
+	$token_val = null;
+	$token_sel = null;
+	$user = null;
 
-	if ($token_val !== NULL && $token_sel !== NULL) {
+	if (isset($_POST['token_val']) && isset($_POST['token_sel'])) {
+		$token_val = $_POST['token_val'];
+		$token_sel = $_POST['token_sel'];
 		if (User::validate_token($token_sel, $token_val)) $user = User::login_from_token($token_sel, $token_val);
-		else throw new CompendiumError("Invalid user login token", TRUE, ERRORS::USER_ERROR);
+		else throw new CompendiumError("Invalid user login token", true, ERRORS::USER_ERROR);
 	}
 	
 	if ($user === NULL) {
 		if (User::validate_username($userident)) {
-			if (User::check_user($userident)) {
-				$username = $userident;
-			} else throw new CompendiumError("User not found", TRUE, ERRORS::USER_ERROR);
+			if (User::is_user($userident, 'username')) {
+				$user = new User($userident, 'username');
+			} else throw new CompendiumError("User not found", true, ERRORS::USER_ERROR);
 		}
 		elseif (User::validate_email($userident)) {
-			if (User::check_user_email($userident)) {
-				$username = User::get_user_from_email($userident)->username;
-			} else throw new CompendiumError("Email not found", TRUE, ERRORS::USER_ERROR);
+			if (User::is_user($userident, 'email')) {
+				$user = new User($userident, 'email');
+			} else throw new CompendiumError("Email not found", true, ERRORS::USER_ERROR);
 		}
-		else throw new CompendiumError("Invalid username/email", TRUE, ERRORS::USER_ERROR);
+		else throw new CompendiumError("Invalid username/email", true, ERRORS::USER_ERROR);
 
-		if (User::validate_user($username, $password)) {
-			$user = User::login_user($username, $password, TRUE);
-		} else throw new CompendiumError("Incorrect password", TRUE, ERRORS::USER_ERROR);
+		if (User::validate_user($user, $password)) $user = User::login_user($user, $password, true);
+		else throw new CompendiumError("Incorrect password", true, ERRORS::USER_ERROR);
 	}
 
 	$_SESSION['user'] = $user;

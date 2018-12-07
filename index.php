@@ -5,7 +5,7 @@ include_once(__DIR__."/com/php/def/def.php");
 $loggedin = false;
 if(!empty($_SESSION['user'])) {
 	try {
-		if (User::check_userid($_SESSION['user']->id)) $loggedin = true;
+		if (User::is_user($_SESSION['user']->id)) $loggedin = true;
 		else {
 			$loggedin = false;
 			unset($_SESSION['user']);

@@ -15,7 +15,7 @@ try {
 
 	if (!isset($_SESSION['user'])) throw new CompendiumError("Must be logged in to create pages", true, ERRORS::USER_ERROR, 401);
 	$user = $_SESSION['user'];
-	if (!User::check_userid($user->id)) throw new CompendiumError("User not recognized", true, ERRORS::USER_ERROR, 401);
+	if (!User::is_user($user->id)) throw new CompendiumError("User not recognized", true, ERRORS::USER_ERROR, 401);
 
 	if ($user->has_permission('epo') == FALSE) throw new CompendiumError("User does not have permission to create pages", TRUE, ERRORS::USER_ERROR, 401);
 	if (Page::validate_title($title) == FALSE) throw new CompendiumError("Title is not valid", TRUE, ERRORS::PAGE_ERROR, 400);

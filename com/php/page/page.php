@@ -46,14 +46,6 @@ class Page extends CompAccessor {
 		'sel' => 'selector'
 	];
 
-	static private function _find_by($colname, $val) {
-		return self::_accessor_find_by($colname, $val, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
-	}
-
-	static private function _find($value, $identifier='id') {
-		return self::_accessor_find($value, $identifier, self::IDENTIFIERS, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
-	}
-
 	static private function _make_selector() {
 		$selector = bin2hex(openssl_random_pseudo_bytes(12));
 		$unique = true;
@@ -111,9 +103,7 @@ class Page extends CompAccessor {
 	}
 
 	static public function is_page($value, $identifier='id') {
-		$rows = self::_find($value, $identifier);
-		if (!empty($rows) && is_array($rows)) return true;
-		else return false;
+		return self::is($value, $identifier);
 	}
 
 	static public function create_new_page($author, $title="Untitled", $description="", $text=""){
@@ -143,14 +133,6 @@ class Page extends CompAccessor {
 // --------------------------------------------------
 // Begin non-static features
 // --------------------------------------------------
-	private function _get($colname, $count=null) {
-		return self::_accessor_get($colname, $count, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
-	}
-
-	private function _set($colname, $val) {
-		return self::_accessor_set($colname, $val, self::COLUMN_NAMES, self::COLUMN_TYPES, self::TABLE_NAME, self::PRIMARY_KEY);
-	}
-
 	public function __construct($value, $identifier='id') {
 		$rows = $this->_find($value, $identifier);
 		if (!empty($rows)) {

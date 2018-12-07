@@ -33,6 +33,7 @@ function disable_submit() {
 }
 
 function show_error(str) {
+	const error_box = $('#user_delete_error');
 	error_box.html(str);
 	if (error_box.css("display") == "none") error_box.slideDown();
 }
