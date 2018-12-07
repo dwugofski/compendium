@@ -425,8 +425,8 @@ class User extends CompAccessor {
 		} else ERRORS::log(
 			ERRORS::USER_ERROR,
 			"User::follow() User '%s' cannot follower user '%s' as they either already do, or are blocked",
-			$this->username;
-			$user->username;
+			$this->username,
+			$user->username
 		);
 	}
 
@@ -473,8 +473,8 @@ class User extends CompAccessor {
 		} else ERRORS::log(
 			ERRORS::USER_ERROR,
 			"User::follow() User '%s' cannot block user '%s' as they do",
-			$this->username;
-			$user->username;
+			$this->username,
+			$user->username
 		);
 	}
 
