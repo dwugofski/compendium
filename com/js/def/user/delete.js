@@ -1,4 +1,6 @@
 
+import * as Verify from "./logging/verification.js";
+
 export function init() {
 	if ($('#user_delete')[0] === undefined) return;
 
@@ -63,7 +65,7 @@ function verify_field(elem, val, eval_f) {
 
 function verify_form() {
 	var valid = true;
-	valid &= verify_field($("#user_delete_form_password"), undefined, verify_password);
+	valid &= Verify.field($("#user_delete_form_password"), Verify.password);
 
 	if (valid) enable_submit();
 	else disable_submit();
@@ -78,7 +80,7 @@ function delete_user(e) {
 			o[i.name] = i.value;
 			return o;
 		}, {});
-		var php_data = {"password":data.password};
+		var php_data = {"password": data.password};
 		$.ajax({
 			url : "com/php/user/delete_user.php",
 			type : "POST",

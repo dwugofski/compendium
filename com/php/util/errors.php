@@ -20,7 +20,8 @@ class ERRORS {
 	const PAGE_ERROR 			= 4;
 	const DOM_ERROR 			= 5;
 	const ACCESSOR_ERROR		= 6;
-	const UNKNOWN_ERROR 		= 7;
+	const COMMENT_ERROR			= 7;
+	const UNKNOWN_ERROR 		= 8;
 
 	const ERROR_STRINGS = [
 		'NO ERROR             ',
@@ -30,6 +31,7 @@ class ERRORS {
 		'PAGE ERROR           ',
 		'DOM ERROR            ',
 		'ACCESSOR ERROR       ',
+		'COMMENT ERROR        ',
 		'UNKNOWN ERROR        '
 	];
 

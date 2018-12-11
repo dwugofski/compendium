@@ -27,7 +27,7 @@ function user_record_tables($overwrite, $delete) {
 		user_id INT(10) UNSIGNED NOT NULL, 
 		page_id INT(10) UNSIGNED DEFAULT NULL, 
 		comment_id INT(10) UNSIGNED DEFAULT NULL, 
-		interaction_type ENUM('view', 'edit', 'save') NOT NULL, 
+		interaction_type ENUM('view', 'edit', 'save', 'like', 'dislike') NOT NULL, 
 		target_type ENUM('page', 'comment') NOT NULL, 
 		event DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		PRIMARY KEY (id), 

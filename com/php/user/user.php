@@ -15,39 +15,43 @@ class User extends CompAccessor {
 	const PERM_GUEST 	= 'guest';
 
 	// root actions
-	const ACT_EDIT_ALL_ADMINS 		= 'eaa';
+	const ACT_EDIT_ALL_ADMINS 			= 'eaa';
 	// admin actions
-	const ACT_EDIT_ALL_USERS 		= 'eua';
-	const ACT_EDIT_ALL_THEMES 		= 'eta';
-	const ACT_EDIT_ALL_PAGES 		= 'epa';
-	const ACT_LOCK_ALL_PAGES 		= 'lpa';
-	const ACT_OPEN_ALL_PAGES 		= 'gpa';
-	const ACT_EDIT_ALL_COMMENTS 	= 'eca';
-	const ACT_ADD_ALL_COMMENTS 		= 'aca';
-	const ACT_VIEW_ALL_PAGES 		= 'vpa';
+	const ACT_EDIT_ALL_USERS 			= 'eua';
+	const ACT_EDIT_ALL_THEMES 			= 'eta';
+	const ACT_EDIT_ALL_PAGES 			= 'epa';
+	const ACT_LOCK_ALL_PAGES 			= 'lpa';
+	const ACT_OPEN_ALL_PAGES 			= 'gpa';
+	const ACT_EDIT_ALL_COMMENTS 		= 'eca';
+	const ACT_ADD_ALL_COMMENTS 			= 'aca';
+	const ACT_VIEW_ALL_PAGES 			= 'vpa';
 	// user actions
-	const ACT_EDIT_OWN_USER 		= 'euo';
-	const ACT_EDIT_OWN_THEMES 		= 'eto';
-	const ACT_EDIT_OWN_PAGES 		= 'epo';
-	const ACT_LOCK_OWN_PAGES 		= 'lpo';
-	const ACT_OPEN_OWN_PAGES 		= 'gpo';
-	const ACT_EDIT_OWN_COMMENTS 	= 'eco';
-	const ACT_ADD_OWN_COMMENTS 		= 'aco';
-	const ACT_VIEW_OWN_PAGES 		= 'vpo';
-	const ACT_EDIT_OPEN_PAGES 		= 'epg';
-	const ACT_ADD_OPEN_COMMENTS 	= 'acg';
-	// user actions
-	const ACT_VIEW_UNLOCKED_PAGES 	= 'vpu';
+	const ACT_EDIT_OWN_USER 			= 'euo';
+	const ACT_EDIT_OWN_THEMES 			= 'eto';
+	const ACT_EDIT_OWN_PAGES 			= 'epo';
+	const ACT_LOCK_OWN_PAGES 			= 'lpo';
+	const ACT_OPEN_OWN_PAGES 			= 'gpo';
+	const ACT_EDIT_OWN_COMMENTS 		= 'eco';
+	const ACT_ADD_OWN_COMMENTS 			= 'aco';
+	const ACT_VIEW_OWN_PAGES 			= 'vpo';
+	const ACT_EDIT_OPEN_PAGES 			= 'epg';
+	const ACT_ADD_OPEN_COMMENTS 		= 'acg';
+	const ACT_ADD_UNLOCKED_COMMENTS 	= 'acu';
+	// guest actions
+	const ACT_VIEW_UNLOCKED_PAGES 		= 'vpu';
 
 	const TGT_PAGE = 'page';
 	const TGT_PAGE_ID = 'page_id';
 	const TGT_COMMENT = 'comment';
 	const TGT_COMMENT_ID = 'comment_id';
 
-	const INTRCTN_VIEW = 'view';
-	const INTRCTN_EDIT = 'edit';
-	const INTRCTN_SAVE = 'save';
+	const INTRCTN_VIEW 		= 'view';
+	const INTRCTN_EDIT 		= 'edit';
+	const INTRCTN_SAVE 		= 'save';
+	const INTRCTN_LIKE 		= 'like';
+	const INTRCTN_DISLIKE 	= 'dislike';
 
+	// CompAccessor necessary properties
 	const TABLE_NAME = 'users';
 	const PRIMARY_KEY = 'id';
 
@@ -80,21 +84,6 @@ class User extends CompAccessor {
 		'user' => 'username',
 		'email' => 'email'
 	];
-
-	static private function make_selector() {
-		$selector = bin2hex(openssl_random_pseudo_bytes(12));
-		$unique = TRUE;
-		MYSQL::prepare("SELECT id FROM users WHERE selector = ?", "s", [&$selector]);
-		for ($i=0; $i<10; $i+=1) {
-			if (!empty(MYSQL::execute())) {
-				$unique = TRUE;
-			} else {
-				$selector = bin2hex(openssl_random_pseudo_bytes(12));
-			}
-		}
-		if ($unique) return $selector;
-		else ERRORS::log(ERRORS::PAGE_ERROR("Could not establish a unique selector for users\n"));
-	}
 
 	static public function login_user($user, $password, $remember_me=FALSE) {
 		if (self::is_user($user->id) == FALSE) {
@@ -140,7 +129,7 @@ class User extends CompAccessor {
 			ERRORS::log(ERRORS::USER_ERROR, "Invalid email: %s", $email);
 		}
 
-		$selector = self::make_selector();
+		$selector = self::_make_selector();
 		$sql = "INSERT INTO users (username, password, email, selector) VALUES (?, ?, ?, ?)";
 		MYSQL::run_query($sql, 'ssss', [&$username, &$passhash, &$email, &$selector]);
 		$id = MYSQL::get_index();
@@ -232,22 +221,14 @@ class User extends CompAccessor {
 	static public function perm_level_to_title($permission_level) {
 		return MYSQL::run_query("SELECT title FROM permissions WHERE id = ?", 'i', [&$permission_level])[0]['title'];
 	}
+
 // --------------------------------------------------
 // Begin non-static features
 // --------------------------------------------------
 	private $token;
 
 	public function __construct($value, $identifier='id') {
-		$rows = $this->_find($value, $identifier);
-		if (!empty($rows)) {
-			$this->id = $rows[0]['id'];
-		}
-		else ERRORS::log(
-			ERRORS::PAGE_ERROR, 
-			"User::__construct() could not find user '%s' => '%s'", 
-			json_encode($identifier), 
-			json_encode($value)
-		);
+		parent::__construct($value, $identifier);
 	}
 
 	public function __get($name) {
@@ -256,26 +237,30 @@ class User extends CompAccessor {
 				return $this->get_followeds();
 			case "blockers":
 				return $this->get_followers();
-			case "id":
-				return $this->id;
-			case "username":
-				return $this->get_username();
-			case "token":
-				return $this->token;
+			case "created":
+				return strtotime($this->_get('created'));
 			case "email":
 				return $this->get_email();
 			case "followeds":
 				return $this->get_followeds();
 			case "followers":
 				return $this->get_followers();
-			case "selector":
-				return $this->get_selector();
+			case "id":
+				return $this->id;
+			case "modified":
+				return strtotime($this->_get('modified'));
 			case "permissions":
 				return $this->get_permissions();
+			case "selector":
+				return $this->get_selector();
+			case "token":
+				return $this->token;
+			case "username":
+				return $this->get_username();
 			case "data":
 				return ["username" => $this->get_username(), "token" => $this->token, "email" => $this->email, "selector" => $this->get_selector()];
 			default:
-				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to get unknown property '%s' of user", $name);
+				ERRORS::log(ERRORS::USER_ERROR, "Attempted to get unknown property '%s' of user", $name);
 		}
 	}
 
@@ -291,16 +276,18 @@ class User extends CompAccessor {
 				return $this->grant_permissions($value);
 			case "blockeds":
 			case "blockers":
-			case "id":
+			case "created":
 			case "data":
-			case "followers":
 			case "followeds":
-			case "token":
+			case "followers":
+			case "id":
+			case "modified":
 			case "selector":
-				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set read-only property '%s' of user", $name);
+			case "token":
+				ERRORS::log(ERRORS::USER_ERROR, "Attempted to set read-only property '%s' of user", $name);
 				break;
 			default:
-				ERRORS::log(ERRORS::PAGE_ERROR, "Attempted to set unknown property '%s' of user", $name);
+				ERRORS::log(ERRORS::USER_ERROR, "Attempted to set unknown property '%s' of user", $name);
 		}
 	}
 
@@ -506,36 +493,13 @@ class User extends CompAccessor {
 	}
 
 	public function log_page_interaction($page_id, $interaction_type) {
+		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
 		return $this->log_generic_interaction($page_id, self::TGT_PAGE_ID, $interaction_type, self::TGT_PAGE);
 	}
 
 	public function log_comment_interaction($comment_id, $interaction_type) {
+		if (is_a($comment_id, 'Comment')) $comment_id = $comment_id->id;
 		return $this->log_generic_interaction($comment_id, self::TGT_COMMENT_ID, $interaction_type, self::TGT_COMMENT);
-	}
-
-	public function log_page_visit($page_id) {
-		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
-		return $this->log_page_interaction($page_id, self::INTRCTN_VIEW);
-	}
-
-	public function log_page_edit($page_id) {
-		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
-		return $this->log_page_interaction($page_id, self::INTRCTN_EDIT);
-	}
-
-	public function log_page_save($page_id) {
-		if (is_a($page_id, 'Page')) $page_id = $page_id->id;
-		return $this->log_page_interaction($page_id, self::INTRCTN_SAVE);
-	}
-
-	public function log_comment_visit($comment_id) {
-		if (is_a($comment_id, 'Comment')) $comment_id = $comment_id->id;
-		return $this->log_page_interaction($comment_id, self::INTRCTN_VIEW);
-	}
-
-	public function log_comment_edit($comment_id) {
-		if (is_a($comment_id, 'Comment')) $comment_id = $comment_id->id;
-		return $this->log_page_interaction($comment_id, self::INTRCTN_EDIT);
 	}
 }
 

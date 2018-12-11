@@ -4,13 +4,15 @@ include_once(__DIR__."/errors.php");
 include_once(__DIR__."/mysql.php");
 
 class CompAccessor {
+
+// --------------------------------------------------
+// Begin static features
+// --------------------------------------------------
 	const TABLE_NAME = null;
 	const PRIMARY_KEY = null;
 	const COLUMN_NAMES = null;
 	const COLUMN_TYPES = null;
 	const IDENTIFIERS = null;
-
-	protected $id;
 
 	static protected function _find_by($colname, $val) {
 		if (empty(static::TABLE_NAME)) ERRORS::log(ERRORS::ACCESSOR_ERROR, "CompAccessor::_find_by() No tablename entered");
@@ -51,6 +53,28 @@ class CompAccessor {
 		return $rows;
 	}
 
+	static protected function _make_selector() {
+		$selector = null;
+
+		if (empty(static::TABLE_NAME)) ERRORS::log(ERRORS::ACCESSOR_ERROR, "CompAccessor::_find() No tablename entered");
+		else {
+			$selector = bin2hex(openssl_random_pseudo_bytes(12));
+			$unique = false;
+			MYSQL::prepare("SELECT id FROM ".static::TABLE_NAME." WHERE selector = ?", "s", [&$selector]);
+			for ($i=0; $i<10; $i+=1) {
+				if (empty(MYSQL::execute())) {
+					$unique = true;
+				} else {
+					$selector = bin2hex(openssl_random_pseudo_bytes(12));
+				}
+			}
+			if ($unique) return $selector;
+			else ERRORS::log(ERRORS::ACCESSOR_ERROR, "CompAccessor::make_selector(table=%s) Could not establish a unique selector", static::TABLE_NAME);
+		}
+
+		return $selector;
+	}
+
 	static public function is($value, $identifier) {
 		$rows = self::_find($value, $identifier);
 		return (!empty($rows) && is_array($rows));
@@ -58,6 +82,29 @@ class CompAccessor {
 
 	static public function equals($a, $b) {
 		return $a->id == $b->id;
+	}
+
+// --------------------------------------------------
+// Begin non-static features
+// --------------------------------------------------
+
+	protected $id;
+
+	public function __construct($value, $identifier) {
+		if (empty(static::TABLE_NAME)) ERRORS::log(ERRORS::ACCESSOR_ERROR, "CompAccessor::__construct() No tablename entered");
+		elseif (empty(static::PRIMARY_KEY)) ERRORS::log(ERRORS::ACCESSOR_ERROR, "CompAccessor::__construct(table='%s') No primary key entered", static::TABLE_NAME);
+		else {
+			$rows = $this->_find($value, $identifier);
+			if (!empty($rows)) {
+				$this->id = $rows[0][static::PRIMARY_KEY];
+			}
+			else ERRORS::log(
+				ERRORS::PAGE_ERROR, 
+				"CompAccessor::__construct() could not find element '%s' => '%s'", 
+				json_encode($identifier), 
+				json_encode($value)
+			);
+		}
 	}
 
 	protected function _get($colname, $count=null) {

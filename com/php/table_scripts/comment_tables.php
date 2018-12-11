@@ -30,6 +30,7 @@ function comment_tables($overwrite, $delete) {
 		selector CHAR(24) NOT NULL, 
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		modified DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
+		deleted BOOLEAN DEFAULT FALSE, 
 		parent_id INT(10) UNSIGNED DEFAULT NULL, 
 		PRIMARY KEY (id), 
 		INDEX PAGE (title), 

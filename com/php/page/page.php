@@ -46,21 +46,6 @@ class Page extends CompAccessor {
 		'sel' => 'selector'
 	];
 
-	static private function _make_selector() {
-		$selector = bin2hex(openssl_random_pseudo_bytes(12));
-		$unique = true;
-		MYSQL::prepare("SELECT id FROM pages WHERE selector = ?", "s", [&$selector]);
-		for ($i=0; $i<10; $i+=1) {
-			if (!empty(MYSQL::execute())) {
-				$unique = false;
-			} else {
-				$selector = bin2hex(openssl_random_pseudo_bytes(12));
-			}
-		}
-		if ($unique) return $selector;
-		else ERRORS::log(ERRORS::PAGE_ERROR, "Page:make_selector() Could not establish a unique selector for pages");
-	}
-
 	static public function compare($page1, $page2) {
 		if ($page1->title == $page2->title) return 0;
 		return ($page1->title < $page2->title) ? -1 : 1;
@@ -134,16 +119,7 @@ class Page extends CompAccessor {
 // Begin non-static features
 // --------------------------------------------------
 	public function __construct($value, $identifier='id') {
-		$rows = $this->_find($value, $identifier);
-		if (!empty($rows)) {
-			$this->id = $rows[0]['id'];
-		}
-		else ERRORS::log(
-			ERRORS::PAGE_ERROR, 
-			"Page::__construct() could not find page with identifier '%s' => '%s'", 
-			json_encode($identifier), 
-			json_encode($value)
-		);
+		parent::__construct($value, $identifier);
 	}
 
 	public function __get($name) {
@@ -164,6 +140,8 @@ class Page extends CompAccessor {
 			case "collabs":
 			case "collaborators":
 				return $this->get_colabs();
+			case "created":
+				return strtotime($this->_get('created'));
 			case "description":
 				return $this->_get("description");
 			case "created":
@@ -181,6 +159,8 @@ class Page extends CompAccessor {
 				return $this->get_level();
 			case "locked":
 				return $this->is_locked();
+			case "modified":
+				return strtotime($this->_get('modified'));
 			case "opened":
 				return $this->is_opened();
 			case "parent":
@@ -235,6 +215,7 @@ class Page extends CompAccessor {
 			case "isBook":
 			case "isChapter":
 			case "level":
+			case "modified":
 			case "parent":
 			case "parents":
 			case "path":
@@ -248,21 +229,21 @@ class Page extends CompAccessor {
 
 	public function can_see($user) {
 		if ($user->has_permission(User::ACT_VIEW_ALL_PAGES)) return true;
-		if ($this->author == $user->id && $user->has_permission(User::ACT_VIEW_OWN_PAGES)) return true;
-		if ($this->is_blacklisted_user($user)) return false;
-		if ($this->is_locked() == true && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
-		if ($this->is_colab($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
-		if ($this->is_whitelisted_user($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
+		elseif ($this->author == $user->id && $user->has_permission(User::ACT_VIEW_OWN_PAGES)) return true;
+		elseif ($this->is_blacklisted_user($user)) return false;
+		elseif ($this->is_locked() == true && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
+		elseif ($this->is_colab($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
+		elseif ($this->is_whitelisted_user($user) && $user->has_permission(User::ACT_VIEW_UNLOCKED_PAGES)) return true;
 
 		return false;
 	}
 
 	public function can_edit($user) {
 		if ($user->has_permission(User::ACT_EDIT_ALL_PAGES)) return true;
-		if ($this->author == $user->id && $user->has_permission(User::ACT_EDIT_OWN_PAGES)) return true;
-		if ($this->is_blacklisted_user($user)) return true;
-		if ($this->is_opened() && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return true;
-		if ($this->is_colab($user) && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return true;
+		elseif ($this->author == $user->id && $user->has_permission(User::ACT_EDIT_OWN_PAGES)) return true;
+		elseif ($this->is_blacklisted_user($user)) return false;
+		elseif ($this->is_opened() && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return true;
+		elseif ($this->is_colab($user) && $user->has_permission(User::ACT_EDIT_OPEN_PAGES)) return true;
 		elseif ($this->is_colab($user)) echo(sprintf("Collaborator %s cannot edit the page\n"));
 
 		return false;
@@ -270,14 +251,23 @@ class Page extends CompAccessor {
 
 	public function can_lock($user) {
 		if ($user->has_permission(User::ACT_LOCK_ALL_PAGES)) return true;
-		if ($this->author == $user->id && $user->has_permission(User::ACT_LOCK_OWN_PAGES)) return true;
+		elseif ($this->author == $user->id && $user->has_permission(User::ACT_LOCK_OWN_PAGES)) return true;
 
 		return false;
 	}
 
 	public function can_open($user) {
 		if ($user->has_permission(User::ACT_OPEN_ALL_PAGES)) return true;
-		if ($this->author == $user->id && $user->has_permission(User::ACT_OPEN_OWN_PAGES)) return true;
+		elseif ($this->author == $user->id && $user->has_permission(User::ACT_OPEN_OWN_PAGES)) return true;
+
+		return false;
+	}
+
+	public function can_comment($user) {
+		if ($user->has_permission(User::ACT_ADD_ALL_COMMENTS)) return true;
+		elseif ($this->author == $user->id && $user->has_permission(User::ACT_ADD_OWN_COMMENTS)) return true;
+		elseif ($this->can_edit($user) && $user->has_permission(User::ACT_ADD_OPEN_COMMENTS)) return true;
+		elseif ($this->can_see($user) && $user->has_permission(User::ACT_ADD_UNLOCKED_COMMENTS)) return true;
 
 		return false;
 	}

@@ -25,3 +25,4 @@ TODO
 - Front Page
 - Implement View/Edit history
 - Edit Pages
+- Decide whether someone can delete comments of others on pages they can edit
