@@ -92,10 +92,11 @@ class Comment extends CompAccessor {
 				return strtotime($this->_get('created'));
 			case "deleted":
 				return ($this->_get('deleted') == 1) ? true : false;
-			case "id":
-				return $this->id;
+			case "edited":
 			case "modified":
 				return strtotime($this->_get('modified'));
+			case "id":
+				return $this->id;
 			case "page":
 				return new Page($this->_get('page_id'), 'id');
 			case "parent":
@@ -116,8 +117,9 @@ class Comment extends CompAccessor {
 			case "children":
 			case "created":
 			case "deleted":
-			case "id":
+			case "edited":
 			case "modified":
+			case "id":
 			case "page":
 			case "parent":
 			case "selector":

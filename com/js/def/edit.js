@@ -1,6 +1,7 @@
 
 //import * as Editor from "./edit/editor.js";
 import * as Create from "./edit/create.js";
+import * as Editor from "./edit/editor.js";
 import * as View from "./edit/view.js";
 
 export function init() {
@@ -16,7 +17,7 @@ export function goto_create(event){
 	location.href = getUrlFromJson(obj);
 }
 
-export { Create, View };
+export { Create, View, Editor };
 
 $(document).ready(() => {
 	init();

@@ -44,6 +44,7 @@ function page_tables($overwrite, $delete) {
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		modified DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
 		parent_id INT(10) UNSIGNED DEFAULT NULL, 
+		type ENUM('display', 'profile') NOT NULL, 
 		PRIMARY KEY (id), 
 		INDEX PAGE (title), 
 		UNIQUE INDEX SEL (selector), 

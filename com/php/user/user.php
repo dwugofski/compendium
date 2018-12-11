@@ -239,6 +239,9 @@ class User extends CompAccessor {
 				return $this->get_followers();
 			case "created":
 				return strtotime($this->_get('created'));
+			case "edited":
+			case "modified":
+				return strtotime($this->_get('modified'));
 			case "email":
 				return $this->get_email();
 			case "followeds":
@@ -247,8 +250,6 @@ class User extends CompAccessor {
 				return $this->get_followers();
 			case "id":
 				return $this->id;
-			case "modified":
-				return strtotime($this->_get('modified'));
 			case "permissions":
 				return $this->get_permissions();
 			case "selector":
@@ -277,11 +278,12 @@ class User extends CompAccessor {
 			case "blockeds":
 			case "blockers":
 			case "created":
+			case "edited":
+			case "modified":
 			case "data":
 			case "followeds":
 			case "followers":
 			case "id":
-			case "modified":
 			case "selector":
 			case "token":
 				ERRORS::log(ERRORS::USER_ERROR, "Attempted to set read-only property '%s' of user", $name);

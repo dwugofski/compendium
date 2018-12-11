@@ -1,8 +1,3 @@
-
-import * as Markdown from "./markdown.js";
-
-var preview_mode = "edit";
-
 const e = React.createElement;
 
 const initialValue = Slate.Value.fromJSON({
@@ -19,10 +14,24 @@ const initialValue = Slate.Value.fromJSON({
 	}
 });
 
-export class CompEditor extends React.Component {
+class CompendiumEditor extends React.Component {
 	constructor() {
 		super();
 		this.state = {value: initialValue};
+	}
+
+	render() {
+		//console.log(this.state.value.toJSON());
+		return e(
+			SlateReact.Editor,
+			{	value: this.state.value,
+				onChange: this.onChange.bind(this),
+				onKeyDown: this.onKeyDown.bind(this),
+				renderMark: this.renderMark.bind(this),
+				renderNode: this.renderNode.bind(this),
+				decorateNode: this.decorateNode.bind(this),
+				className: "mkdn_editor"
+			});
 	}
 
 	onChange({value}) {
@@ -30,9 +39,17 @@ export class CompEditor extends React.Component {
 	}
 
 	onKeyDown(event, editor, next) {
+		console.log(event.key);
 		switch(event.key) {
 			case 'Enter':
 				return this.onEnter(event, editor, next);
+			case ' ':
+				return this.onSpace(event, editor, next);
+			case 'Backspace':
+				return this.onBackspace(event, editor, next);
+			case 'Tab':
+				event.preventDefault();
+				editor.insertText("\t");
 			default:
 				return next();
 		}
@@ -45,25 +62,77 @@ export class CompEditor extends React.Component {
 		const {start, end, expanded} = selection;
 		if (expanded) return next();
 
-		if (start.offset == 0 && start_block.text.length == 0) return next();
-		if (end.offset != start_block.text.length) return next();
-
 		switch(start_block.type){
-			case "h1":
-			case "h2":
-			case "h3":
-			case "h4":
-			case "h5":
-			case "h6":
+			case "uli":
+			case "oli":
+				if (start.offset == 0 && start_block.text.length == 0) return this.onBackspace(event, editor, next);
+				else return next();
+			case "paragraph":
+				if (event.shiftKey) {
+					event.preventDefault();
+					editor.insertText("\n");
+				} else return next();
 			default:
 				event.preventDefault();
 				editor.splitBlock().setBlocks('paragraph');
 				break;
-			case "paragraph":
-				if (event.shiftKey && false) {
-					event.preventDefault();
-					editor.insertInline({object: 'inline', type: 'break', text: ""});
-				} else return next();
+		}
+	}
+
+	onSpace(event, editor, next) {
+		const { value } = editor;
+		const { selection } = value;
+		// If we have an expanded output, we need to collapse it before determining whether we have a shortcut
+		const options = (selection.isExpanded) ? next() || [] : null;
+
+		const { startBlock } = value;
+		const { start } = selection;
+		// Gets rid of everything after and including the space in the heading
+		const chars = startBlock.text.slice(0, start.offset).replace(/\s*/g, '');
+		const type = MarkdownParser.determine_block(chars);
+		console.log(chars);
+		console.log(type);
+		if (!type) return options ? options : next();
+
+		event.preventDefault();
+
+		editor.setBlocks(type);
+		// Wrap list if necessary
+		switch (type) {
+			case 'oli':
+				editor.wrapBlock('ol');
+				break;
+			case 'uli':
+				editor.wrapBlock('ul');
+				break;
+			default:
+				break;
+		}
+		editor.moveFocusToStartOfNode(startBlock).delete()
+	}
+
+	onBackspace(event, editor, next) {
+		const { value } = editor;
+		const { selection } = value;
+		if (selection.isExpanded) return next();
+		if (selection.start.offset != 0) return next();
+
+		const { startBlock } = value;
+		if (startBlock.type == 'paragraph') return next();
+
+		event.preventDefault();
+		editor.setBlocks('paragraph');
+
+		// Unwrap list if necessary
+		switch (startBlock.type) {
+			case 'oli':
+				editor.unwrapBlock('ol');
+				break;
+			case 'uli':
+				editor.unwrapBlock('ul');
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -77,11 +146,16 @@ export class CompEditor extends React.Component {
 			case "h4":
 			case "h5":
 			case "h6":
+			case "ul":
+			case "ol":
 				return e(node.type, attributes, children);
+			case "oli":
+			case "uli":
+				return e('li', attributes, children);
 			case "paragraph":
 				return e("p", attributes, children);
 			case "break":
-				return e('span', {...attributes, style: {display: 'block'}}, children);
+				return e("span", attributes, children);
 			default:
 				return next();
 		}
@@ -102,113 +176,25 @@ export class CompEditor extends React.Component {
 
 	decorateNode(node, editor, next) {
 		const others = next() || [];
-		if (node.object != 'block') return others;
 
-		if (node.getBlocks().size != 0) return others;
-		else {
-			const new_type = Markdown.classify(node.text)
-			editor.setNodeByKey(node.key, new_type);
-		}
-
-		const string = node.text;
-		const tokens = Markdown.tokenize(string);
-		const decorations = [];
-
-		for (const token of tokens) {
-			const texts = node.getTexts().toArray();
-			var start_text = texts.shift();
-			var start_offset = 0;
-			var start = 0;
-
-			while (start_offset + start < token.start) {
-				if (token.start >= start_offset + start_text.text.length) {
-					start_offset += start_text.text.length;
-					start_text = texts.shift();
-				} else {
-					start = token.start - start_offset;
-				}
-			}
-
-			var end_text = start_text;
-			var end_offset = start_offset + end_text.text.length;
-			while (end_offset < token.start + token.length) {
-				end_text = texts.shift();
-				end_offset += end_text.text.length;
-			}
-
-			const dec = {
-				anchor: {
-					key: end_text.key,
-					offset: token.start
-				},
-				focus: {
-					key: end_text.key,
-					offset: token.start + token.length
-				},
-				mark: {
-					type: token.type
-				}
-			};
-
-			decorations.push(dec);
-		}
-
-		return [...others, ...decorations];
-	}
-
-	render() {
-		return e(
-			SlateReact.Editor,
-			{	value: this.state.value,
-				onChange: this.onChange.bind(this),
-				onKeyDown: this.onKeyDown.bind(this),
-				renderMark: this.renderMark.bind(this),
-				renderNode: this.renderNode.bind(this),
-				decorateNode: this.decorateNode.bind(this),
-				className: "mkdn_editor"
-			});
+		return [...others ];
 	}
 }
 
-export function init() {
-	$("#page_form_switch_sub span").click(toggle_preview);
-}
+const headings_ident = /^#{1,6}$/g;
+const ordered_list_ident = /^((( {3})*|\t)*[0-9]+\.)$/g;
+const unordered_list_ident = /^((( {3})*|\t)*\*+)$/g;
 
-function toggle_preview() {
-	if (preview_mode == "edit") {
-		preview_mode = "preview";
-		hide_edit(show_preview);
-	} else {
-		preview_mode = "edit";
-		hide_preview(show_edit);
+class MarkdownParser {
+	static determine_block(prefix) {
+		if (prefix.match(headings_ident)) return 'h' + prefix.length;
+		else if (prefix.match(ordered_list_ident)) return 'oli';
+		else if (prefix.match(unordered_list_ident)) return 'uli';
+		else return null;
 	}
 }
 
-function hide_edit(callback) {
-	$("#page_form_text").hide(100, callback);
-}
-
-function hide_preview(callback) {
-	$("#page_form_preview").hide(100, callback);
-}
-
-function show_preview(callback) {
-	$("#page_form_preview").html(Markdown.parse($("#page_form_text").val()));
-	$("#page_form_switch_sub span").text("Edit");
-	$("#page_form_preview").show(100, callback);
-}
-
-function show_edit(callback) {
-	$("#page_form_switch_sub span").text("Preview");
-	$("#page_form_text").show(100, callback);
-}
-
-/*
 ReactDOM.render(
-	e(CompEditor),
+	e(CompendiumEditor),
 	$("#page_form_text")[0]
-);*/
-
-$(document).ready(function(){
-	init();
-});
+);

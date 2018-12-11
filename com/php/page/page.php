@@ -9,6 +9,16 @@ class Page extends CompAccessor {
 // --------------------------------------------------
 // Begin static features
 // --------------------------------------------------
+	// Page types
+	const TYPE_DISPLAY	= 'display';
+	const TYPE_PROFILE 	= 'profile';
+
+	const TYPES_ARRAY = [
+		'display',
+		'profile'
+	];
+
+	// CompAccessor Fields
 	const TABLE_NAME = 'pages';
 	const PRIMARY_KEY = 'id';
 
@@ -23,7 +33,8 @@ class Page extends CompAccessor {
 		"selector",
 		"created",
 		"modified",
-		"parent_id"
+		"parent_id",
+		"type"
 	];
 
 	const COLUMN_TYPES = [
@@ -37,7 +48,8 @@ class Page extends CompAccessor {
 		"selector" => 's',
 		"created" => 's',
 		"modified" => 's',
-		"parent_id" => 'i'
+		"parent_id" => 'i',
+		"type" => 's'
 	];
 	
 	const IDENTIFIERS = [
@@ -47,6 +59,12 @@ class Page extends CompAccessor {
 	];
 
 	static public function compare($page1, $page2) {
+		// May want to rethink this in favor of a more customizable ordering
+		// TODO: Add in an index - below the parent - which keeps track of children order preference
+		// Will need edits to SQL table
+		// Allow null = unpreferenced
+		// 		prefferential indexes will be first (always "before" a null index)
+		// 		after preferrential indexes, compare unpreferenced pages alphabetically by title
 		if ($page1->title == $page2->title) return 0;
 		return ($page1->title < $page2->title) ? -1 : 1;
 	}
@@ -148,7 +166,7 @@ class Page extends CompAccessor {
 				return $this->_get("created");
 			case "edited":
 			case "modified":
-				return $this->_get("modified");
+				return strtotime($this->_get("modified"));
 			case "id":
 				return $this->id;
 			case "isBook":
@@ -159,8 +177,6 @@ class Page extends CompAccessor {
 				return $this->get_level();
 			case "locked":
 				return $this->is_locked();
-			case "modified":
-				return strtotime($this->_get('modified'));
 			case "opened":
 				return $this->is_opened();
 			case "parent":
@@ -573,6 +589,16 @@ class Page extends CompAccessor {
 
 	public function close() {
 		$this->set_opened(false);
+	}
+
+	public function set_type($type) {
+		if (is_string($type) && is_numeric($type)) $type = self::TYPES_ARRAY[intval($type)];
+		elseif (is_int($type)) $type = self::TYPES_ARRAY[$type];
+		elseif (!is_string($type) || !in_array($type, self::TYPES_ARRAY)) {
+			ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_type() cannot find type %s", json_encode($type));
+		} else {
+			$this->_set('type', $type);
+		}
 	}
 }
 
