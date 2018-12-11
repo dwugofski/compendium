@@ -36,7 +36,7 @@ function comment_tables($overwrite, $delete) {
 		INDEX PAGE (title), 
 		UNIQUE INDEX SEL (selector), 
 		FOREIGN KEY (author_id) REFERENCES users(id) 
-		ON DELETE CASCADE ON UPDATE CASCADE, 
+		ON DELETE SET NULL ON UPDATE CASCADE, 
 		FOREIGN KEY (page_id) REFERENCES pages(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
 		FOREIGN KEY (parent_id) REFERENCES comments(id) 
