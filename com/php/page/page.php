@@ -184,6 +184,10 @@ class Page extends CompAccessor {
 
 	public function __set($name, $value) {
 		switch($name) {
+			case "author":
+				if (is_a($value, 'User')) $value = $value->id;
+				$this->_set($name, $value);
+				break;
 			case "locked":
 				if ($value) $this->lock();
 				else $this->unlock();
@@ -202,7 +206,6 @@ class Page extends CompAccessor {
 				$this->set_title($value);
 				break;
 			case "all_children":
-			case "author":
 			case "book":
 			case "chapter":
 			case "children":
