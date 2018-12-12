@@ -6,47 +6,47 @@ body .mkdn_editor {
 		border-style: solid;
 		border-width: 0.2em 0;
 		box-sizing: border-box;
-		height: 46px;
 		color: var(--accent);
 		margin: 1em 0;
 		padding: 0.2em 0.2em;
 		width: 100%;
 
 		.option {
+			border: 0.1em solid transparent;
 			border-radius: 0.2em;
 			box-sizing: border-box;
 			cursor: pointer;
+			display: block;
 			padding: 0.5em;
 			margin: 0 0.2em;
 		}
 		.option:hover {
-			background-color: var(--bg-dark);
+			border-color: var(--accent);
 		}
 
 		.option.active {
-			background-color: var(--accent);
-			color: var(--bg);
+			border-color: var(--accent-light);
+			box-shadow: 0.1em 0.1em 0.7em var(--accent-light) inset;
 		}
 		.option.active:hover {
-			background-color: var(--accent-dark);
-		}
-		.option.before {
-			margin-right: 0;
-			border-radius: 0.2em 0 0 0.2em;
-		}
-		.option.after {
-			margin-left: 0;
-			border-radius: 0 0.2em 0.2em 0;
-		}
-		.option.after.before {
-			border-radius: 0;
+			border-color: var(--accent);
 		}
 
-		img.option {
-			height: 100%;
+		.option.mark {
+			border-width: 0.067em;
+			font-size: 150%;
+			padding: 0.1em 0.5em;
 		}
-		img.option.active {
-			background-color: var(--accent);
+
+		.option.bold {
+			font-weight: bold;
+		}
+		.option.italic {
+			font-style: italic;
+			padding-right: 0.7em;
+		}
+		.option.underlined {
+			text-decoration: underline;
 		}
 	}
 
@@ -60,16 +60,34 @@ body .mkdn_editor {
 		margin: 1em 1em 0 1em;
 		min-height: 30em;
 		outline: none;
-		overflow-y: hidden;
+		//overflow-y: hidden;
 		padding: 1em;
-		padding-right: calc(1em + var(--scrollbar-width));
+		//padding-right: calc(1em + var(--scrollbar-width));
+		position: relative;
 		resize: none;
 		width: calc(100% - 2em);
+
+		.placeholder {
+			color: var(--grey);
+			display: none;
+			left: 1em;
+			pointer-events: none;
+			position: absolute;
+			top: 2em;
+		}
 	}
 	.comp_editor:hover, .comp_editor:focus {
-		padding-right: 1em;
+		//padding-right: 1em;
 		background-color: var(--bg-light);
-		overflow-y: scroll;
+		//overflow-y: scroll;
+	}
+	.comp_editor:focus {
+		.placeholder {
+			color: var(--grey-shade);
+		}
+	}
+	.comp_editor.empty .placeholder {
+		display: block;
 	}
 
 }

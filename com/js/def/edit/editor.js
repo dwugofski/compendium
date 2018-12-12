@@ -1,16 +1,17 @@
 const e = React.createElement;
 
+const PLACEHOLDER_TEXT = 'Edit text here...';
+
 const initialValue = Slate.Value.fromJSON({
 	document: {
-		nodes: [
-			{	object: 'block',
-				type: 'paragraph',
+		nodes: [{
+				object: 'block',
+				type: 'placeholder',
 				nodes: [{
 						object: 'text',
-						leaves: [{text: 'Begin writing here...'}]
+						leaves: [{text: PLACEHOLDER_TEXT}]
 				}]
-			}
-		]
+			}]
 	}
 });
 
@@ -18,9 +19,7 @@ class CompendiumEditor extends React.Component {
 	constructor() {
 		super();
 		this.state = {value: initialValue};
-		this.bold = false;
-		this.italic = false;
-		this.underline = false;
+		this.has_text = false;
 	}
 
 	render() {
@@ -32,15 +31,39 @@ class CompendiumEditor extends React.Component {
 				onKeyDown: this.onKeyDown.bind(this),
 				renderMark: this.renderMark.bind(this),
 				renderNode: this.renderNode.bind(this),
-				className: "comp_editor"
+				className: (this.has_text) ? "comp_editor" : "comp_editor empty"
 			});
 	}
 
 	onChange({value}) {
+		const {text, nodes} = value.document;
+		this.has_text = ((text != PLACEHOLDER_TEXT || (nodes.size >= 2 && nodes.get(1).type != "paragraph")) || nodes.size > 2) ;
 		this.setState({value});
 	}
 
 	onKeyDown(event, editor, next) {
+		if (!this.has_text) {
+			if (editor.value.startBlock.type == "placeholder") {
+				editor.moveFocusToEndOfDocument();
+				if (editor.value.document.nodes.size < 2) editor.splitBlock().setBlocks('paragraph');
+			}
+			if (event.key == "ArrowLeft" || event.key == "ArrowUp") {
+				event.preventDefault();
+				const ret = next();
+				editor.moveFocusToEndOfDocument();
+				return ret;
+			}
+			if (event.key == "Backspace" || event.key == "Delete") {
+				event.preventDefault();
+				return;
+			}
+		}
+		/*if (!this.has_text && editor.value.startBlock.type == "placeholder") {
+			editor.moveFocusToEndOfDocument();
+			console.log(editor.value.document.nodes.size);
+			if (editor.value.document.nodes.size < 2) editor.splitBlock().setBlocks('paragraph');
+		}*/
+
 		switch(event.key) {
 			case 'Enter':
 				return this.onEnter(event, editor, next);
@@ -48,6 +71,8 @@ class CompendiumEditor extends React.Component {
 				return this.onSpace(event, editor, next);
 			case 'Backspace':
 				return this.onBackspace(event, editor, next);
+			case 'Delete':
+				return this.onDelete(event, editor, next);
 			case 'Tab':
 				event.preventDefault();
 				editor.insertText("\t");
@@ -162,6 +187,32 @@ class CompendiumEditor extends React.Component {
 		}
 	}
 
+	onDelete(event, editor, next) {
+		const {value} = editor;
+		//const {text, nodes} = value.document;
+		const {selection} = value;
+		const {text, type} = value.startBlock;
+
+		if (selection.isExpanded) return next();
+		if (selection.start.offset != 0) return next();
+
+		if (text == "" && type != "paragraph") {
+			event.preventDefault();
+			editor.setBlocks('paragraph');
+
+			switch (type) {
+				case 'oli':
+					editor.unwrapBlock('ol');
+					break;
+				case 'uli':
+					editor.unwrapBlock('ul');
+					break;
+				default:
+					break;
+			}
+		} else return next();
+	}
+
 	renderNode(props, editor, next) {
 		const { attributes, children, node } = props
 
@@ -180,6 +231,8 @@ class CompendiumEditor extends React.Component {
 				return e('li', attributes, children);
 			case "paragraph":
 				return e("p", attributes, children);
+			case "placeholder":
+				return e("div", {...attributes, 'className': 'placeholder'}, children);
 			case "break":
 				return e("span", attributes, children);
 			default:
