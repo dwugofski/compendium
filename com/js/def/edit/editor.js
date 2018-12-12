@@ -15,7 +15,228 @@ const initialValue = Slate.Value.fromJSON({
 	}
 });
 
-class CompendiumEditor extends React.Component {
+class CompendiumComponent extends React.Component {
+	constructor() {
+		super();
+		this._cfns = [];
+		this._kdfns = [];
+		this._kufns = [];
+		this._ocfns = [];
+		this._classnames = [];
+		this.render_src = "div";
+		this.attrs = {
+			onChange: this.on_change.bind(this),
+			onKeyDown: this.on_key_down.bind(this),
+			onKeyUp: this.on_key_up.bind(this),
+			onClick: this.on_click.bind(this),
+			className: "",
+			key: 0
+		}
+		this.state = {class: "", children: "", child_counter: 0, fn_counter : 0};
+		this._ready = false;
+	}
+
+	_bind_fn(new_fn, array) {
+		array.push(new_fn);
+
+		this.update({fn_counter: this.state.fn_counter + 1});
+	}
+
+	_unbind_fn(old_fn, array) {
+		var indexes = [];
+		for (var i=0; i<array.length; i+=1) {
+			if (old_fn === array[i]) {
+				indexes.push(i);
+			}
+		}
+
+		for (var i=indexes.length-1; i>=0; i-=1) {
+			array.splice(indexes[i], 1);
+		}
+		this.update({fn_counter: this.state.fn_counter - 1});
+	}
+
+	_on_event(array, event, source, next) {
+		for (var i=array.length-1; i>=0; i-=1) {
+			array[i](event, source, next);
+		}
+	}
+
+	bind_click(new_fn) { this._bind_fn(new_fn, this._cfns); }
+	bind_key_down(new_fn) { this._bind_fn(new_fn, this._kdfns); }
+	bind_key_up(new_fn) { this._bind_fn(new_fn, this._kufns); }
+	bind_change(new_fn) { this._bind_fn(new_fn, this._ocfns); }
+
+	unbind_click(old_fn) { this._unbind_fn(old_fn, this._cfns); }
+	unbind_key_down(old_fn) { this._unbind_fn(old_fn, this._kdfns); }
+	unbind_key_up(old_fn) { this._unbind_fn(old_fn, this._kufns); }
+	unbind_change(old_fn) { this._unbind_fn(old_fn, this._ocfns); }
+
+	on_click(event, source, next) { this._on_event(this._cfns, event, source, next); }
+	on_key_down(event, source, next) { this._on_event(this._kdfns, event, source, next); }
+	on_key_up(event, source, next) { this._on_event(this._kufns, event, source, next); }
+	on_change(event, source, next) { this._on_event(this._ocfns, event, source, next); }
+
+	add_class(class_name) {
+		const classes = class_name.split(" ");
+		for (var i=0; i<classes.length; i+=1) {
+			if (this.has_class(classes[i])) continue;
+
+			this._classnames.push(classes[i]);
+		}
+
+		this.update({class: this.class_name});
+	}
+
+	remove_class(class_str) {
+		const classes = class_str.split(" ");
+		for (var i=0; i<classes.length; i+=1) {
+			const class_name = classes[i];
+			var indexes = [];
+			for (var j=0; j<this._classnames.length; j+=1) {
+				if (class_name == this._classnames[j]) {
+					indexes.push(j);
+				}
+			}
+
+			for (var j=indexes.length-1; j>=0; j-=1) {
+				this._classnames.splice(indexes[j], 1);
+			}
+		}
+		
+		this.update({class: this.class_name});
+	}
+
+	has_class(class_name) {
+		return this._classnames.includes(class_name);
+	}
+
+	get class_name() {
+		var class_str = "";
+		var prefix = "";
+		for (var i=0; i<this._classnames.length; i+=1) {
+			class_str += prefix + this._classnames[i];
+			if (i == 0) prefix = " ";
+		}
+		return class_str;
+	}
+	set class_name(class_str) {
+		const classes = class_str.split(" ");
+		this._classnames = [];
+		for (var i=0; i<classes.length; i+=1) {
+			this._classnames.push(classes[i]);
+		}
+
+		this.update({class: this.class_name});
+	}
+
+	add_child(child) {
+		var children = this.state.children.slice();
+		var counter = this.state.child_counter;
+		if (typeof child == "string" && counter == 0) children = child;
+		else {
+			if (counter == 0) children = [];
+
+			child.attrs.key = counter;
+			children.push(child);
+			counter += 1;
+		}
+
+		this.update({children: children, child_counter: counter});
+	}
+
+	render() {
+		if (!this._ready) this._ready = true;
+		const el = this.get_element();
+		console.log(this.constructor.name);
+		return el
+	}
+
+	get_element() {
+		this.attrs.className = this.class_name;
+		var childs = [];
+		const children = this.state.children.slice();
+		if (typeof children == "string") childs = children;
+		else {
+			for (var i=0; i<children.length; i+=1)
+				childs.push( children[i].get_element())
+		}
+		return e(this.render_src, this.attrs, childs);
+	}
+
+	update(state_change) {
+		if (!this._ready) {
+			this.state = {...this.state, ...state_change};
+		} else {
+			this.setState(state_change);
+		}
+	}
+}
+
+class CompendiumControlOption extends CompendiumComponent {
+	constructor(text) {
+		super();
+		this.add_class("option fl");
+		this.add_child(text);
+		this.bind_click(this.toggle_activate.bind(this));
+		this.activated = false;
+	}
+
+	verify_activation() {
+		this.activated = this.has_class("activate");
+	}
+
+	toggle_activate() {
+		console.log("Toggle activate");
+		this.verify_activation();
+		if (this.activated) this.deactivate();
+		else this.activate();
+	}
+
+	activate() {
+		this.verify_activation();
+		if (!this.activated) {
+			this.activated = true;
+			this.add_class("activate");
+		}
+	}
+
+	deactivate() {
+		this.verify_activation();
+		if (this.activated) {
+			this.activated = false;
+			this.remove_class("activate");
+		}
+	}
+}
+
+class CompendiumControlBar extends CompendiumComponent {
+	constructor() {
+		super();
+		this.add_class("control_bar");
+		this.add_child(new CompendiumControlOption("Option 1"));
+		this.add_child(new CompendiumControlOption("Option 2"));
+		this.add_child(new CompendiumControlOption("Option 3"));
+		const clearer = new CompendiumComponent();
+		clearer.add_class("clearer");
+		this.add_child(clearer);
+	}
+}
+
+class CompendiumEditor extends CompendiumComponent {
+	constructor() {
+		super();
+		this.add_class("mkdn_editor");
+		this.add_child(new CompendiumControlBar());
+		//this.add_child(new CompendiumTextArea());
+		/*this.children = [];
+		console.log("Making");
+		this.children.push(e(CompendiumControlBar, {key: 1}));
+		this.children.push(e(CompendiumTextArea, {key: 2}));*/
+	}
+}
+
+class CompendiumTextArea extends React.Component {
 	constructor() {
 		super();
 		this.state = {value: initialValue};
@@ -270,10 +491,10 @@ class MarkdownParser {
 }
 
 export function init() {
-	if ($("#page_form_editor")[0]) {
+	if ($("#page_form_text")[0]) {
 		ReactDOM.render(
 			e(CompendiumEditor),
-			$("#page_form_editor")[0]
+			$("#page_form_text")[0]
 		);
 	}
 }
