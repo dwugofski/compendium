@@ -18,6 +18,9 @@ class CompendiumEditor extends React.Component {
 	constructor() {
 		super();
 		this.state = {value: initialValue};
+		this.bold = false;
+		this.italic = false;
+		this.underline = false;
 	}
 
 	render() {
@@ -29,8 +32,7 @@ class CompendiumEditor extends React.Component {
 				onKeyDown: this.onKeyDown.bind(this),
 				renderMark: this.renderMark.bind(this),
 				renderNode: this.renderNode.bind(this),
-				decorateNode: this.decorateNode.bind(this),
-				className: "mkdn_editor"
+				className: "comp_editor"
 			});
 	}
 
@@ -39,7 +41,6 @@ class CompendiumEditor extends React.Component {
 	}
 
 	onKeyDown(event, editor, next) {
-		console.log(event.key);
 		switch(event.key) {
 			case 'Enter':
 				return this.onEnter(event, editor, next);
@@ -51,6 +52,25 @@ class CompendiumEditor extends React.Component {
 				event.preventDefault();
 				editor.insertText("\t");
 			default:
+				if (event.ctrlKey && !event.repeat) {
+					var mark = undefined;
+					switch(event.key) {
+						case 'b':
+							mark = 'bold';
+							break;
+						case 'i':
+							mark = 'italic';
+							break;
+						case 'u':
+							mark = 'underlined';
+							break;
+						default:
+							return next();
+					}
+					event.preventDefault();
+					editor.toggleMark(mark);
+					//console.log(editor);
+				}
 				return next();
 		}
 	}
@@ -66,15 +86,22 @@ class CompendiumEditor extends React.Component {
 			case "uli":
 			case "oli":
 				if (start.offset == 0 && start_block.text.length == 0) return this.onBackspace(event, editor, next);
-				else return next();
+				else if (event.shiftKey) {
+					event.preventDefault();
+					editor.insertText("\n");
+				} else return next();
+				break;
 			case "paragraph":
+				console.log("p");
 				if (event.shiftKey) {
 					event.preventDefault();
 					editor.insertText("\n");
 				} else return next();
+				break;
 			default:
 				event.preventDefault();
 				editor.splitBlock().setBlocks('paragraph');
+				console.log("p");
 				break;
 		}
 	}
@@ -90,13 +117,12 @@ class CompendiumEditor extends React.Component {
 		// Gets rid of everything after and including the space in the heading
 		const chars = startBlock.text.slice(0, start.offset).replace(/\s*/g, '');
 		const type = MarkdownParser.determine_block(chars);
-		console.log(chars);
-		console.log(type);
 		if (!type) return options ? options : next();
 
 		event.preventDefault();
 
 		editor.setBlocks(type);
+		console.log(type);
 		// Wrap list if necessary
 		switch (type) {
 			case 'oli':
@@ -165,19 +191,15 @@ class CompendiumEditor extends React.Component {
 		const { children, mark, attributes } = props;
 
 		switch(mark.type) {
-			case "italic":
-				return e("em", attributes, children);
 			case "bold":
 				return e("strong", attributes, children);
+			case "italic":
+				return e("em", attributes, children);
+			case "underlined":
+				return e("u", attributes, children);
 			default:
 				return next();
 		}
-	}
-
-	decorateNode(node, editor, next) {
-		const others = next() || [];
-
-		return [...others ];
 	}
 }
 
@@ -194,7 +216,13 @@ class MarkdownParser {
 	}
 }
 
-ReactDOM.render(
-	e(CompendiumEditor),
-	$("#page_form_text")[0]
-);
+export function init() {
+	if ($("#page_form_editor")[0]) {
+		ReactDOM.render(
+			e(CompendiumEditor),
+			$("#page_form_editor")[0]
+		);
+	}
+}
+
+$(document).ready(init);

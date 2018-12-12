@@ -6,7 +6,18 @@
 		<input type="text" name="subtitle" id="page_form_subtitle" placeholder="Subtitle" />
 		<div id="page_form_switch_sub"><span>Preview</span></div>
 		<!--<textarea name="text" class="mkdn_editor" id="page_form_text" placeholder="Begin writing here..."></textarea>-->
-		<div id="page_form_text"></div>
+		<div id="page_form_text" class="mkdn_editor">
+			<div class="control_bar">
+				<div class="option fl">Option 1</div>
+				<div class="option fl">Option 2</div>
+				<div class="option fl active">Active Option 3</div>
+				<img class="option fl before" src="res/icons/bold.png"/>
+				<img class="option fl after before active" src="res/icons/italic_active.png"/>
+				<img class="option fl after" src="res/icons/underline.png"/>
+				<div class="clearer"></div>
+			</div>
+			<div id="page_form_editor" class="clearer"></div>
+		</div>
 		<div id="page_form_preview"></div>
 		<div id="page_form_review_sub"><span>Formatting guide</span></div>
 		<div id="page_form_submit" class="button">Submit</div>
