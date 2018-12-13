@@ -76,9 +76,14 @@ body #main #display #content {
 		}
 
 		em {
-			color: var(--accent);
 			font-style: italic;
+		}
+		strong {
 			font-weight: bold;
+		}
+
+		em strong, strong em {
+			color: var(--accent);
 		}
 	}
 

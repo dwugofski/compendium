@@ -430,9 +430,11 @@ body #main #display #content {
     body #main #display #content p a:hover {
       color: var(--red-dark); }
     body #main #display #content p em {
-      color: var(--accent);
-      font-style: italic;
+      font-style: italic; }
+    body #main #display #content p strong {
       font-weight: bold; }
+    body #main #display #content p em strong, body #main #display #content p strong em {
+      color: var(--accent); }
   body #main #display #content hr {
     background-color: var(--accent);
     border-style: none;

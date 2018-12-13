@@ -356,6 +356,7 @@ class MarkOption extends ControlOption {
 		if (props === undefined) props = {};
 		if (props.mark === undefined) props.mark = "";
 		super(props);
+		this.attrs.onMouseDown = (event) => { event.preventDefault(); };
 		this.add_class("mark");
 		this.bind_click(((event) => {
 			console.log(event);
