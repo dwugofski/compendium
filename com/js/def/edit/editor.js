@@ -17,45 +17,41 @@ const initialValue = Slate.Value.fromJSON({
 
 var global_item_count = 1;
 
-class Component extends React.Component {
-	constructor(props) {
-		super(props);
-		console.log("Constructing " + this.constructor.name);
-		//console.log(props);
-		this._cfns = [];
-		this._kdfns = [];
-		this._kufns = [];
-		this._ocfns = [];
-		this._classnames = [];
-		this.attrs = {
-			onChange: this.on_change.bind(this),
-			onKeyDown: this.on_key_down.bind(this),
-			onKeyUp: this.on_key_up.bind(this),
-			onClick: this.on_click.bind(this),
-			className: "",
-			key: 0
-		}
-		this.state = {class: "", children: "", child_counter: 0, fn_counter : 0};
+const Updatable = (Base) => class extends Base {
+	constructor(...args) {
+		super(...args);
+		if (this.state === undefined) this.state = {};
 		this._ready = false;
-
-		if (typeof props.className == 'string') this.class_name = props.className;
-		if (typeof props.children == 'string') this.add_child(props.children);
+		if (!this.setState) this.setState = (state_change) => this.state = state_change;
 	}
 
-	get render_src() {
-		return "div";
+	update(state_change) {
+		if (!this._ready) {
+			this.state = {...this.state, ...state_change};
+		} else {
+			this.setState(state_change);
+		}
 	}
-	get element_src() {
-		return this.constructor;
+}
+
+const Bindable = (Base) => class extends Updatable(Base) {
+	constructor(...args) {
+		super(...args);
+		if (this.state === undefined) this.state = {};
+		this.state = {...this.state, child_counter: 0, fn_counter : 0};
 	}
 
-	_bind_fn(new_fn, array) {
+	_bind_fn(new_fn, binding_name) {
+		if (!this._has_binding(binding_name)) return;
+		const array = this[binding_name+"_fns"];
 		array.push(new_fn);
 
 		this.update({fn_counter: this.state.fn_counter + 1});
 	}
 
-	_unbind_fn(old_fn, array) {
+	_unbind_fn(old_fn, binding_name) {
+		if (!this._has_binding(binding_name)) return;
+		const array = this[binding_name+"_fns"];
 		var indexes = [];
 		for (var i=0; i<array.length; i+=1) {
 			if (old_fn === array[i]) {
@@ -69,26 +65,90 @@ class Component extends React.Component {
 		this.update({fn_counter: this.state.fn_counter - 1});
 	}
 
-	_on_event(array, event, source, next) {
+	_on_event(binding_name, ...args) {
+		if (!this._has_binding(binding_name)) return;
+		const array = this[binding_name+"_fns"];
 		for (var i=array.length-1; i>=0; i-=1) {
-			array[i](event, source, next);
+			array[i](...args);
 		}
 	}
 
-	bind_click(new_fn) { this._bind_fn(new_fn, this._cfns); }
-	bind_key_down(new_fn) { this._bind_fn(new_fn, this._kdfns); }
-	bind_key_up(new_fn) { this._bind_fn(new_fn, this._kufns); }
-	bind_change(new_fn) { this._bind_fn(new_fn, this._ocfns); }
+	_create_binding(binding_name) {
+		if (this._has_binding(binding_name)) return;
+		this[binding_name+"_fns"] = [];
+		this["bind_"+binding_name] = (new_fn) => { this._bind_fn(new_fn, binding_name); };
+		this["unbind_"+binding_name] = (old_fn) => { this._unbind_fn(old_fn, binding_name); };
+		this["on_"+binding_name] = (...args) => { this._on_event(binding_name, ...args); };
+	}
 
-	unbind_click(old_fn) { this._unbind_fn(old_fn, this._cfns); }
-	unbind_key_down(old_fn) { this._unbind_fn(old_fn, this._kdfns); }
-	unbind_key_up(old_fn) { this._unbind_fn(old_fn, this._kufns); }
-	unbind_change(old_fn) { this._unbind_fn(old_fn, this._ocfns); }
+	_destroy_binding(binding_name) {
+		if (!this._has_binding(binding_name)) return;
+		this[binding_name+"_fns"] = undefined;
+		this["bind_"+binding_name] = undefined;
+		this["unbind_"+binding_name] = undefined;
+		this["on_"+binding_name] = undefined;
+	}
 
-	on_click(event, source, next) { this._on_event(this._cfns, event, source, next); }
-	on_key_down(event, source, next) { this._on_event(this._kdfns, event, source, next); }
-	on_key_up(event, source, next) { this._on_event(this._kufns, event, source, next); }
-	on_change(event, source, next) { this._on_event(this._ocfns, event, source, next); }
+	_has_binding(binding_name) {
+		return (this[binding_name+"_fns"] !== undefined);
+	}
+
+}
+
+const Classable = (Base) => class extends Bindable(Base) {
+	constructor(...args) {
+		super(...args);
+		this._classnames = [];
+		if (this.state === undefined) this.state = {};
+		this.state = {...this.state, class: ""};
+	}
+
+	add_class_toggle(class_name) {
+		class_name = class_name.replace(" ", "_");
+		this._create_binding("make_"+class_name);
+		this._create_binding("un_"+class_name);
+		this['is_'+class_name] = () => { return this.has_class(class_name); };
+		this['make_'+class_name] = () => {
+			if (!this['is_'+class_name]()) {
+				this.add_class(class_name);
+				this['on_make_'+class_name]();
+			}
+		};
+		this['un_'+class_name] = () => {
+			if (this['is_'+class_name]()) {
+				this.remove_class(class_name);
+				this['on_un_'+class_name]();
+			}
+		};
+		this['toggle_'+class_name] = () => {
+			if (this['is_'+class_name]()) this['un_'+class_name]();
+			else this['make_'+class_name]();
+		};
+		Object.defineProperty(this, class_name, {
+			get: function() { return this['is_'+class_name](); },
+			set: function(val) {
+				if (val) this['make_'+class_name]();
+				else this['un_'+class_name]();
+			},
+			configurable: true
+		});
+	}
+
+	remove_class_toggle(class_name) {
+		class_name = class_name.replace(" ", "_");
+		this._destroy_binding("make_"+class_name);
+		this._destroy_binding("un_"+class_name);
+		this['is_'+class_name] = undefined;
+		this['make_'+class_name] = undefined;
+		this['un_'+class_name] = undefined;
+		this['toggle_'+class_name] = undefined;
+		delete this[class_name];
+	}
+
+	has_class_toggle(class_name) {
+		class_name = class_name.replace(" ", "_");
+		return (this['toggle_'+class_name] !== undefined);
+	}
 
 	add_class(class_name) {
 		const classes = class_name.split(" ");
@@ -121,7 +181,15 @@ class Component extends React.Component {
 	}
 
 	has_class(class_name) {
-		return this._classnames.includes(class_name);
+		var ret = true;
+		const class_names = class_name.split(" ");
+		for (var i=0; i<class_names.length; i+=1) {
+			if (!this._classnames.includes(class_names[i])) {
+				ret = false;
+				break;
+			}
+		}
+		return ret;
 	}
 
 	get class_name() {
@@ -142,10 +210,95 @@ class Component extends React.Component {
 
 		this.update({class: this.class_name});
 	}
+}
+
+class EditorBridge extends Classable(Object) {
+	constructor(...args) {
+		super(...args);
+		this._create_binding("mark_change");
+		this._create_binding("block_change");
+
+		this.bind_mark_change((type) => { console.log("Mark " + type + " is " + this[type]); });
+		this.bind_block_change((type) => { console.log("Block " + type + " is " + this[type]); });
+	}
+
+	_track_generic(type, base) {
+		if (typeof type == 'string' && type.length > 0 && this.has_class_toggle(type)) return;
+
+		this.add_class_toggle(type);
+		this['bind_make_'+type]((() => { this["on_"+base+"_change"](type); }).bind(this));
+		this['bind_un_'+type]((() => { this["on_"+base+"_change"](type); }).bind(this));
+	}
+
+	_untrack_generic(type, base) {
+		if (typeof type == 'string' && type.length > 0 && !this.has_class_toggle(type)) return;
+
+		this.remove_class_toggle(type);
+	}
+
+	track_mark(type) { this._track_generic(type, "mark") }
+	untrack_mark(type) { this._untrack_generic(type, "mark") }
+	track_block(type) { this._track_generic(type, "block") }
+	untrack_block(type) { this._untrack_generic(type, "block") }
+}
+
+const global_bridge = new EditorBridge();
+
+const Interactable = (Base) => class extends Classable(Base) {
+	constructor(...args) {
+		super(...args);
+		if (this.state === undefined) this.state = {};
+		this.state = {...this.state, child_counter: 0, fn_counter : 0};
+		this._create_binding("click");
+		this._create_binding("key_down");
+		this._create_binding("key_up");
+		this._create_binding("change");
+	}
+}
+
+class Component extends Interactable(React.Component) {
+	constructor(props) {
+		super(props);
+		this.attrs = {
+			onChange: this.on_change.bind(this),
+			onKeyDown: this.on_key_down.bind(this),
+			onKeyUp: this.on_key_up.bind(this),
+			onClick: this.on_click.bind(this),
+			className: "",
+			key: 0
+		}
+		if (this.state === undefined) this.state = {};
+		this.state = {...this.state, children: ""};
+
+		if (typeof props.className == 'string') this.class_name = props.className;
+		if (typeof props.children == 'string') this.add_child(props.children);
+
+		if (typeof props.fns == 'object') {
+			for (var event in props.fns) {
+				if (!this._has_binding(event)) this._create_binding(event);
+				const fns = props.fns[event];
+
+				if (typeof fns == 'function') this["bind_"+event](fns);
+				else if (typeof fns == 'object' && fns.constructor.name == "Array") {
+					for (var i=0; i<fns.length; i+=1) {
+						const fn = fns[i];
+						if (typeof fn == 'function') this["bind_"+event](fns[i]);
+						else console.error("An item in props.fns."+event+" array is not a function");
+					}
+				} else console.error("Property '"+event+"' in props.fns is not an array or function");
+			}
+		}
+	}
+
+	get render_src() {
+		return "div";
+	}
+	get element_src() {
+		return this.constructor;
+	}
 
 	add_child(constructor, props = {}, text = undefined) {
 		//global global_item_count;
-		console.log("Adding "+constructor.name);
 		var children = this.state.children.slice();
 		var counter = this.state.child_counter;
 		var child = null;
@@ -184,18 +337,8 @@ class Component extends React.Component {
 	}
 
 	render() {
-		console.log("rendering "+this.constructor.name);
-		console.log(this.state.children);
 		if (!this._ready) this._ready = true;
 		return e(this.render_src, {...this.props, ...this.attrs, className: this.state.class}, this.state.children);
-	}
-
-	update(state_change) {
-		if (!this._ready) {
-			this.state = {...this.state, ...state_change};
-		} else {
-			this.setState(state_change);
-		}
 	}
 }
 
@@ -203,35 +346,27 @@ class ControlOption extends Component {
 	constructor(props) {
 		super(props);
 		this.add_class("option fl");
-		this.bind_click(this.toggle_activate.bind(this));
-		this.activated = false;
+		this.add_class_toggle("active");
+		//this.activated = false;
 	}
+}
 
-	verify_activation() {
-		this.activated = this.has_class("active");
-	}
-
-	toggle_activate() {
-		console.log("Toggle active");
-		this.verify_activation();
-		if (this.activated) this.deactivate();
-		else this.activate();
-	}
-
-	activate() {
-		this.verify_activation();
-		if (!this.activated) {
-			this.activated = true;
-			this.add_class("active");
-		}
-	}
-
-	deactivate() {
-		this.verify_activation();
-		if (this.activated) {
-			this.activated = false;
-			this.remove_class("active");
-		}
+class MarkOption extends ControlOption {
+	constructor(props) {
+		if (props === undefined) props = {};
+		if (props.mark === undefined) props.mark = "";
+		super(props);
+		this.add_class("mark");
+		this.bind_click(this.toggle_active.bind(this));
+		global_bridge.track_mark(this.props.mark);
+		this.bind_make_active(() => {
+			const mark = this.props.mark;
+			global_bridge[mark] = true;
+		});
+		this.bind_un_active(() => {
+			const mark = this.props.mark;
+			global_bridge[mark] = false;
+		});
 	}
 }
 
@@ -242,6 +377,9 @@ class ControlBar extends Component {
 		this.add_child(ControlOption, {}, "Option 1");
 		this.add_child(ControlOption, {}, "Option 2");
 		this.add_child(ControlOption, {}, "Option 3");
+		this.add_child(MarkOption, {className: "bold", mark: "bold"}, "B");
+		this.add_child(MarkOption, {className: "italic", mark: "italic"}, "I");
+		this.add_child(MarkOption, {className: "underlined", mark: "underlined"}, "U");
 		const clearer = this.add_child(Component, {className: "clearer"});
 	}
 }
