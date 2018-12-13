@@ -15,15 +15,18 @@ const initialValue = Slate.Value.fromJSON({
 	}
 });
 
-class CompendiumComponent extends React.Component {
-	constructor() {
-		super();
+var global_item_count = 1;
+
+class Component extends React.Component {
+	constructor(props) {
+		super(props);
+		console.log("Constructing " + this.constructor.name);
+		//console.log(props);
 		this._cfns = [];
 		this._kdfns = [];
 		this._kufns = [];
 		this._ocfns = [];
 		this._classnames = [];
-		this.render_src = "div";
 		this.attrs = {
 			onChange: this.on_change.bind(this),
 			onKeyDown: this.on_key_down.bind(this),
@@ -34,6 +37,16 @@ class CompendiumComponent extends React.Component {
 		}
 		this.state = {class: "", children: "", child_counter: 0, fn_counter : 0};
 		this._ready = false;
+
+		if (typeof props.className == 'string') this.class_name = props.className;
+		if (typeof props.children == 'string') this.add_child(props.children);
+	}
+
+	get render_src() {
+		return "div";
+	}
+	get element_src() {
+		return this.constructor;
 	}
 
 	_bind_fn(new_fn, array) {
@@ -130,38 +143,51 @@ class CompendiumComponent extends React.Component {
 		this.update({class: this.class_name});
 	}
 
-	add_child(child) {
+	add_child(constructor, props = {}, text = undefined) {
+		//global global_item_count;
+		console.log("Adding "+constructor.name);
 		var children = this.state.children.slice();
 		var counter = this.state.child_counter;
-		if (typeof child == "string" && counter == 0) children = child;
+		var child = null;
+		if (typeof constructor == "string" && counter == 0) {
+			children = constructor;
+			child = constructor;
+		}
 		else {
 			if (counter == 0) children = [];
 
-			child.attrs.key = counter;
+			props.key = global_item_count;
+			if (text) child = e(constructor, props, text);
+			else child = e(constructor, props);
 			children.push(child);
 			counter += 1;
+			global_item_count += 1;
+			
 		}
 
 		this.update({children: children, child_counter: counter});
+		return child;
+	}
+
+	get childs() {
+		var childs = [];
+		const children = this.state.children
+		for (var i=0; i<children.length; i+=1) {
+			const child = children[i];
+			childs.push(child.element);
+		}
+		return childs;
+	}
+
+	get element() {
+		return e(this.element_src, {...this.props, ...this.attrs} , this.state.children);
 	}
 
 	render() {
+		console.log("rendering "+this.constructor.name);
+		console.log(this.state.children);
 		if (!this._ready) this._ready = true;
-		const el = this.get_element();
-		console.log(this.constructor.name);
-		return el
-	}
-
-	get_element() {
-		this.attrs.className = this.class_name;
-		var childs = [];
-		const children = this.state.children.slice();
-		if (typeof children == "string") childs = children;
-		else {
-			for (var i=0; i<children.length; i+=1)
-				childs.push( children[i].get_element())
-		}
-		return e(this.render_src, this.attrs, childs);
+		return e(this.render_src, {...this.props, ...this.attrs, className: this.state.class}, this.state.children);
 	}
 
 	update(state_change) {
@@ -173,21 +199,20 @@ class CompendiumComponent extends React.Component {
 	}
 }
 
-class CompendiumControlOption extends CompendiumComponent {
-	constructor(text) {
-		super();
+class ControlOption extends Component {
+	constructor(props) {
+		super(props);
 		this.add_class("option fl");
-		this.add_child(text);
 		this.bind_click(this.toggle_activate.bind(this));
 		this.activated = false;
 	}
 
 	verify_activation() {
-		this.activated = this.has_class("activate");
+		this.activated = this.has_class("active");
 	}
 
 	toggle_activate() {
-		console.log("Toggle activate");
+		console.log("Toggle active");
 		this.verify_activation();
 		if (this.activated) this.deactivate();
 		else this.activate();
@@ -197,7 +222,7 @@ class CompendiumControlOption extends CompendiumComponent {
 		this.verify_activation();
 		if (!this.activated) {
 			this.activated = true;
-			this.add_class("activate");
+			this.add_class("active");
 		}
 	}
 
@@ -205,29 +230,27 @@ class CompendiumControlOption extends CompendiumComponent {
 		this.verify_activation();
 		if (this.activated) {
 			this.activated = false;
-			this.remove_class("activate");
+			this.remove_class("active");
 		}
 	}
 }
 
-class CompendiumControlBar extends CompendiumComponent {
-	constructor() {
-		super();
+class ControlBar extends Component {
+	constructor(props) {
+		super(props);
 		this.add_class("control_bar");
-		this.add_child(new CompendiumControlOption("Option 1"));
-		this.add_child(new CompendiumControlOption("Option 2"));
-		this.add_child(new CompendiumControlOption("Option 3"));
-		const clearer = new CompendiumComponent();
-		clearer.add_class("clearer");
-		this.add_child(clearer);
+		this.add_child(ControlOption, {}, "Option 1");
+		this.add_child(ControlOption, {}, "Option 2");
+		this.add_child(ControlOption, {}, "Option 3");
+		const clearer = this.add_child(Component, {className: "clearer"});
 	}
 }
 
-class CompendiumEditor extends CompendiumComponent {
-	constructor() {
-		super();
+class Editor extends Component {
+	constructor(props) {
+		super(props);
 		this.add_class("mkdn_editor");
-		this.add_child(new CompendiumControlBar());
+		this.add_child(ControlBar);
 		//this.add_child(new CompendiumTextArea());
 		/*this.children = [];
 		console.log("Making");
@@ -493,7 +516,7 @@ class MarkdownParser {
 export function init() {
 	if ($("#page_form_text")[0]) {
 		ReactDOM.render(
-			e(CompendiumEditor),
+			e(Editor, {key: 0}),
 			$("#page_form_text")[0]
 		);
 	}
