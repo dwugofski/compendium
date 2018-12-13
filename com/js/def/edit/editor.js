@@ -357,7 +357,11 @@ class MarkOption extends ControlOption {
 		if (props.mark === undefined) props.mark = "";
 		super(props);
 		this.add_class("mark");
-		this.bind_click(this.toggle_active.bind(this));
+		this.bind_click(((event) => {
+			console.log(event);
+			event.preventDefault();
+			this.toggle_active();
+		}).bind(this));
 		global_bridge.track_mark(this.props.mark);
 		this.bind_make_active(() => {
 			const mark = this.props.mark;
@@ -381,6 +385,7 @@ class ControlBar extends Component {
 		this.add_child(MarkOption, {className: "italic", mark: "italic"}, "I");
 		this.add_child(MarkOption, {className: "underlined", mark: "underlined"}, "U");
 		const clearer = this.add_child(Component, {className: "clearer"});
+		this.bind_click(event => event.preventDefault());
 	}
 }
 
@@ -389,7 +394,7 @@ class Editor extends Component {
 		super(props);
 		this.add_class("mkdn_editor");
 		this.add_child(ControlBar);
-		//this.add_child(new CompendiumTextArea());
+		this.add_child(CompendiumTextArea);
 		/*this.children = [];
 		console.log("Making");
 		this.children.push(e(CompendiumControlBar, {key: 1}));
@@ -402,6 +407,18 @@ class CompendiumTextArea extends React.Component {
 		super();
 		this.state = {value: initialValue};
 		this.has_text = false;
+		this._ready = false;
+		this.editor == undefined;
+
+		global_bridge.bind_mark_change( ((type) => {
+			if (this.editor === undefined) return;
+			if (global_bridge[type] && !this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
+			else if (!global_bridge[type] && this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
+		}).bind(this));
+	}
+
+	ref(editor) {
+		this.editor = editor;
 	}
 
 	render() {
@@ -413,6 +430,7 @@ class CompendiumTextArea extends React.Component {
 				onKeyDown: this.onKeyDown.bind(this),
 				renderMark: this.renderMark.bind(this),
 				renderNode: this.renderNode.bind(this),
+				ref: this.ref.bind(this),
 				className: (this.has_text) ? "comp_editor" : "comp_editor empty"
 			});
 	}
