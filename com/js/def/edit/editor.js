@@ -11,6 +11,10 @@ const initialValue = Slate.Value.fromJSON({
 						object: 'text',
 						leaves: [{text: PLACEHOLDER_TEXT}]
 				}]
+			},{
+				object: 'block',
+				type: 'paragraph',
+				nodes: [{object: 'text', leaves: [{text: ""}]}]
 			}]
 	}
 });
@@ -79,6 +83,7 @@ const Bindable = (Base) => class extends Updatable(Base) {
 		this["bind_"+binding_name] = (new_fn) => { this._bind_fn(new_fn, binding_name); };
 		this["unbind_"+binding_name] = (old_fn) => { this._unbind_fn(old_fn, binding_name); };
 		this["on_"+binding_name] = (...args) => { this._on_event(binding_name, ...args); };
+		this[binding_name] = (...args) => { this._on_event(binding_name, ...args); };
 	}
 
 	_destroy_binding(binding_name) {
@@ -87,6 +92,7 @@ const Bindable = (Base) => class extends Updatable(Base) {
 		this["bind_"+binding_name] = undefined;
 		this["unbind_"+binding_name] = undefined;
 		this["on_"+binding_name] = undefined;
+		this[binding_name] = undefined;
 	}
 
 	_has_binding(binding_name) {
@@ -232,7 +238,7 @@ class EditorBridge extends Classable(Object) {
 		Object.defineProperty(this[base+"s"], [type], {
 			configurable: true,
 			get: () => { return this[type]; },
-			set: (value) => { this[type] = value; }
+			set: (value) => { console.log("Changing "+type); this[type] = value; }
 		});
 
 		this['bind_make_'+type]((() => { this["on_"+base+"_change"](type); }).bind(this));
@@ -255,7 +261,7 @@ class EditorBridge extends Classable(Object) {
 	has_block(type) { return (this.tracking_block(type)) ? this.blocks[type] : false; }
 	get active_blocks() {
 		var block_list = [];
-		const prop_list = Object.getOwnPropertyNames(this.marks);
+		const prop_list = Object.getOwnPropertyNames(this.blocks);
 		for(var i in prop_list) {
 			const block = prop_list[i];
 			if (this.blocks[block]) block_list.push(block);
@@ -264,6 +270,13 @@ class EditorBridge extends Classable(Object) {
 	}
 	get active_block() {
 		return this.active_blocks[0];
+	}
+	set active_block(new_type) {
+		if (!this.tracking_block(new_type)) return;
+		if (this.has_block(new_type)) return;
+
+		this.blocks[this.active_block] = false;
+		this.blocks[new_type] = true;
 	}
 
 	tracking_mark(type) { return this.marks[type] !== undefined; }
@@ -347,12 +360,43 @@ class Component extends Interactable(React.Component) {
 			if (counter == 0) children = [];
 
 			props.key = global_item_count;
+			props.index = global_item_count;
 			if (text) child = e(constructor, props, text);
 			else child = e(constructor, props);
 			children.push(child);
 			counter += 1;
 			global_item_count += 1;
 			
+		}
+
+		this.update({children: children, child_counter: counter});
+		return child;
+	}
+
+	remove_child(key) {
+		//global global_item_count;
+		var children = this.state.children.slice();
+		var counter = this.state.child_counter;
+		var index = null;
+		var child = null;
+
+		if (children.length == 0) return;
+		else if (children.length == 1 && typeof children[0] == 'string') {
+			children = [];
+			counter = 0;
+		} else if (key !== undefined) {
+			for (var i in children) {
+				if (children[i].props.key == key) {
+					index = i;
+					break;
+				}
+			}
+
+			if (index) {
+				child = children[i];
+				children.splice(index, 1);
+				counter = counter - 1;
+			}
 		}
 
 		this.update({children: children, child_counter: counter});
@@ -375,16 +419,20 @@ class Component extends Interactable(React.Component) {
 
 	render() {
 		if (!this._ready) this._ready = true;
-		return e(this.render_src, {...this.props, ...this.attrs, className: this.state.class}, this.state.children);
+		return e(this.render_src, {...this.attrs, className: this.state.class}, this.state.children);
 	}
 }
 
 class ControlOption extends Component {
 	constructor(props) {
 		super(props);
-		this.add_class("option fl");
+		//this.add_class("option fl");
+		this.add_class("option");
 		this.add_class_toggle("active");
 		//this.activated = false;
+		this._create_binding("mouse_down");
+		this.bind_mouse_down((event) => { event.preventDefault(); });
+		this.attrs.onMouseDown = this.on_mouse_down.bind(this);
 	}
 }
 
@@ -393,7 +441,6 @@ class MarkOption extends ControlOption {
 		if (props === undefined) props = {};
 		if (props.mark === undefined) props.mark = "";
 		super(props);
-		this.attrs.onMouseDown = (event) => { event.preventDefault(); };
 		this.add_class("mark");
 		this.bind_click(((event) => {
 			event.preventDefault();
@@ -413,13 +460,152 @@ class MarkOption extends ControlOption {
 	}
 }
 
+class DropDownOptionDisplay extends Component {
+	constructor(props) {
+		super(props);
+		this.add_class("dropdown-toggle");
+		this.add_class("dropdown_display");
+		if (this.attrs === undefined) this.attrs = {};
+		this.attrs["data-toggle"] = "dropdown";
+		this.bind_click(this.parent.expand.bind(this.parent));
+		this.parent.bind_set_selection( ((name, val) => this.value = val).bind(this) );
+
+		if (this.props.initial) this.parent.selection = {name: this.props.initial, value: this.parent.props.options[this.props.initial]};
+		else this.value = this.props.blank;
+
+		this._create_binding("mouse_down");
+		this.bind_mouse_down((event) => { event.preventDefault(); });
+		this.attrs.onMouseDown = this.on_mouse_down.bind(this);
+	}
+
+	get parent() { return this.props.parent; }
+	get render_src() { return "span"; }
+
+	get value() { return this.state.children[0].replace(" \u25BC", ""); }
+	set value(val) {
+		if (typeof val == 'string') this.update({children: [val + " \u25BC"]});
+		else this.update({children: [this.props.blank + " \u25BC"]});
+	}
+
+}
+
+class DropDownOptionItem extends Component {
+	constructor(props) {
+		super(props);
+		this.add_class("dd_opt_"+this.props.name);
+		this.bind_click( (event => this.parent.selection = {name: this.props.name, value: this.props.text}).bind(this) );
+
+		this._create_binding("mouse_down");
+		this.bind_mouse_down((event) => { event.preventDefault(); });
+		this.attrs.onMouseDown = this.on_mouse_down.bind(this);
+	}
+
+	get parent() { return this.props.parent; }
+	get render_src() { return "li"; }
+}
+
+class DropDownOptionList extends Component {
+	constructor(props) {
+		if (props === undefined) props = {};
+		const options = (typeof props.options != 'object') ? {} : props.options;
+		super(props);
+		this.add_class("dropdown-menu");
+		this._options = {};
+
+		for (var key in options)
+			this.add_option(key, options[key]);
+	}
+
+	add_option(name, option) {
+		if (Object.getOwnPropertyNames(this._options).includes(name)) return;
+
+		const new_option = this.add_child(DropDownOptionItem, {parent: this.parent, name: name, text: option}, option);
+		Object.defineProperty(this._options, name, {
+			configurable: true,
+			value: {
+				key: new_option.props.index,
+				text: option
+			}
+		});
+	}
+
+	remove_option(name) {
+		if (!Object.getOwnPropertyNames(this._options).includes(name)) return;
+
+		this.remove_child(this._options[name].key);
+		delete this._options[name];
+	}
+
+	get parent() { return this.props.parent; }
+	get render_src() { return "ul"; }
+}
+
+class DropDownOption extends ControlOption {
+	constructor(props) {
+		if (props === undefined) props = {};
+		super(props);
+		this.add_class("dropdown");
+		this._create_binding("set_selection");
+		this._create_binding("expand");
+
+		this.add_child(DropDownOptionList, {parent: this, options: this.props.options});
+		this.add_child(DropDownOptionDisplay, {parent: this, initial: this.props.initial, blank: this.props.blank}, this.props.blank + " \u25BC");
+
+		this._create_binding("mouse_down");
+		this.bind_mouse_down((event) => { event.preventDefault(); });
+		this.attrs.onMouseDown = this.on_mouse_down.bind(this);
+	}
+
+	get selection() { return this.display.value; }
+	set selection({name, value}) { 
+		if (this.display != undefined && this.selection == value) return;
+
+		this.set_selection(name, value);
+	}
+}
+
+class BlockTypeOption extends DropDownOption {
+	constructor(props) {
+		super(props);
+
+		for (var block in this.props.options)
+			global_bridge.track_block(block);
+
+		global_bridge.bind_block_change(((type) => {
+			if (this.props.options[type] !== undefined) this.selection = {name: type, value: this.props.options[type]};
+			else console.log("Do not have type "+type);
+		}).bind(this));
+
+		//this.selection = {name: "paragraph", value: this.props.options.paragraph};
+		global_bridge["paragraph"] = true;
+	}
+}
+
 class ControlBar extends Component {
 	constructor(props) {
 		super(props);
 		this.add_class("control_bar");
-		this.add_child(ControlOption, {}, "Option 1");
+		this.add_child(BlockTypeOption, {
+			options: {
+				paragraph: "Paragraph",
+				h1: "Heading 1",
+				h2: "Heading 2",
+				h3: "Heading 3",
+				h4: "Heading 4",
+				h5: "Heading 5",
+				h6: "Heading 6",
+				oli: "Numbered List",
+				uli: "Bullet List"
+			},
+			fns: {
+				set_selection: [(name, value) => { global_bridge.active_block = name; }]
+			}, 
+			initial: 'paragraph',
+			blank: "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0"
+		});
 		this.add_child(ControlOption, {}, "Option 2");
 		this.add_child(ControlOption, {}, "Option 3");
+		this.add_child(ControlOption, {className: "bar"});
 		this.add_child(MarkOption, {className: "bold", mark: "bold"}, "B");
 		this.add_child(MarkOption, {className: "italic", mark: "italic"}, "I");
 		this.add_child(MarkOption, {className: "underlined", mark: "underlined"}, "U");
@@ -454,6 +640,10 @@ class CompendiumTextArea extends React.Component {
 			if (global_bridge[type] && !this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
 			else if (!global_bridge[type] && this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
 		}).bind(this));
+
+		global_bridge.bind_block_change( ((type) => {
+			if (this.editor.value.startBlock !== null && this.editor.value.startBlock.type !== 'placeholder') this.set_type(this.editor, type);
+		}).bind(this));
 	}
 
 	ref(editor) {
@@ -477,6 +667,10 @@ class CompendiumTextArea extends React.Component {
 	onChange({value}) {
 		const {text, nodes} = value.document;
 		this.has_text = ((text != PLACEHOLDER_TEXT || (nodes.size >= 2 && nodes.get(1).type != "paragraph")) || nodes.size > 2) ;
+
+		if (value.startBlock !== null) {
+			if (global_bridge.active_block != value.startBlock.type) global_bridge.active_block = value.startBlock.type;
+		}
 
 		const global_marks = global_bridge.active_marks;
 		for (var i in global_marks) {
@@ -588,6 +782,23 @@ class CompendiumTextArea extends React.Component {
 		}
 	}
 
+	set_type(editor, type) {
+		console.log("Setting block type to "+type);
+		editor.unwrapBlock("ol");
+		editor.unwrapBlock("ul");
+		editor.setBlocks(type);
+		switch (type) {
+			case 'oli':
+				editor.wrapBlock('ol');
+				break;
+			case 'uli':
+				editor.wrapBlock('ul');
+				break;
+			default:
+				break;
+		}
+	}
+
 	onSpace(event, editor, next) {
 		const { value } = editor;
 		const { selection } = value;
@@ -602,7 +813,9 @@ class CompendiumTextArea extends React.Component {
 		if (!type) return options ? options : next();
 
 		event.preventDefault();
+		this.set_type(editor, type);
 
+		/*
 		editor.setBlocks(type);
 		console.log(type);
 		// Wrap list if necessary
@@ -615,7 +828,7 @@ class CompendiumTextArea extends React.Component {
 				break;
 			default:
 				break;
-		}
+		}*/
 		editor.moveFocusToStartOfNode(startBlock).delete()
 	}
 
@@ -629,8 +842,8 @@ class CompendiumTextArea extends React.Component {
 		if (startBlock.type == 'paragraph') return next();
 
 		event.preventDefault();
-		editor.setBlocks('paragraph');
-
+		this.set_type(editor, 'paragraph');
+		/*
 		// Unwrap list if necessary
 		switch (startBlock.type) {
 			case 'oli':
@@ -641,7 +854,7 @@ class CompendiumTextArea extends React.Component {
 				break;
 			default:
 				break;
-		}
+		}*/
 	}
 
 	onDelete(event, editor, next) {
@@ -655,6 +868,8 @@ class CompendiumTextArea extends React.Component {
 
 		if (text == "" && type != "paragraph") {
 			event.preventDefault();
+			this.set_type(editor, 'paragraph');
+			/*
 			editor.setBlocks('paragraph');
 
 			switch (type) {
@@ -666,7 +881,7 @@ class CompendiumTextArea extends React.Component {
 					break;
 				default:
 					break;
-			}
+			})*/
 		} else return next();
 	}
 

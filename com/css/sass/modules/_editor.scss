@@ -10,6 +10,7 @@ body .mkdn_editor {
 		margin: 1em 0;
 		padding: 0.2em 0.2em;
 		width: 100%;
+		display: flex;
 
 		.option {
 			border: 0.1em solid transparent;
@@ -17,8 +18,8 @@ body .mkdn_editor {
 			box-sizing: border-box;
 			cursor: pointer;
 			display: block;
-			padding: 0.5em;
-			margin: 0 0.2em;
+			padding: 0.5em 0.5em;
+			margin: 0 0.1em;
 		}
 		.option:hover {
 			border-color: var(--accent);
@@ -30,6 +31,12 @@ body .mkdn_editor {
 		}
 		.option.active:hover {
 			border-color: var(--accent);
+		}
+
+		.option.bar {
+			padding: 0;
+			border-right: 0.1em solid var(--accent);
+			margin: 0.4em 0.1em;
 		}
 
 		.option.mark {
@@ -47,6 +54,10 @@ body .mkdn_editor {
 		}
 		.option.underlined {
 			text-decoration: underline;
+		}
+
+		.option.dropdown {
+			border-color: var(--accent-light);
 		}
 	}
 

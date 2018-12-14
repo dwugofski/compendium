@@ -542,15 +542,16 @@ body .mkdn_editor .control_bar {
   color: var(--accent);
   margin: 1em 0;
   padding: 0.2em 0.2em;
-  width: 100%; }
+  width: 100%;
+  display: flex; }
   body .mkdn_editor .control_bar .option {
     border: 0.1em solid transparent;
     border-radius: 0.2em;
     box-sizing: border-box;
     cursor: pointer;
     display: block;
-    padding: 0.5em;
-    margin: 0 0.2em; }
+    padding: 0.5em 0.5em;
+    margin: 0 0.1em; }
   body .mkdn_editor .control_bar .option:hover {
     border-color: var(--accent); }
   body .mkdn_editor .control_bar .option.active {
@@ -558,6 +559,10 @@ body .mkdn_editor .control_bar {
     box-shadow: 0.1em 0.1em 0.7em var(--accent-light) inset; }
   body .mkdn_editor .control_bar .option.active:hover {
     border-color: var(--accent); }
+  body .mkdn_editor .control_bar .option.bar {
+    padding: 0;
+    border-right: 0.1em solid var(--accent);
+    margin: 0.4em 0.1em; }
   body .mkdn_editor .control_bar .option.mark {
     border-width: 0.067em;
     font-size: 150%;
@@ -569,6 +574,8 @@ body .mkdn_editor .control_bar {
     padding-right: 0.7em; }
   body .mkdn_editor .control_bar .option.underlined {
     text-decoration: underline; }
+  body .mkdn_editor .control_bar .option.dropdown {
+    border-color: var(--accent-light); }
 body .mkdn_editor .comp_editor {
   border-color: var(--bg-dark);
   background-color: transparent;
