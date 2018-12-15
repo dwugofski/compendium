@@ -11,17 +11,7 @@ body #navbar {
 	width: 100%;
 	z-index: 4;
 
-	.navopt {
-		color: var(--fg-light);
-		cursor: pointer;
-		display: inline-block;
-		height: 100%;
-		overflow-y: visible;
-		padding: 0.7em;
-		vertical-align: middle;
-
-		@include transition(background-color, 0.4s);
-
+	.dropdown {
 		.dropdown-menu {
 			background-color: var(--bg-light);
 			border: 2px solid var(--accent-dark);
@@ -32,6 +22,7 @@ body #navbar {
 			padding: 0.2em 0;
 
 			li {
+				cursor: pointer;
 				color: var(--accent);
 				padding: 0.2em 0.7em;
 
@@ -51,6 +42,7 @@ body #navbar {
 				}
 			}
 			li.spacer {
+				cursor: default;
 				border-bottom: 0.1em solid var(--bg-dark);
 				height: 0;
 				margin: 1px 0;
@@ -61,7 +53,19 @@ body #navbar {
 			}
 		}
 	}
-	.navopt:hover, .navopt.open {
+
+	.navopt {
+		color: var(--fg-light);
+		cursor: pointer;
+		display: inline-block;
+		height: 100%;
+		overflow-y: visible;
+		padding: 0.7em;
+		vertical-align: middle;
+
+		@include transition(background-color, 0.4s);
+	}
+	.navopt:hover, .navopt.open, .dropdown:hover .navopt, .dropdown.open .navopt {
 		background-color: var(--accent-dark);
 	}
 
