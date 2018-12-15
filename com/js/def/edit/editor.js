@@ -226,8 +226,8 @@ class EditorBridge extends Classable(Object) {
 		this.marks = {};
 		this.blocks = {};
 
-		this.bind_mark_change((type) => { console.log("Mark " + type + " is " + this[type]); });
-		this.bind_block_change((type) => { console.log("Block " + type + " is " + this[type]); });
+		//this.bind_mark_change((type) => { console.log("Mark " + type + " is " + this[type]); });
+		//this.bind_block_change((type) => { console.log("Block " + type + " is " + this[type]); });
 	}
 
 	_track_generic(type, base) {
@@ -238,7 +238,7 @@ class EditorBridge extends Classable(Object) {
 		Object.defineProperty(this[base+"s"], [type], {
 			configurable: true,
 			get: () => { return this[type]; },
-			set: (value) => { console.log("Changing "+type); this[type] = value; }
+			set: (value) => { this[type] = value; }
 		});
 
 		this['bind_make_'+type]((() => { this["on_"+base+"_change"](type); }).bind(this));
@@ -469,6 +469,7 @@ class DropDownOptionDisplay extends Component {
 		this.attrs["data-toggle"] = "dropdown";
 		this.bind_click(this.parent.expand.bind(this.parent));
 		this.parent.bind_set_selection( ((name, val) => this.value = val).bind(this) );
+		this.parent.display = this;
 
 		if (this.props.initial) this.parent.selection = {name: this.props.initial, value: this.parent.props.options[this.props.initial]};
 		else this.value = this.props.blank;
@@ -557,8 +558,8 @@ class DropDownOption extends ControlOption {
 	}
 
 	get selection() { return this.display.value; }
-	set selection({name, value}) { 
-		if (this.display != undefined && this.selection == value) return;
+	set selection({name, value}) {
+		if (this.display === undefined || this.selection == value) return;
 
 		this.set_selection(name, value);
 	}
@@ -603,12 +604,10 @@ class ControlBar extends Component {
 			initial: 'paragraph',
 			blank: "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0"
 		});
-		this.add_child(ControlOption, {}, "Option 2");
-		this.add_child(ControlOption, {}, "Option 3");
-		this.add_child(ControlOption, {className: "bar"});
 		this.add_child(MarkOption, {className: "bold", mark: "bold"}, "B");
 		this.add_child(MarkOption, {className: "italic", mark: "italic"}, "I");
 		this.add_child(MarkOption, {className: "underlined", mark: "underlined"}, "U");
+		this.add_child(ControlOption, {className: "bar"});
 		const clearer = this.add_child(Component, {className: "clearer"});
 		this.bind_click(event => event.preventDefault());
 	}
@@ -620,10 +619,6 @@ class Editor extends Component {
 		this.add_class("mkdn_editor");
 		this.add_child(ControlBar);
 		this.add_child(CompendiumTextArea);
-		/*this.children = [];
-		console.log("Making");
-		this.children.push(e(CompendiumControlBar, {key: 1}));
-		this.children.push(e(CompendiumTextArea, {key: 2}));*/
 	}
 }
 
@@ -675,9 +670,7 @@ class CompendiumTextArea extends React.Component {
 		const global_marks = global_bridge.active_marks;
 		for (var i in global_marks) {
 			const type = global_marks[i];
-			console.log("Checking "+type);
 			if (!value.activeMarks.some(mark => mark.type == type) && global_bridge[type]) {
-				console.log("setting value");
 				global_bridge[type] = false;
 			}
 		}
@@ -685,7 +678,6 @@ class CompendiumTextArea extends React.Component {
 		const my_marks = value.activeMarks.toArray();
 		for (var i in my_marks) {
 			const type = my_marks[i].type;
-			console.log(type);
 			if (!global_bridge[type] && value.activeMarks.some(mark => mark.type == type)) global_bridge[type] = true;
 		}
 
@@ -709,11 +701,6 @@ class CompendiumTextArea extends React.Component {
 				return;
 			}
 		}
-		/*if (!this.has_text && editor.value.startBlock.type == "placeholder") {
-			editor.moveFocusToEndOfDocument();
-			console.log(editor.value.document.nodes.size);
-			if (editor.value.document.nodes.size < 2) editor.splitBlock().setBlocks('paragraph');
-		}*/
 
 		switch(event.key) {
 			case 'Enter':
@@ -745,7 +732,6 @@ class CompendiumTextArea extends React.Component {
 					}
 					event.preventDefault();
 					editor.toggleMark(mark);
-					//console.log(editor);
 				}
 				return next();
 		}
@@ -783,7 +769,6 @@ class CompendiumTextArea extends React.Component {
 	}
 
 	set_type(editor, type) {
-		console.log("Setting block type to "+type);
 		editor.unwrapBlock("ol");
 		editor.unwrapBlock("ul");
 		editor.setBlocks(type);
@@ -815,20 +800,6 @@ class CompendiumTextArea extends React.Component {
 		event.preventDefault();
 		this.set_type(editor, type);
 
-		/*
-		editor.setBlocks(type);
-		console.log(type);
-		// Wrap list if necessary
-		switch (type) {
-			case 'oli':
-				editor.wrapBlock('ol');
-				break;
-			case 'uli':
-				editor.wrapBlock('ul');
-				break;
-			default:
-				break;
-		}*/
 		editor.moveFocusToStartOfNode(startBlock).delete()
 	}
 
@@ -843,18 +814,6 @@ class CompendiumTextArea extends React.Component {
 
 		event.preventDefault();
 		this.set_type(editor, 'paragraph');
-		/*
-		// Unwrap list if necessary
-		switch (startBlock.type) {
-			case 'oli':
-				editor.unwrapBlock('ol');
-				break;
-			case 'uli':
-				editor.unwrapBlock('ul');
-				break;
-			default:
-				break;
-		}*/
 	}
 
 	onDelete(event, editor, next) {
@@ -869,19 +828,6 @@ class CompendiumTextArea extends React.Component {
 		if (text == "" && type != "paragraph") {
 			event.preventDefault();
 			this.set_type(editor, 'paragraph');
-			/*
-			editor.setBlocks('paragraph');
-
-			switch (type) {
-				case 'oli':
-					editor.unwrapBlock('ol');
-					break;
-				case 'uli':
-					editor.unwrapBlock('ul');
-					break;
-				default:
-					break;
-			})*/
 		} else return next();
 	}
 

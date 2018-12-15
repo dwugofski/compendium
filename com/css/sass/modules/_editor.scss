@@ -58,6 +58,63 @@ body .mkdn_editor {
 
 		.option.dropdown {
 			border-color: var(--accent-light);
+
+			ul {
+				background-color: var(--bg);
+				min-width: 0;
+				margin-top: 0;
+				width: auto;
+
+				li {
+					color: var(--fg);
+					min-width: 0;
+					padding: 0.2em 0.5em;
+					white-space: nowrap;
+					width: auto;
+				}
+				li:hover {
+					background-color: var(--bg-dark);
+				}
+				li.dd_opt_h1 {
+					color: var(--accent);
+					font-family: var(--title-font);
+					font-size: 170%;
+					font-variant: small-caps;
+					font-weight: bold;
+					text-decoration: underline;
+				}
+				li.dd_opt_h2 {
+					color: var(--accent);
+					font-family: var(--serif-font);
+					font-size: 140%;
+					font-weight: bold;
+					text-decoration: underline;
+				}
+				li.dd_opt_h3 {
+					color: var(--accent);
+					font-family: var(--serif-font);
+					font-size: 120%;
+					font-weight: bold;
+				}
+				li.dd_opt_h4 {
+					font-family: var(--serif-font);
+					font-size: 110%;
+					font-weight: bold;
+				}
+				li.dd_opt_h5 {
+					font-family: var(--serif-font);
+					font-size: 100%;
+					font-weight: bold;
+				}
+				li.dd_opt_h6 {
+					font-family: var(--sans-font);
+					font-size: 100%;
+					font-weight: bold;
+				}
+			}
+		}
+		.option.dropdown:hover {
+			border-color: var(--accent);
 		}
 	}
 
