@@ -1,7 +1,7 @@
 <?php
 
-include_once(dirname(__DIR__)."../util/mysql.php");
-include_once(dirname(__DIR__)."../user/user.php");
+include_once(__DIR__."/../util/mysql.php");
+include_once(__DIR__."/../user/user.php");
 
 function display_permissions_usage(){
 	echo("\nUsage:\n");

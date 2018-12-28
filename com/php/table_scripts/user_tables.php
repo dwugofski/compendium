@@ -1,6 +1,6 @@
 <?php
 
-include_once(dirname(__DIR__)."../util/mysql.php");
+include_once(__DIR__."/../util/mysql.php");
 
 function display_user_usage(){
 	echo("\nUsage:\n");
