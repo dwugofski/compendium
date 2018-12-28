@@ -19,7 +19,7 @@ function comment_tables($overwrite, $delete) {
 			if ($delete) return;
 		}
 
-		echo("Creating pages\n");
+		echo("Creating comments\n");
 
 		$sql = "
 		CREATE TABLE comments (
@@ -33,7 +33,6 @@ function comment_tables($overwrite, $delete) {
 		deleted BOOLEAN DEFAULT FALSE, 
 		parent_id INT(10) UNSIGNED DEFAULT NULL, 
 		PRIMARY KEY (id), 
-		INDEX PAGE (title), 
 		UNIQUE INDEX SEL (selector), 
 		FOREIGN KEY (author_id) REFERENCES users(id) 
 		ON DELETE SET NULL ON UPDATE CASCADE, 

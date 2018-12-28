@@ -45,13 +45,13 @@ function user_tables($overwrite, $delete) {
 		$sql = "
 		CREATE TABLE followings (
 		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		followed INT(10) NOT NULL, 
-		follower INT(10) NOT NULL,
+		followed INT(10) UNSIGNED NOT NULL, 
+		follower INT(10) UNSIGNED NOT NULL, 
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		PRIMARY KEY (id), 
 		FOREIGN KEY (followed) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (follower) REFERENCES pages(id) 
+		FOREIGN KEY (follower) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
@@ -59,13 +59,13 @@ function user_tables($overwrite, $delete) {
 		$sql = "
 		CREATE TABLE user_blocks (
 		id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, 
-		blocked INT(10) NOT NULL, 
-		blocker INT(10) NOT NULL,
+		blocked INT(10) UNSIGNED NOT NULL, 
+		blocker INT(10) UNSIGNED NOT NULL,
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		PRIMARY KEY (id), 
 		FOREIGN KEY (blocked) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE, 
-		FOREIGN KEY (blocker) REFERENCES pages(id) 
+		FOREIGN KEY (blocker) REFERENCES users(id) 
 		ON DELETE CASCADE ON UPDATE CASCADE)
 		ENGINE = INNODB";
 		MYSQL::run_query($sql);
