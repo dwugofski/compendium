@@ -47,6 +47,8 @@ export function type_to_tag(type) {
 			return "li";
 		case "paragraph":
 			return "p";
+		case "placeholder":
+			return "placeholder";
 		case "bold":
 			return "strong";
 		case "italic":
@@ -106,7 +108,8 @@ export const RULES = [
 
 		serialize(obj, children) {
 			var tag = type_to_tag(obj.type);
-			if (tag) return e(tag, {className: obj.data.get("className")}, children);
+			if (tag && tag != "placeholder") return e(tag, {className: obj.data.get("className")}, children);
+			if (tag == "placeholder") return null;
 		},
 	}
 ];
@@ -116,7 +119,7 @@ export function deseralize_html(html_string) {
 	return html.deserialize(html_string);
 }
 
-export function seralize_value(value) {
+export function serialize_value(value) {
 	const html = new SlateHtmlSerializer.default({rules: RULES});
 	return html.serialize(value);
 }

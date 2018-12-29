@@ -1,11 +1,23 @@
 
+import * as Editor from "./editor.js";
+
+const e = React.createElement;
+
+const EDITOR_CONTENT_LOC = "EditorContent";
+
 export function init(){
 	$("#page_form_submit").click(submit_form);
 
 	$("#page_form_title").on("input", verify_form);
 	$("#page_form_text").on("input", verify_form);
-	
-	$("#page_form_switch_sub span").click(toggle_preview);
+	localStorage.setItem(EDITOR_CONTENT_LOC, "")
+
+	if ($("#page_form_text")[0]) {
+		ReactDOM.render(
+			e(Editor.Editor, {key: 0, storage: EDITOR_CONTENT_LOC}),
+			$("#page_form_text")[0]
+		);
+	}
 
 	disable_submit();
 }
@@ -69,7 +81,7 @@ function verify_form() {
 	var valid = true;
 	valid &= verify_field($("#page_form_user"), undefined, verify_usersel);
 	valid &= verify_field($("#page_form_title"), undefined, verify_title);
-	valid &= verify_field($("#page_form_text"), undefined, verify_text);
+	//valid &= verify_field($("#page_form_text"), undefined, verify_text);
 
 	if (valid) enable_submit();
 	else disable_submit();
@@ -84,15 +96,17 @@ function submit_form(e){
 			o[i.name] = i.value;
 			return o;
 		}, {});
-		console.log(create_data.user);
-		var php_data = {usersel: create_data.user, title: create_data.title, description: create_data.subtitle, text: create_data.text, parent: create_data.parent};
+		create_data.text = localStorage.getItem(EDITOR_CONTENT_LOC);
+		//console.log(create_data);
+		//console.log(create_data.user);
+		/*var php_data = {usersel: create_data.user, title: create_data.title, description: create_data.subtitle, text: create_data.text, parent: create_data.parent};
 		$.ajax({
 			url : "com/php/page/create.php",
 			type : "POST",
 			data : php_data,
 			success : handle_php_created,
 			error : handle_php_create_error
-		});
+		});*/
 	}
 }
 
@@ -104,35 +118,6 @@ function handle_php_created(data, status, jqxhr) {
 function handle_php_create_error(jqxhr, status, error) {
 	show_error(JSON.parse(jqxhr.responseText).error);
 	verify_form();
-}
-
-function toggle_preview() {
-	if (preview_mode == "edit") {
-		preview_mode = "preview";
-		hide_edit(show_preview);
-	} else {
-		preview_mode = "edit";
-		hide_preview(show_edit);
-	}
-}
-
-function hide_edit(callback) {
-	$("#page_form_text").hide(100, callback);
-}
-
-function hide_preview(callback) {
-	$("#page_form_preview").hide(100, callback);
-}
-
-function show_preview(callback) {
-	$("#page_form_preview").html(Markdown.parse($("#page_form_text").val()));
-	$("#page_form_switch_sub span").text("Edit");
-	$("#page_form_preview").show(100, callback);
-}
-
-function show_edit(callback) {
-	$("#page_form_switch_sub span").text("Preview");
-	$("#page_form_text").show(100, callback);
 }
 
 $(document).ready(function(){

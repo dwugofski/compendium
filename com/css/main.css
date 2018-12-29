@@ -562,9 +562,12 @@ body .mkdn_editor .control_bar {
   body .mkdn_editor .control_bar .option.active:hover {
     border-color: var(--accent); }
   body .mkdn_editor .control_bar .option.bar {
+    cursor: default;
     padding: 0;
     border-right: 0.1em solid var(--accent);
     margin: 0.4em 0.1em; }
+  body .mkdn_editor .control_bar .option.bar:hover {
+    border-color: transparent var(--accent) transparent transparent; }
   body .mkdn_editor .control_bar .option.mark {
     border-width: 0.067em;
     font-size: 150%;

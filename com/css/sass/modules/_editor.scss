@@ -34,9 +34,13 @@ body .mkdn_editor {
 		}
 
 		.option.bar {
+			cursor: default;
 			padding: 0;
 			border-right: 0.1em solid var(--accent);
 			margin: 0.4em 0.1em;
+		}
+		.option.bar:hover {
+			border-color: transparent var(--accent) transparent transparent;
 		}
 
 		.option.mark {

@@ -616,22 +616,23 @@ class ControlBar extends Component {
 	}
 }
 
-class Editor extends Component {
+export class Editor extends Component {
 	constructor(props) {
 		super(props);
 		this.add_class("mkdn_editor");
 		this.add_child(ControlBar);
-		this.add_child(CompendiumTextArea);
+		this.add_child(CompendiumTextArea, {storage: props.storage});
 	}
 }
 
 class CompendiumTextArea extends React.Component {
-	constructor() {
+	constructor(props) {
 		super();
 		this.state = {value: initialValue};
 		this.has_text = false;
 		this._ready = false;
 		this.editor == undefined;
+		this.storage = (props.storage && typeof props.storage == 'string') ? props.storage : null;
 
 		global_bridge.bind_mark_change( ((type) => {
 			if (this.editor === undefined) return;
@@ -664,7 +665,7 @@ class CompendiumTextArea extends React.Component {
 
 	onChange({value}) {
 		const {text, nodes} = value.document;
-		this.has_text = ((text != PLACEHOLDER_TEXT || (nodes.size >= 2 && nodes.get(1).type != "paragraph")) || nodes.size > 2) ;
+		this.has_text = ((text != PLACEHOLDER_TEXT || (nodes.size >= 2 && nodes.get(1).type != "paragraph")) || nodes.size > 2);
 
 		if (value.startBlock !== null) {
 			if (global_bridge.active_block != value.startBlock.type) global_bridge.active_block = value.startBlock.type;
@@ -682,6 +683,12 @@ class CompendiumTextArea extends React.Component {
 		for (var i in my_marks) {
 			const type = my_marks[i].type;
 			if (!global_bridge[type] && value.activeMarks.some(mark => mark.type == type)) global_bridge[type] = true;
+		}
+
+		if (this.storage) {
+			if (value.document != this.state.value.document) {
+				localStorage.setItem(this.storage, Serialization.serialize_value(value));
+			}
 		}
 
 		this.setState({value});
@@ -890,14 +897,4 @@ class MarkdownParser {
 	}
 }
 
-export function init() {
-	if ($("#page_form_text")[0]) {
-		ReactDOM.render(
-			e(Editor, {key: 0}),
-			$("#page_form_text")[0]
-		);
-	}
-}
 export {Serialization};
-
-$(document).ready(init);
