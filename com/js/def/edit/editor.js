@@ -1,3 +1,6 @@
+
+import * as Serialization from "./editor/serialization.js";
+
 const e = React.createElement;
 
 const PLACEHOLDER_TEXT = 'Edit text here...';
@@ -895,5 +898,6 @@ export function init() {
 		);
 	}
 }
+export {Serialization};
 
 $(document).ready(init);

@@ -26,3 +26,8 @@ TODO
 - Implement View/Edit history
 - Edit Pages
 - Decide whether someone can delete comments of others on pages they can edit
+- Content serialization
+	- Implement serialization to send to php server
+	- Implement deserialization (dynamically? AJAX request?) on client
+	- Store content as binary, not text
+	- Consider compressing data to reduce transfer cost
