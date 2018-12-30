@@ -1,7 +1,7 @@
 <?php
 
 function set_context($dom) {
-	if (!isset($_SESSION['user'])) throw new CompendiumError("Must be logged in.", FALSE, ERRORS::USER_ERROR, 403);
+	if (!isset($_SESSION['user'])) throw new CompendiumError("Must be logged in.", FALSE, ERRORS::USER_ERROR, 401);
 
 	$dom->goto("main");
 	$dom->add_class("no-sidebar");

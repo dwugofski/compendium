@@ -46,7 +46,7 @@ try {
 }
 catch (CompendiumError $e) {
 	ERRORS::json_log($e);
-	http_response_code(403);
+	http_response_code(500);
 }
 
 

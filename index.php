@@ -28,6 +28,7 @@ if (isset($_GET["context"])) {
 			$context = $_GET["context"];
 			break;
 		case "create":
+		case "edit":
 			if ($loggedin) {
 				$context = $_GET["context"];
 				break;

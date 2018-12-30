@@ -74,12 +74,24 @@ function display_page($pagesel, $target_user) {
 		} else throw new CompendiumError("Page not found.", FALSE, ERRORS::USER_ERROR, 404);
 	}
 
-	$Parsedown = new Parsedown();
-	$Parsedown->setBreaksEnabled(true);
-	$dom->goto("content")->append_html($Parsedown->text($target_page->text));
+	if (!isset($target_page)) throw new CompendiumError("Page could not be found.", FALSE, ERRORS::USER_ERROR, 404);
+
+	if ($target_page->locked && !isset($_SESSION['user'])) {
+		throw new CompendiumError("Page cannot be viewed without logging in.", FALSE, ERRORS::USER_ERROR, 401);
+	} elseif (!$target_page->can_see($_SESSION['user'])) throw new CompendiumError("User cannot see page.", FALSE, ERRORS::USER_ERROR, 401);
+
+	//$Parsedown = new Parsedown();
+	//$Parsedown->setBreaksEnabled(true);
+	//$dom->goto("content")->append_html($Parsedown->text($target_page->text));
+	$dom->goto("content")->append_html($target_page->text);
 	$dom->goto("display_h1")->text = htmlentities($target_page->title);
-	$dom->goto("display_h2")->text = htmlentities($target_page->description);
-	return $target_page->selector;
+	if ($target_page->description != "") {
+		$dom->goto("display_h2");
+		$dom->text = htmlentities($target_page->description);
+		$dom->remove_class("nodisp");
+	}
+	else $dom->goto("display_h2")->add_class("nodisp");
+	return $target_page;
 }
 
 function set_context($dom) {
@@ -92,9 +104,10 @@ function set_context($dom) {
 	} else throw new CompendiumError("User not found.", false, ERRORS::USER_ERROR, 404);
 
 	fill_sidebar($page_user);
-	$page_id = display_page($target_page, $page_user);
+	$page = display_page($target_page, $page_user);
 
-	add_navopt_create($dom, $page_id);
+	add_navopt_create($dom, $page->selector);
+	if ($page->can_edit($page_user)) add_navopt_edit($dom, $page->selector);
 }
 
 ?>

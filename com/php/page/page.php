@@ -41,7 +41,7 @@ class Page extends CompAccessor {
 		"id" => 'i',
 		"title" => 's',
 		"description" => 's',
-		"content" => 'b',
+		"content" => 's',
 		"author_id" => 'i',
 		"locked" => 'i',
 		"opened" => 'i',
@@ -145,6 +145,7 @@ class Page extends CompAccessor {
 			case "all_children":
 				return $this->get_children(false);
 			case "author":
+			case "author_id":
 				return $this->_get("author_id");
 			case "blacklist":
 				return $this->get_blacklist();
@@ -193,6 +194,8 @@ class Page extends CompAccessor {
 				return $this->_get("title");
 			case "whitelist":
 				return $this->get_whitelist();
+			case "data":
+				return ["title" => $this->title, "author" => $this->author, "description" => $this->description, "text" => $this->text, "path" => $this->path, "selector" => $this->selector];
 			default:
 				ERRORS::log(ERRORS::PAGE_ERROR, "Page::__get() Attempted to get unknown property '%s' of page", $name);
 		}
@@ -201,8 +204,12 @@ class Page extends CompAccessor {
 	public function __set($name, $value) {
 		switch($name) {
 			case "author":
+			case "author_id":
 				if (is_a($value, 'User')) $value = $value->id;
-				$this->_set($name, $value);
+				$this->_set("author_id", $value);
+				break;
+			case "description":
+				$this->set_description($value);
 				break;
 			case "locked":
 				if ($value) $this->lock();
@@ -526,7 +533,6 @@ class Page extends CompAccessor {
 			$titles = $parent_path['titles'] . "/" . $titles;
 			array_splice($selectors, 0, 0, $parent_path['selectors']);
 		} else {
-			error_log($this->title . " does not have a parent");
 			$author = new User($this->author);
 			$titles = "u/" . $author->username . "/" . $titles;
 		}
@@ -535,17 +541,17 @@ class Page extends CompAccessor {
 	}
 
 	public function set_text($text) {
-		if (Pages::validate_text($text) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_text() Text format invalid for \n%s", $text);
+		if (Page::validate_text($text) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_text() Text format invalid for \n%s", $text);
 		else $this->_set("content", $text);
 	}
 
 	public function set_title($title) {
-		if (Pages::validate_title($title) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_title() Title format invalid for %s", $title);
+		if (Page::validate_title($title) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_title() Title format invalid for %s", $title);
 		else $this->_set("title", $title);
 	}
 
 	public function set_description($desc) {
-		if (Pages::validate_description($desc) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_description() Description format invalid for %s", $desc);
+		if (Page::validate_description($desc) == false) ERRORS::log(ERRORS::PAGE_ERROR, "Page::set_description() Description format invalid for %s", $desc);
 		else $this->_set("description", $desc);
 	}
 

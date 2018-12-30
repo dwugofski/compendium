@@ -30,12 +30,7 @@ export function init() {
 		});
 	});
 
-	setTimeout(function() {
-		window.scrollBy(0, 1);
-		scrollnav();
-		window.scrollBy(0, -1);
-		main_resize();
-	}, 100);
+	main_resize();
 
 	$('.dropdown-toggle').dropdown();
 	$('.dropdown').dropdown();

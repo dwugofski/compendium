@@ -1,5 +1,5 @@
 
-body #text_entry {
+body #text_entry, body #text_editing {
 	#page_form {
 		label {
 			color: black;
@@ -42,27 +42,9 @@ body #text_entry {
 			background-color: var(--bg-light);
 		}
 
-		/*.mkdn_editor {
-			border-color: var(--bg-dark);
-			background-color: transparent;
-			border: none;
-			box-sizing: border-box;
-			font-family: var(--sans-font);
-			font-size: 90%;
-			margin: 1em 1em 0 1em;
-			min-height: 30em;
-			outline: none;
-			overflow-y: hidden;
-			padding: 1em;
-			padding-right: calc(1em + var(--scrollbar-width));
-			resize: none;
-			width: calc(100% - 2em);
+		.mkdn_editor {
+			margin-bottom: 1em;
 		}
-		.mkdn_editor:hover, .mkdn_editor:focus {
-			padding-right: 1em;
-			background-color: var(--bg-light);
-			overflow-y: scroll;
-		}*/
 
 		#page_form_preview {
 			display: none;

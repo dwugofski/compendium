@@ -37,5 +37,11 @@ function add_navopt_create($dom, $page_id=null) {
 	}
 }
 
+function add_navopt_edit($dom, $page_id=null) {
+	if (isset($page_id)) {
+		add_navopt($dom, "navopt_edit", "Edit this page", true, ["page" => $page_id, "class" => "button"]);
+	}
+}
+
 
 ?>

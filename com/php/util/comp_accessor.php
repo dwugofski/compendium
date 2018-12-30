@@ -145,9 +145,9 @@ class CompAccessor {
 		elseif (empty(static::COLUMN_NAMES)) ERRORS::log(ERRORS::PAGE_ERROR, "CompAccessor::_set(table='%s') No columns entered", static::TABLE_NAME);
 		elseif (empty(static::COLUMN_TYPES)) ERRORS::log(ERRORS::PAGE_ERROR, "CompAccessor::_set(table='%s') No types entered", static::TABLE_NAME);
 		elseif (empty(static::PRIMARY_KEY)) ERRORS::log(ERRORS::PAGE_ERROR, "CompAccessor::_set(table='%s') No primary key entered", static::TABLE_NAME);
-		elseif (in_array($colname, self::COLUMN_NAMES)) {
+		elseif (in_array($colname, static::COLUMN_NAMES)) {
 			$rows = MYSQL::run_query(
-				"UPDATE ".static::TABLE_NAME." SET ".$col_name." = ? WHERE ".static::PRIMARY_KEY." = ?",
+				"UPDATE ".static::TABLE_NAME." SET ".$colname." = ? WHERE ".static::PRIMARY_KEY." = ?",
 				static::COLUMN_TYPES[$colname].static::COLUMN_TYPES[static::PRIMARY_KEY],
 				[$val, $this->id]
 			);

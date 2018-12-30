@@ -29,6 +29,8 @@ body {
     font-family: var(--code-font);
     margin-top: 0.5em;
     text-align: center; }
+  body .nodisp {
+    display: none !important; }
 
 body > * {
   flex-shrink: 0; }
@@ -444,97 +446,77 @@ body #main #display #content {
   body #main #display #content h2 + p, body #main #display #content h3 + p, body #main #display #content h4 + p, body #main #display #content h5 + p, body #main #display #content h6 + p {
     margin-top: 0; }
 
-body #text_entry #page_form {
-  /*.mkdn_editor {
-  	border-color: var(--bg-dark);
-  	background-color: transparent;
-  	border: none;
-  	box-sizing: border-box;
-  	font-family: var(--sans-font);
-  	font-size: 90%;
-  	margin: 1em 1em 0 1em;
-  	min-height: 30em;
-  	outline: none;
-  	overflow-y: hidden;
-  	padding: 1em;
-  	padding-right: calc(1em + var(--scrollbar-width));
-  	resize: none;
-  	width: calc(100% - 2em);
-  }
-  .mkdn_editor:hover, .mkdn_editor:focus {
-  	padding-right: 1em;
-  	background-color: var(--bg-light);
-  	overflow-y: scroll;
-  }*/ }
-  body #text_entry #page_form label {
-    color: black;
-    font-size: 120%;
-    font-weight: normal;
-    margin-bottom: 0; }
-  body #text_entry #page_form #page_form_title {
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    color: var(--accent);
-    font-family: var(--title-font);
-    font-size: 250%;
-    font-variant: small-caps;
-    font-weight: bold;
-    margin: 0.1em 0 0.4em 0;
-    outline: none;
-    padding: 0.1em; }
-  body #text_entry #page_form #page_form_title:focus, body #text_entry #page_form #page_form_title:hover {
-    background-color: var(--bg-light); }
-  body #text_entry #page_form #page_form_subtitle {
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    color: var(--accent);
-    font-family: var(--title-font);
-    font-size: 150%;
-    font-variant: small-caps;
-    font-weight: bold;
-    margin: 0.1em 0 0.4em 0;
-    outline: none;
-    padding: 0.1em; }
-  body #text_entry #page_form #page_form_subtitle:focus, body #text_entry #page_form #page_form_subtitle:hover {
-    background-color: var(--bg-light); }
-  body #text_entry #page_form #page_form_preview {
-    display: none;
-    min-height: 30em; }
-  body #text_entry #page_form #page_form_submit {
-    margin: 0 auto;
-    width: 20em; }
-  body #text_entry #page_form #page_form_review_sub {
-    color: var(--accent);
-    font-size: 80%;
-    font-weight: bold;
-    text-align: right; }
-    body #text_entry #page_form #page_form_review_sub span {
-      cursor: pointer; }
-  body #text_entry #page_form #page_form_review_sub span:hover {
-    color: var(--accent-dark);
-    text-decoration: underline; }
-  body #text_entry #page_form #page_form_switch_sub {
-    color: var(--accent);
-    font-size: 80%;
-    font-weight: bold;
-    text-align: left; }
-    body #text_entry #page_form #page_form_switch_sub span {
-      cursor: pointer; }
-  body #text_entry #page_form #page_form_switch_sub span:hover {
-    color: var(--accent-dark);
-    text-decoration: underline; }
-  body #text_entry #page_form #page_form_path {
-    color: var(--accent);
-    cursor: pointer;
-    font-style: italic;
-    font-size: 120%;
-    margin-top: 0 !important;
-    padding-left: 2em;
-    text-indent: -1em; }
-  body #text_entry #page_form #page_form_path:hover {
-    text-decoration: underline; }
+body #text_entry #page_form label, body #text_editing #page_form label {
+  color: black;
+  font-size: 120%;
+  font-weight: normal;
+  margin-bottom: 0; }
+body #text_entry #page_form #page_form_title, body #text_editing #page_form #page_form_title {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--accent);
+  font-family: var(--title-font);
+  font-size: 250%;
+  font-variant: small-caps;
+  font-weight: bold;
+  margin: 0.1em 0 0.4em 0;
+  outline: none;
+  padding: 0.1em; }
+body #text_entry #page_form #page_form_title:focus, body #text_entry #page_form #page_form_title:hover, body #text_editing #page_form #page_form_title:focus, body #text_editing #page_form #page_form_title:hover {
+  background-color: var(--bg-light); }
+body #text_entry #page_form #page_form_subtitle, body #text_editing #page_form #page_form_subtitle {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--accent);
+  font-family: var(--title-font);
+  font-size: 150%;
+  font-variant: small-caps;
+  font-weight: bold;
+  margin: 0.1em 0 0.4em 0;
+  outline: none;
+  padding: 0.1em; }
+body #text_entry #page_form #page_form_subtitle:focus, body #text_entry #page_form #page_form_subtitle:hover, body #text_editing #page_form #page_form_subtitle:focus, body #text_editing #page_form #page_form_subtitle:hover {
+  background-color: var(--bg-light); }
+body #text_entry #page_form .mkdn_editor, body #text_editing #page_form .mkdn_editor {
+  margin-bottom: 1em; }
+body #text_entry #page_form #page_form_preview, body #text_editing #page_form #page_form_preview {
+  display: none;
+  min-height: 30em; }
+body #text_entry #page_form #page_form_submit, body #text_editing #page_form #page_form_submit {
+  margin: 0 auto;
+  width: 20em; }
+body #text_entry #page_form #page_form_review_sub, body #text_editing #page_form #page_form_review_sub {
+  color: var(--accent);
+  font-size: 80%;
+  font-weight: bold;
+  text-align: right; }
+  body #text_entry #page_form #page_form_review_sub span, body #text_editing #page_form #page_form_review_sub span {
+    cursor: pointer; }
+body #text_entry #page_form #page_form_review_sub span:hover, body #text_editing #page_form #page_form_review_sub span:hover {
+  color: var(--accent-dark);
+  text-decoration: underline; }
+body #text_entry #page_form #page_form_switch_sub, body #text_editing #page_form #page_form_switch_sub {
+  color: var(--accent);
+  font-size: 80%;
+  font-weight: bold;
+  text-align: left; }
+  body #text_entry #page_form #page_form_switch_sub span, body #text_editing #page_form #page_form_switch_sub span {
+    cursor: pointer; }
+body #text_entry #page_form #page_form_switch_sub span:hover, body #text_editing #page_form #page_form_switch_sub span:hover {
+  color: var(--accent-dark);
+  text-decoration: underline; }
+body #text_entry #page_form #page_form_path, body #text_editing #page_form #page_form_path {
+  color: var(--accent);
+  cursor: pointer;
+  font-style: italic;
+  font-size: 120%;
+  margin-top: 0 !important;
+  padding-left: 2em;
+  text-indent: -1em; }
+body #text_entry #page_form #page_form_path:hover, body #text_editing #page_form #page_form_path:hover {
+  text-decoration: underline; }
 
 body .mkdn_editor .control_bar {
   border-color: var(--accent);

@@ -31,3 +31,4 @@ TODO
 	- Implement deserialization (dynamically? AJAX request?) on client
 	- Store content as binary, not text
 	- Consider compressing data to reduce transfer cost
+- Consider optimizing object queries by latching values from table (rather than querying every time)

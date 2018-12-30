@@ -5,7 +5,7 @@ const e = React.createElement;
 
 const PLACEHOLDER_TEXT = 'Edit text here...';
 
-const initialValue = Slate.Value.fromJSON({
+const INITIAL_VALUE = Slate.Value.fromJSON({
 	document: {
 		nodes: [{
 				object: 'block',
@@ -621,18 +621,22 @@ export class Editor extends Component {
 		super(props);
 		this.add_class("mkdn_editor");
 		this.add_child(ControlBar);
-		this.add_child(CompendiumTextArea, {storage: props.storage});
+		this.add_child(CompendiumTextArea, {storage: props.storage, initial: props.initial});
 	}
 }
 
 class CompendiumTextArea extends React.Component {
 	constructor(props) {
 		super();
-		this.state = {value: initialValue};
+		//this.state = {value: initialValue};
 		this.has_text = false;
 		this._ready = false;
 		this.editor == undefined;
 		this.storage = (props.storage && typeof props.storage == 'string') ? props.storage : null;
+		console.log(props.initial);
+
+		this.state = {value: (props.initial !== undefined) ? props.initial : INITIAL_VALUE};
+		if (this.storage !== null) localStorage.setItem(this.storage, Serialization.serialize_value(this.state.value));
 
 		global_bridge.bind_mark_change( ((type) => {
 			if (this.editor === undefined) return;
