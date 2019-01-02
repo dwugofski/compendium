@@ -14,6 +14,12 @@ function display_user_record_usage(){
 function user_record_tables($overwrite, $delete) {
 	try{
 		if ($overwrite){
+			echo("Deleting user_saves\n");
+			MYSQL::run_query("DROP TABLE IF EXISTS user_saves CASCADE");
+			echo("Deleting user_edits\n");
+			MYSQL::run_query("DROP TABLE IF EXISTS user_edits CASCADE");
+			echo("Deleting user_views\n");
+			MYSQL::run_query("DROP TABLE IF EXISTS user_views CASCADE");
 			echo("Deleting user_interactions\n");
 			MYSQL::run_query("DROP TABLE IF EXISTS user_interactions CASCADE");
 			if ($delete) return;
