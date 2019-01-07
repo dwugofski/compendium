@@ -64,6 +64,7 @@ body #main #display #content {
 	p {
 		margin-top: 1em;
 		margin-bottom: 0;
+		text-indent: 1em;
 
 		a {
 			color: var(--blue-light);
@@ -87,13 +88,32 @@ body #main #display #content {
 		}
 	}
 
+	blockquote {
+		background-color: var(--accent-light);
+		border: 0.5em solid var(--accent);
+		border-width: 0.2em 0.1em;
+		font-style: italic;
+		margin: 2em 10em;
+		width: calc(100% - 20em);
+
+		footer {
+			color: var(--accent-shade);
+			text-align: right;
+		}
+	}
+
 	hr {
 		background-color: var(--accent);
 		border-style: none;
 		height: 0.2em;
 	}
 
+	h1+p {
+		text-indent: 0;
+	}
+
 	h2+p, h3+p, h4+p, h5+p, h6+p {
-		margin-top: 0;
+		margin-top: 0.5em;
+		text-indent: 0;
 	}
 }

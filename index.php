@@ -47,7 +47,7 @@ try {
 	set_context($dom);
 } catch (CompendiumError $e) {
 	$dom->goto("main")->add_class("no-sidebar");
-	$dom->goto("display_h1")->text = "Error";
+	$dom->goto("display_h1")->text = "Something Went Wrong";
 	$dom->goto("display_h2")->text = "The Compendium has encountered an error";
 
 	$dom->goto("content")->clear();

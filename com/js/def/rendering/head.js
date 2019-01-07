@@ -5,8 +5,8 @@ var main = undefined;
 var sidebar = undefined;
 var contnt = undefined;
 
-const min_content_width = 1000;
-const max_content_width = 1400;
+const min_content_width = 800;
+const max_content_width = 1200;
 const def_content_margin = 75;
 
 export function init() {

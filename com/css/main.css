@@ -426,7 +426,8 @@ body #main #display #content {
     margin: 1em 0 0 0; }
   body #main #display #content p {
     margin-top: 1em;
-    margin-bottom: 0; }
+    margin-bottom: 0;
+    text-indent: 1em; }
     body #main #display #content p a {
       color: var(--blue-light); }
     body #main #display #content p a:visited {
@@ -439,12 +440,25 @@ body #main #display #content {
       font-weight: bold; }
     body #main #display #content p em strong, body #main #display #content p strong em {
       color: var(--accent); }
+  body #main #display #content blockquote {
+    background-color: var(--accent-light);
+    border: 0.5em solid var(--accent);
+    border-width: 0.2em 0.1em;
+    font-style: italic;
+    margin: 2em 10em;
+    width: calc(100% - 20em); }
+    body #main #display #content blockquote footer {
+      color: var(--accent-shade);
+      text-align: right; }
   body #main #display #content hr {
     background-color: var(--accent);
     border-style: none;
     height: 0.2em; }
+  body #main #display #content h1 + p {
+    text-indent: 0; }
   body #main #display #content h2 + p, body #main #display #content h3 + p, body #main #display #content h4 + p, body #main #display #content h5 + p, body #main #display #content h6 + p {
-    margin-top: 0; }
+    margin-top: 0.5em;
+    text-indent: 0; }
 
 body #text_entry #page_form label, body #text_editing #page_form label {
   color: black;

@@ -228,9 +228,6 @@ class EditorBridge extends Classable(Object) {
 		this._create_binding("block_change");
 		this.marks = {};
 		this.blocks = {};
-
-		//this.bind_mark_change((type) => { console.log("Mark " + type + " is " + this[type]); });
-		//this.bind_block_change((type) => { console.log("Block " + type + " is " + this[type]); });
 	}
 
 	_track_generic(type, base) {
@@ -654,7 +651,6 @@ class CompendiumTextArea extends React.Component {
 	}
 
 	render() {
-		//console.log(this.state.value.toJSON());
 		return e(
 			SlateReact.Editor,
 			{	value: this.state.value,
