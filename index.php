@@ -1,6 +1,6 @@
 <?php
 
-include_once(__DIR__."/com/php/def/def.php");
+include_once(__DIR__."/def.php");
 
 $loggedin = false;
 if(!empty($_SESSION['user'])) {
@@ -16,7 +16,7 @@ if(!empty($_SESSION['user'])) {
 	}
 } else $loggedin = false;
 
-$html = file_get_contents(__DIR__."/com/html/index.html");
+$html = file_get_contents(__DIR__."/def_index.html");
 
 $dom = new MyDOM($html);
 
@@ -38,7 +38,7 @@ if (isset($_GET["context"])) {
 	}
 }
 
-include(__DIR__."/com/php/contexts/".$context.".php");
+include(__DIR__."/contexts/".$context."/".$context.".php");
 
 create_navbar($dom);
 create_screens($dom);
@@ -52,11 +52,11 @@ try {
 
 	$dom->goto("content")->clear();
 
-	if (file_exists(__DIR__."/com/html/errors/".$e->html_response_code.".html")) {
-		$dom->append_html(file_get_contents(__DIR__."/com/html/errors/".$e->html_response_code.".html"));
+	if (file_exists(__DIR__."/errors/".$e->html_response_code.".html")) {
+		$dom->append_html(file_get_contents(__DIR__."/errors/".$e->html_response_code.".html"));
 	} else {
 		ERRORS::log(ERRORS::UNKNOWN_ERROR, "Could not service error code ".$e->html_response_code);
-		$dom->append_html(file_get_contents(__DIR__."/com/html/errors/500.html"));
+		$dom->append_html(file_get_contents(__DIR__."/errors/500.html"));
 	}
 }
 
