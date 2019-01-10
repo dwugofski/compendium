@@ -80,10 +80,8 @@ function display_page($pagesel, $target_user) {
 		throw new CompendiumError("Page cannot be viewed without logging in.", FALSE, ERRORS::USER_ERROR, 401);
 	} elseif (!$target_page->can_see($_SESSION['user'])) throw new CompendiumError("User cannot see page.", FALSE, ERRORS::USER_ERROR, 401);
 
-	//$Parsedown = new Parsedown();
-	//$Parsedown->setBreaksEnabled(true);
-	//$dom->goto("content")->append_html($Parsedown->text($target_page->text));
-	$dom->goto("content")->append_html($target_page->text);
+	$dom->goto("content")->append_html(file_get_contents(__DIR__."/view.html"));
+	$dom->goto("page_holder")->append_html($target_page->text);
 	$dom->goto("display_h1")->text = htmlentities($target_page->title);
 	if ($target_page->description != "") {
 		$dom->goto("display_h2");

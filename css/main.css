@@ -532,6 +532,17 @@ body #text_entry #page_form #page_form_path, body #text_editing #page_form #page
 body #text_entry #page_form #page_form_path:hover, body #text_editing #page_form #page_form_path:hover {
   text-decoration: underline; }
 
+body #main #display #content #page_holder {
+  margin-bottom: 2em; }
+
+body #main #display #content #comments_holder {
+  margin-top: 1em; }
+  body #main #display #content #comments_holder .comment {
+    background-color: var(--accent-light);
+    border-left: 0.2em solid var(--accent);
+    margin: 0 1em 1em 4em;
+    padding: 0.4em 0.4em 0.4em 1em; }
+
 body .mkdn_editor .control_bar {
   border-color: var(--accent);
   border-style: solid;
