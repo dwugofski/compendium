@@ -11,7 +11,7 @@ $USER = null;
 $HAS_PAGE = false;
 $PAGE = null;
 
-$DOM = new MyDOM($html);
+$DOM = new MyDOM(file_get_contents(__DIR__."/def_index.html"));
 
 /* --------------------------------------------------
  * --------------------------------------------------
@@ -26,15 +26,94 @@ function set_content($content_html) {
 	$DOM->append_html($content_html);
 }
 
-function handle_error($message, $title, $super_title="Something Went Wrong", $description="Compendium Has Encountered an Error") {
+function create_screens(){
+	global $DOM;
 
+	$DOM->goto("screens");
+
+	if (!isset($_SESSION['user'])) {
+		$DOM->append_html(file_get_contents(__DIR__."/users/login_screen.html"));
+		$DOM->end();
+	} else {
+		$DOM->append_html(file_get_contents(__DIR__."/users/delete_screen.html"));
+		$DOM->end();
+	}
+
+	$DOM->create("div", ["class"=>"clearer"], "");
+}
+
+function handle_error($file, $title="Something Went Wrong", $description="The Compendium Has Encountered an Error") {
+	global $DOM;
+
+	$DOM->goto("main");
+	$DOM->add_class("no-sidebar");
+	$DOM->add_class("error-msg");
+
+	set_content(file_get_contents($file));
+
+	$DOM->goto("display_h1")->text = htmlentities($title);
+	if (!empty($description)) {
+		$DOM->goto("display_h2")->text = htmlentities($description);
+		$DOM->remove_class("nodisp");
+	} else $DOM->goto("display_h2")->add_class("nodisp");
 }
 
 /* --------------------------------------------------
  * --------------------------------------------------
- * NAVOPT MANAGEMENT --------------------------------
+ * NAVBAR MANAGEMENT --------------------------------
  * --------------------------------------------------
  * -------------------------------------------------- */
+
+function create_navbar() {
+	global $DOM;
+
+	$DOM->goto("navbar");
+
+	$DOM->create("div", ["class"=>"navopt fl", "id"=>"navopt_home"], "Compendium Home");
+
+	if (isset($_SESSION['user'])) {
+		$DOM->append_html(file_get_contents(__DIR__."/users/navopt_user.html"));
+		$DOM->goto("navopt_user")->text = "Hello, ".$_SESSION['user']->username." \u{25BC}";
+		$DOM->goto("navbar");
+	} else {
+		$DOM->append_html(file_get_contents(__DIR__."/users/navopt_sign_in.html"));
+		$DOM->end();
+	}
+
+	$DOM->create("div", ["class"=>"clearer", "id" => "navbar_clearer"], "");
+}
+
+function add_navopt($id, $text="", $right=false, $attrs=null) {
+	global $DOM;
+
+	if (empty($attrs)) $attrs = [];
+	if (!isset($text)) $text = "";
+
+	$attrs["id"] = $id;
+
+	$DOM->goto("navbar");
+	$DOM->insert_before("navbar_clearer", "div", $attrs, $text);
+	$DOM->add_class("navopt");
+	$DOM->add_class( ($right) ? "fr" : "fl" );
+}
+
+function add_navopt_create() {
+	global $HAS_PAGE, $PAGE;
+
+	if ($HAS_PAGE){
+		add_navopt("navopt_create", "Create a Child Page", false, ["parent" => $PAGE->selector, "class" => "button"]);
+	} else {
+		add_navopt("navopt_create", "Create a Page", false, ["class" => "button"]);
+	}
+}
+
+function add_navopt_edit($page_id=null) {
+	global $HAS_PAGE, $PAGE;
+
+	if ($HAS_PAGE) {
+		add_navopt("navopt_edit", "Edit this page", true, ["page" => $PAGE->selector, "class" => "button"]);
+	}
+}
 
 /* --------------------------------------------------
  * --------------------------------------------------
@@ -111,7 +190,7 @@ function add_page_to_sidebar($page, $list_size=1, $index=0, $restart=false) {
 
 		$do_restart = false;
 		foreach ($children as $child_index => $child) {
-			$do_restart = add_page($child, count($children), $child_index, $do_restart);
+			$do_restart = add_page_to_sidebar($child, count($children), $child_index, $do_restart);
 		}
 
 		$DOM->end();
@@ -123,7 +202,7 @@ function add_page_to_sidebar($page, $list_size=1, $index=0, $restart=false) {
 function fill_sidebar_pages($target_user, $identifier="id") {
 	global $DOM;
 
-	$target_user = get_user($target_user, $identifier)
+	$target_user = get_user($target_user, $identifier);
 
 	$DOM->goto("books");
 
@@ -132,7 +211,7 @@ function fill_sidebar_pages($target_user, $identifier="id") {
 
 		$do_restart = false;
 		foreach ($books as $book_index => $book) {
-			$do_restart = add_page($book, count($books), $book_index, $do_restart);
+			$do_restart = add_page_to_sidebar($book, count($books), $book_index, $do_restart);
 		}
 	}
 
@@ -142,12 +221,14 @@ function fill_sidebar_pages($target_user, $identifier="id") {
 function view_page($page_ident, $identifier="selector") {
 	global $HAS_PAGE, $PAGE, $DOM, $USER, $LOGGED_IN;
 
+	$PAGE = null;
 	$PAGE = get_page($page_ident, $identifier);
-	if (empty($PAGE)) $HAS_PAGE = false;
+	$HAS_PAGE = (!is_null($PAGE));
 	if (!$HAS_PAGE) {
 		// Display html for "page not found"
 		return;
 	}
+	error_log("Page found");
 
 	fill_sidebar_pages($PAGE->author);
 
@@ -167,12 +248,12 @@ function view_page($page_ident, $identifier="selector") {
 
 	if ($LOGGED_IN) {
 		if ($USER->has_permission(User::ACT_EDIT_OWN_PAGES)) add_navopt_create();
-		if ($PAGE->can_edit($page_user)) add_navopt_edit();
+		if ($PAGE->can_edit($USER)) add_navopt_edit();
 	}
 }
 
 function view_user_pages($user_ident, $identifier="selector") {
-	global $LOGGED_IN, $USER;
+	global $LOGGED_IN, $USER, $HAS_PAGE, $PAGE;
 
 	$target_user = null;
 	if ($user_ident === null && $LOGGED_IN) $target_user = $USER;
@@ -197,7 +278,10 @@ function view_user_pages($user_ident, $identifier="selector") {
 	}
 
 	if (!$found_page) {
-		// Display "user has no pages" html
+		handle_error(__DIR__."/errors/user_no_pages.html", "An Empty Library", "This user has not written any pages");
+		if ($target_user->id == $USER->id && $USER->has_permission(User::ACT_EDIT_OWN_PAGES)) {
+			add_navopt_create();
+		}
 	}
 }
 
@@ -209,8 +293,9 @@ function edit_page() {
 		return;
 	}
 
-	$PAGE = get_page($_GET('page_id'), $identifier);
-	if (empty($PAGE)) $HAS_PAGE = false;
+	$PAGE = null;
+	if (isset($_GET['page_id'])) $PAGE = get_page($_GET['page_id'], 'selector');
+	$HAS_PAGE = (!is_null($PAGE));
 	if (!$HAS_PAGE) {
 		// Display html for "page not found"
 		return;
@@ -297,10 +382,11 @@ function home_display() {
  * --------------------------------------------------
  * -------------------------------------------------- */
 
-$html = file_get_contents(__DIR__."/def_index.html");
-
-log_in_user($_SESSION['user']);
+if (isset($_SESSION['user'])) log_in_user($_SESSION['user']);
 if (!$LOGGED_IN) unset($_SESSION['user']);
+
+create_navbar();
+create_screens();
 
 $context = (isset($_GET['context'])) ? $_GET['context'] : 'home';
 switch($context) {
@@ -311,8 +397,15 @@ switch($context) {
 		else home_display();
 		break;
 	case 'edit':
-
-
+		edit_page();
+		break;
+	case 'create':
+		create_page();
+		break;
+	default:
+		home_display();
 }
+
+echo $DOM->print();
 
 ?>
