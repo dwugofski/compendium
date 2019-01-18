@@ -292,7 +292,7 @@ class EditorBridge extends Classable(Object) {
 	}
 }
 
-const global_bridge = new EditorBridge();
+//const global_bridge = new EditorBridge();
 
 const Interactable = (Base) => class extends Classable(Base) {
 	constructor(...args) {
@@ -446,17 +446,17 @@ class MarkOption extends ControlOption {
 			event.preventDefault();
 			this.toggle_active();
 		}).bind(this));
-		global_bridge.track_mark(this.props.mark);
+		this.props.global_bridge.track_mark(this.props.mark);
 		this.bind_make_active(() => {
 			const mark = this.props.mark;
-			global_bridge[mark] = true;
+			this.props.global_bridge[mark] = true;
 		});
 		this.bind_un_active(() => {
 			const mark = this.props.mark;
-			global_bridge[mark] = false;
+			this.props.global_bridge[mark] = false;
 		});
-		global_bridge["bind_make_"+this.props.mark]( (() => { if(!this.active) this.active = true;}).bind(this) );
-		global_bridge["bind_un_"+this.props.mark]( (() => { if(this.active) this.active = false;}).bind(this) );
+		this.props.global_bridge["bind_make_"+this.props.mark]( (() => { if(!this.active) this.active = true;}).bind(this) );
+		this.props.global_bridge["bind_un_"+this.props.mark]( (() => { if(this.active) this.active = false;}).bind(this) );
 	}
 }
 
@@ -570,15 +570,15 @@ class BlockTypeOption extends DropDownOption {
 		super(props);
 
 		for (var block in this.props.options)
-			global_bridge.track_block(block);
+			this.props.global_bridge.track_block(block);
 
-		global_bridge.bind_block_change(((type) => {
+		this.props.global_bridge.bind_block_change(((type) => {
 			if (this.props.options[type] !== undefined) this.selection = {name: type, value: this.props.options[type]};
 			else console.log("Do not have type "+type);
 		}).bind(this));
 
 		//this.selection = {name: "paragraph", value: this.props.options.paragraph};
-		global_bridge["paragraph"] = true;
+		this.props.global_bridge["paragraph"] = true;
 	}
 }
 
@@ -599,14 +599,15 @@ class ControlBar extends Component {
 				uli: "Bullet List"
 			},
 			fns: {
-				set_selection: [(name, value) => { global_bridge.active_block = name; }]
+				set_selection: [(name, value) => { this.props.global_bridge.active_block = name; }]
 			}, 
 			initial: 'paragraph',
-			blank: "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0"
+			blank: "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0",
+			global_bridge: this.props.global_bridge
 		});
-		this.add_child(MarkOption, {className: "bold", mark: "bold"}, "B");
-		this.add_child(MarkOption, {className: "italic", mark: "italic"}, "I");
-		this.add_child(MarkOption, {className: "underlined", mark: "underlined"}, "U");
+		this.add_child(MarkOption, {className: "bold", mark: "bold", global_bridge: this.props.global_bridge}, "B");
+		this.add_child(MarkOption, {className: "italic", mark: "italic", global_bridge: this.props.global_bridge}, "I");
+		this.add_child(MarkOption, {className: "underlined", mark: "underlined", global_bridge: this.props.global_bridge}, "U");
 		this.add_child(ControlOption, {className: "bar"});
 		const clearer = this.add_child(Component, {className: "clearer"});
 		this.bind_click(event => event.preventDefault());
@@ -616,15 +617,16 @@ class ControlBar extends Component {
 export class Editor extends Component {
 	constructor(props) {
 		super(props);
+		this.global_bridge = new EditorBridge();
 		this.add_class("mkdn_editor");
-		this.add_child(ControlBar);
-		this.add_child(CompendiumTextArea, {storage: props.storage, initial: props.initial});
+		this.add_child(ControlBar, {global_bridge: this.global_bridge});
+		this.add_child(CompendiumTextArea, {storage: props.storage, initial: props.initial, global_bridge: this.global_bridge});
 	}
 }
 
 class CompendiumTextArea extends React.Component {
 	constructor(props) {
-		super();
+		super(props);
 		//this.state = {value: initialValue};
 		this.has_text = false;
 		this._ready = false;
@@ -635,13 +637,13 @@ class CompendiumTextArea extends React.Component {
 		this.state = {value: (props.initial !== undefined) ? props.initial : INITIAL_VALUE};
 		if (this.storage !== null) localStorage.setItem(this.storage, Serialization.serialize_value(this.state.value));
 
-		global_bridge.bind_mark_change( ((type) => {
+		this.props.global_bridge.bind_mark_change( ((type) => {
 			if (this.editor === undefined) return;
-			if (global_bridge[type] && !this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
-			else if (!global_bridge[type] && this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
+			if (this.props.global_bridge[type] && !this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
+			else if (!this.props.global_bridge[type] && this.editor.value.activeMarks.some(mark => mark.type == type)) this.editor.toggleMark(type);
 		}).bind(this));
 
-		global_bridge.bind_block_change( ((type) => {
+		this.props.global_bridge.bind_block_change( ((type) => {
 			if (this.editor.value.startBlock !== null && this.editor.value.startBlock.type !== 'placeholder') this.set_type(this.editor, type);
 		}).bind(this));
 	}
@@ -668,21 +670,21 @@ class CompendiumTextArea extends React.Component {
 		this.has_text = ((text != PLACEHOLDER_TEXT || (nodes.size >= 2 && nodes.get(1).type != "paragraph")) || nodes.size > 2);
 
 		if (value.startBlock !== null) {
-			if (global_bridge.active_block != value.startBlock.type) global_bridge.active_block = value.startBlock.type;
+			if (this.props.global_bridge.active_block != value.startBlock.type) this.props.global_bridge.active_block = value.startBlock.type;
 		}
 
-		const global_marks = global_bridge.active_marks;
+		const global_marks = this.props.global_bridge.active_marks;
 		for (var i in global_marks) {
 			const type = global_marks[i];
-			if (!value.activeMarks.some(mark => mark.type == type) && global_bridge[type]) {
-				global_bridge[type] = false;
+			if (!value.activeMarks.some(mark => mark.type == type) && this.props.global_bridge[type]) {
+				this.props.global_bridge[type] = false;
 			}
 		}
 
 		const my_marks = value.activeMarks.toArray();
 		for (var i in my_marks) {
 			const type = my_marks[i].type;
-			if (!global_bridge[type] && value.activeMarks.some(mark => mark.type == type)) global_bridge[type] = true;
+			if (!this.props.global_bridge[type] && value.activeMarks.some(mark => mark.type == type)) this.props.global_bridge[type] = true;
 		}
 
 		if (this.storage) {
