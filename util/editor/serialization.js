@@ -13,6 +13,7 @@ export function tag_to_type(tag) {
 		case "ul":
 		case "ol":
 		case "li":
+		case "img":
 			return {type: tagname, obj: "block"};
 		case "p":
 			return {type: "paragraph", obj: "block"};
@@ -41,6 +42,7 @@ export function type_to_tag(type) {
 		case "h6":
 		case "ul":
 		case "ol":
+		case "img":
 			return typename;
 		case "uli":
 		case "oli":
@@ -56,6 +58,7 @@ export function type_to_tag(type) {
 		case "underlined":
 			return "u";
 		default:
+			if (type.substring(0, 3) == "img") return "img";
 			return null;
 	}
 }
@@ -79,6 +82,9 @@ export const RULES = [
 				case "break":
 					obj = "text";
 					type = "text";
+					break;
+				case "img":
+					type += " " + el.src;
 					break;
 			}
 
@@ -108,7 +114,10 @@ export const RULES = [
 
 		serialize(obj, children) {
 			var tag = type_to_tag(obj.type);
-			if (tag && tag != "placeholder") return e(tag, {className: obj.data.get("className")}, children);
+			if (tag && tag != "placeholder") {
+				if (tag == "img") return e(tag, {className: obj.data.get("className"), src: obj.type.substring(4)});
+				return e(tag, {className: obj.data.get("className")}, children);
+			}
 			if (tag == "placeholder") return null;
 		},
 	}

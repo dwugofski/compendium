@@ -226,6 +226,7 @@ class EditorBridge extends Classable(Object) {
 		super(...args);
 		this._create_binding("mark_change");
 		this._create_binding("block_change");
+		this._create_binding("add_img");
 		this.marks = {};
 		this.blocks = {};
 	}
@@ -582,6 +583,61 @@ class BlockTypeOption extends DropDownOption {
 	}
 }
 
+class AddImgOption extends ControlOption {
+	constructor(props) {
+		super(props);
+		console.log(this);
+		this.bind_click(this.show.bind(this));
+		$("#img_add_screen").click(((event) => {
+			if (event.target == $("#img_add_screen")[0]) {
+				this.hide(event);
+			}
+		}).bind(this));
+
+		$('#img_add_form_submit').click(this.submit.bind(this));
+	}
+
+	show() {
+		$("#img_add_screen").fadeIn("fast");
+	}
+
+	hide() {
+		$("#img_add_screen").fadeOut("fast");
+	}
+
+	complete(url, condition) {
+		if (condition == 'success') this.props.global_bridge.on_add_img(url);
+	}
+
+	submit() {
+		const timeout = 5000;
+		const callback = this.complete.bind(this);
+		const url = $('#img_add_form_src').val();
+		var timedOut = false, timer;
+		var img = new Image();
+		img.onerror = img.onabort = function() {
+			if (!timedOut) {
+				clearTimeout(timer);
+				callback(url, "error");
+			}
+		};
+		img.onload = function() {
+			if (!timedOut) {
+				clearTimeout(timer);
+				callback(url, "success");
+			}
+		};
+		img.src = url;
+		timer = setTimeout(function() {
+			timedOut = true;
+			// reset .src to invalid URL so it stops previous
+			// loading, but doesn't trigger new load
+			img.src = "//!!!!/test.jpg";
+			callback(url, "timeout");
+		}, timeout); 
+	}
+}
+
 class ControlBar extends Component {
 	constructor(props) {
 		super(props);
@@ -609,6 +665,7 @@ class ControlBar extends Component {
 		this.add_child(MarkOption, {className: "italic", mark: "italic", global_bridge: this.props.global_bridge}, "I");
 		this.add_child(MarkOption, {className: "underlined", mark: "underlined", global_bridge: this.props.global_bridge}, "U");
 		this.add_child(ControlOption, {className: "bar"});
+		this.add_child(AddImgOption, {className: "add_img", global_bridge: this.props.global_bridge}, "Add Image");
 		const clearer = this.add_child(Component, {className: "clearer"});
 		this.bind_click(event => event.preventDefault());
 	}
@@ -646,6 +703,8 @@ class CompendiumTextArea extends React.Component {
 		this.props.global_bridge.bind_block_change( ((type) => {
 			if (this.editor.value.startBlock !== null && this.editor.value.startBlock.type !== 'placeholder') this.set_type(this.editor, type);
 		}).bind(this));
+
+		this.props.global_bridge.bind_add_img(this.onAddImg.bind(this));
 	}
 
 	ref(editor) {
@@ -747,6 +806,10 @@ class CompendiumTextArea extends React.Component {
 				}
 				return next();
 		}
+	}
+
+	onAddImg(img_url) {
+		this.editor.insertBlock('img ' + img_url);
 	}
 
 	onEnter(event, editor, next) {
@@ -866,6 +929,9 @@ class CompendiumTextArea extends React.Component {
 			case "break":
 				return e("span", attributes, children);
 			default:
+				if (node.type.substring(0, 3) == "img") {
+					return e("img", {...attributes, 'src': node.type.substring(4)});
+				}
 				return next();
 		}
 	}
