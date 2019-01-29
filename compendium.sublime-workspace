@@ -1,0 +1,967 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"is_",
+				"is_a"
+			],
+			[
+				"BAS",
+				"BASE_ZOOM"
+			],
+			[
+				"BASE",
+				"BASE_WIDTH"
+			],
+			[
+				"center",
+				"center_mapped"
+			],
+			[
+				"BA",
+				"BASE_CENTER_LAT"
+			],
+			[
+				"BAs",
+				"BASE_HEIGHT"
+			],
+			[
+				"ADJ_",
+				"ADJ_HEIGHT"
+			],
+			[
+				"array_ke",
+				"array_key_exists"
+			],
+			[
+				"page_from",
+				"page_form_path"
+			],
+			[
+				"has_",
+				"has_changed"
+			],
+			[
+				"Editor",
+				"EditorContent"
+			],
+			[
+				"bor",
+				"border-color"
+			],
+			[
+				"no",
+				"nowrap\twhite-space"
+			],
+			[
+				"glob",
+				"global_marks"
+			],
+			[
+				"prop",
+				"prop_list"
+			],
+			[
+				"con",
+				"configurable"
+			],
+			[
+				"global",
+				"global_bridge"
+			],
+			[
+				"mark",
+				"mark_list"
+			],
+			[
+				"child",
+				"children"
+			],
+			[
+				"const",
+				"constructor"
+			],
+			[
+				"cla",
+				"className"
+			],
+			[
+				"render",
+				"render_src"
+			],
+			[
+				"cons",
+				"constructor"
+			],
+			[
+				"identi",
+				"identifier_request"
+			],
+			[
+				"mou",
+				"mousemove"
+			],
+			[
+				"_side",
+				"_sidebar_start_width"
+			],
+			[
+				"SID",
+				"SIDEBAR_MIN_WIDTH"
+			],
+			[
+				"SIDE",
+				"SIDEBAR_MAX_WIDTH"
+			],
+			[
+				"side",
+				"sidebar_adjust"
+			],
+			[
+				"accent-",
+				"accent-shade"
+			],
+			[
+				"get",
+				"getUrlFromJson"
+			],
+			[
+				"substr",
+				"substring"
+			],
+			[
+				"html",
+				"htmlentities"
+			],
+			[
+				"page",
+				"pagesel"
+			],
+			[
+				"book",
+				"book_index"
+			],
+			[
+				"user_delete",
+				"user_delete_form_submit"
+			],
+			[
+				"verif",
+				"verify_form"
+			],
+			[
+				"class",
+				"class_list"
+			],
+			[
+				"preg",
+				"preg_replace"
+			],
+			[
+				"sideb",
+				"sidebar_html"
+			],
+			[
+				"drop",
+				"dropdown-menu-right"
+			],
+			[
+				"copy_",
+				"copy_children"
+			],
+			[
+				"new",
+				"newnode"
+			],
+			[
+				"for",
+				"foreach\tforeach …"
+			],
+			[
+				"is",
+				"is_array"
+			],
+			[
+				"mat",
+				"match_str"
+			],
+			[
+				"new_",
+				"new_value"
+			],
+			[
+				"sign",
+				"signup_data"
+			],
+			[
+				"_curren",
+				"_current_i"
+			],
+			[
+				"_curr",
+				"_current_i"
+			],
+			[
+				"_current",
+				"_current_j"
+			],
+			[
+				"margin",
+				"margin-left"
+			],
+			[
+				"sele",
+				"selected_index"
+			],
+			[
+				"remo",
+				"removeItem"
+			],
+			[
+				"add",
+				"addParent"
+			],
+			[
+				"destroySe",
+				"destroySelectableItem"
+			],
+			[
+				"tile",
+				"tile_opt"
+			],
+			[
+				"Tile",
+				"TileOptions"
+			],
+			[
+				"table",
+				"table_row"
+			],
+			[
+				"tabl",
+				"table_row"
+			],
+			[
+				"destr",
+				"destroyController"
+			],
+			[
+				"count",
+				"count_lementor"
+			],
+			[
+				"T",
+				"TILE_TYPES"
+			],
+			[
+				"sel",
+				"selected_ind"
+			],
+			[
+				"board",
+				"BOARD_ID"
+			],
+			[
+				"overflow",
+				"overflow-x"
+			],
+			[
+				"dmg_",
+				"dmg_type"
+			],
+			[
+				"dmg",
+				"dmg_dice"
+			],
+			[
+				"zone",
+				"zone_map"
+			],
+			[
+				"zon",
+				"zone_map"
+			],
+			[
+				"le",
+				"length"
+			],
+			[
+				"token",
+				"tokens_list"
+			],
+			[
+				"tok",
+				"tokens_list"
+			],
+			[
+				"gro",
+				"group_num"
+			],
+			[
+				"ti",
+				"tiles"
+			],
+			[
+				"backgrou",
+				"background-color"
+			],
+			[
+				"co",
+				"count_frequency"
+			],
+			[
+				"hash",
+				"hash_fun"
+			],
+			[
+				"MOU",
+				"MOUNT_SUB_WIDTH"
+			],
+			[
+				"PEAK",
+				"PEAK_MEAN_WIDTH"
+			],
+			[
+				"MO",
+				"MOUNT_MEAN_WIDTH"
+			],
+			[
+				"re",
+				"relevation"
+			],
+			[
+				"PEA",
+				"PEAK_STD_HEIGHT"
+			],
+			[
+				"PE",
+				"PEAK_MEAN_HEIGHT"
+			],
+			[
+				"cou",
+				"couplings"
+			],
+			[
+				"Peak",
+				"PeakPoint"
+			],
+			[
+				"Mount",
+				"MountPoint"
+			],
+			[
+				"Fixed",
+				"FixedPoint"
+			],
+			[
+				"point",
+				"point_ind"
+			],
+			[
+				"clos",
+				"closest_mouth"
+			],
+			[
+				"clo",
+				"closest_ridge"
+			],
+			[
+				"min",
+				"min_ridge_dist"
+			],
+			[
+				"sor",
+				"sorted_mtns"
+			],
+			[
+				"Map",
+				"MapPath"
+			],
+			[
+				"Mou",
+				"MouthPoint"
+			],
+			[
+				"R",
+				"RiverBasin"
+			],
+			[
+				"pair",
+				"pair_str"
+			],
+			[
+				"style",
+				"style_pairs"
+			],
+			[
+				"peak",
+				"peak_ind"
+			],
+			[
+				"mo",
+				"mouth_ind"
+			],
+			[
+				"path",
+				"pathid"
+			],
+			[
+				"ri",
+				"ridge_points"
+			],
+			[
+				"p",
+				"pid"
+			],
+			[
+				"pid",
+				"pid1"
+			],
+			[
+				"DE",
+				"DEFAULT_STRICTNESS_STD"
+			],
+			[
+				"DEF",
+				"DEFAULT_STRICTNESS_MU"
+			],
+			[
+				"genr",
+				"genru"
+			],
+			[
+				"usims",
+				"usims_ranks"
+			],
+			[
+				"num",
+				"num_ps"
+			],
+			[
+				"ass",
+				"assign_cluster_l1"
+			],
+			[
+				"assi",
+				"assign_cluster_l2"
+			],
+			[
+				"fi",
+				"figure"
+			],
+			[
+				"lin_ma",
+				"lin_matches_list"
+			],
+			[
+				"lin_",
+				"lin_time"
+			],
+			[
+				"linear",
+				"linear_search"
+			],
+			[
+				"query",
+				"query_index"
+			],
+			[
+				"trip",
+				"trip_counts"
+			],
+			[
+				"pai",
+				"pair_counts"
+			],
+			[
+				"order",
+				"order_pair"
+			],
+			[
+				"tri",
+				"trip"
+			],
+			[
+				"candi",
+				"candidate_pairs"
+			],
+			[
+				"frie",
+				"friendship"
+			],
+			[
+				"frien",
+				"friend"
+			],
+			[
+				"fri",
+				"friendship"
+			],
+			[
+				"fir",
+				"friendship"
+			],
+			[
+				"line",
+				"line_to_sequence"
+			],
+			[
+				"friend",
+				"friends"
+			],
+			[
+				"font",
+				"font-weight"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "def.js",
+			"settings":
+			{
+				"buffer_size": 405,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "pages/page.js",
+			"settings":
+			{
+				"buffer_size": 884,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "users/user.php",
+			"settings":
+			{
+				"buffer_size": 16729,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 360.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: Ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 384.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/E/David/Personal Documents/Web/compendium",
+		"/E/David/Personal Documents/Web/compendium/contexts",
+		"/E/David/Personal Documents/Web/compendium/contexts/create",
+		"/E/David/Personal Documents/Web/compendium/contexts/edit",
+		"/E/David/Personal Documents/Web/compendium/contexts/home",
+		"/E/David/Personal Documents/Web/compendium/css",
+		"/E/David/Personal Documents/Web/compendium/css/sass",
+		"/E/David/Personal Documents/Web/compendium/css/sass/main",
+		"/E/David/Personal Documents/Web/compendium/css/sass/modules",
+		"/E/David/Personal Documents/Web/compendium/errors",
+		"/E/David/Personal Documents/Web/compendium/pages",
+		"/E/David/Personal Documents/Web/compendium/res",
+		"/E/David/Personal Documents/Web/compendium/res/backgrounds",
+		"/E/David/Personal Documents/Web/compendium/res/icons",
+		"/E/David/Personal Documents/Web/compendium/users"
+	],
+	"file_history":
+	[
+		"/E/David/Personal Documents/Web/compendium/index.php",
+		"/E/David/Personal Documents/Web/compendium/css/sass/main/_comment.scss",
+		"/E/David/Personal Documents/Web/compendium/contexts/view.html",
+		"/E/David/Personal Documents/Web/compendium/sftp-config.json",
+		"/E/David/Personal Documents/Web/compendium/pages/page.js",
+		"/E/David/Personal Documents/Web/compendium/compendium.sublime-project",
+		"/C/Users/David/AppData/Roaming/Sublime Text 3/Packages/SublimeSimpleSync/SublimeSimpleSync.sublime-settings",
+		"/C/Users/David/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
+		"/E/David/Personal Documents/Web/compendium/index_old.php",
+		"/E/David/Personal Documents/Web/compendium/pages/page.php",
+		"/E/David/Personal Documents/Web/compendium/contexts/view/view.php",
+		"/E/David/Personal Documents/Web/compendium/contexts/home/home.php",
+		"/E/David/Personal Documents/Web/compendium/contexts/edit/edit.php",
+		"/E/David/Personal Documents/Web/compendium/contexts/create/create.php",
+		"/E/David/Personal Documents/Web/compendium/users/user.php",
+		"/E/David/Personal Documents/Web/compendium/css/sass/main/_main.scss",
+		"/E/David/Personal Documents/DnDMaps/Makafell_new/continent_1/remap.py",
+		"/E/David/Personal Documents/Web/compendium/com/php/page/create.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/util/comp_accessor.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/page/page.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/edit.js",
+		"/E/David/Personal Documents/Web/compendium/com/html/index.html",
+		"/E/David/Personal Documents/Web/compendium/com/php/page/edit.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/contexts/edit.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/editor.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/create.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/user/login_user.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/page/get_page.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/global_util.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/editor/serialization.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/util/dom.php",
+		"/E/David/Personal Documents/Web/compendium/todo.txt",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/main/_create.scss",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/rendering/head.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/util/errors.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/def/navbar.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/contexts/view.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/contexts/create.php",
+		"/E/David/Personal Documents/Web/compendium/com/html/contexts/create.html",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/navbar/navopt_user.html",
+		"/E/David/Personal Documents/Web/compendium/com/php/contexts/home.php",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/_body.scss",
+		"/E/David/Personal Documents/Web/compendium/com/php/user/user.php",
+		"/E/David/Personal Documents/Web/compendium/com/html/errors/401.html",
+		"/E/David/Personal Documents/Web/compendium/com/php/def/def.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/page_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/modules/_editor.scss",
+		"/E/David/Personal Documents/Web/compendium/com/js/def.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/user_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/user_record_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/permissions_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/comment_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/login_tokens_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/email_verification_tables.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/markdown.js",
+		"/E/David/Personal Documents/Web/compendium/com/css/main.scss",
+		"/E/David/Personal Documents/Web/compendium/com/css/consts/default_colors.css",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/main/_content.scss",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/_navbar.scss",
+		"/E/Program Files/Ultimaker Cura 3.6/plugins/USBPrinting/AutoDetectBaudJob.py",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/editor_test.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/editor_old.js",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/main/_sidebar.scss",
+		"/E/David/Personal Documents/Web/compendium/com/css/consts/sizes.css",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/main/_display.scss",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/view.js",
+		"/E/David/Personal Documents/Web/compendium/home/main.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/def/screens.php",
+		"/E/David/Personal Documents/Web/compendium/view/main.php",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/contexts/create.html",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/contexts/home.html",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/screens/delete.html",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/screens/login_screen.html",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/navbar/navopt_sign_in.html",
+		"/E/David/Personal Documents/Web/compendium/com/html/def/navopt_user.html",
+		"/E/David/Personal Documents/Web/compendium/com/php/def/head.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/util/parsedown.php",
+		"/E/David/Personal Documents/deserts-master/generate.py",
+		"/E/David/Personal Documents/deserts-master/terrain.py",
+		"/E/David/Personal Documents/Web/compendium/create/main.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/user/signup_user.php",
+		"/E/David/Personal Documents/Web/compendium/test.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/user/validate_user_email.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/util/mysql.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/user/logout.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/user/login.js",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/modules/_user_delete.scss",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/user.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/user/delete.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/user/delete_user.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/user/login_form.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/def/tail.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/user.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/login.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/json/json_head.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/signup_user.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/login_user.php",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/_header.scss",
+		"/E/David/Personal Documents/Web/compendium/com/php/errors.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/head/rendering.js",
+		"/E/David/Personal Documents/Web/compendium/com/css/main.css",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/edit/markup.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/jquery.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/def/cookies.js",
+		"/E/David/Personal Documents/Web/compendium/com/js/slate/slate.js",
+		"/E/David/Personal Documents/Web/compendium/like_button.js",
+		"/E/David/Personal Documents/Web/compendium/barfoo.html",
+		"/E/David/Personal Documents/Web/compendium/com/js/def.login.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/page.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def.head.rendering.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/session.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/def.cookies.js",
+		"/E/David/Personal Documents/Web/compendium/index.html",
+		"/E/David/Personal Documents/Web/compendium/com/php/test.php",
+		"/E/David/Personal Documents/Web/compendium/.gitignore",
+		"/E/David/Personal Documents/Web/compendium/com/php/mysql.php",
+		"/E/David/Personal Documents/Web/compendium/com/php/ds.php",
+		"/E/David/Personal Documents/Web/compendium/com/js/base.js",
+		"/E/David/Personal Documents/Web/compendium/com/php/table_scripts/book_tables.php",
+		"/E/David/Personal Documents/Web/eso/com/php/mysql.php",
+		"/E/David/Personal Documents/Web/eso/com/php/perms.php",
+		"/E/David/Personal Documents/Web/eso/com/php/errors.php",
+		"/E/David/Personal Documents/Web/compendium/com/css/consts/default_fonts.css",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/main/_heading.scss",
+		"/E/David/Personal Documents/Web/compendium/com/css/sass/main/_main.scss",
+		"/G/Bridge/B1B MCU Example/Alloy L25B Code Drop 01/halo_fw.py"
+	],
+	"find":
+	{
+		"height": 28.0
+	},
+	"find_in_files":
+	{
+		"height": 104.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"lon_umap",
+			"->dom",
+			"echo",
+			"));\n",
+			"');\n",
+			"is_empty(",
+			"is_empty"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"->doc",
+			"empty("
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "def.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 405,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "pages/page.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 884,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								363,
+								363
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "users/user.php",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 16729,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7801,
+								7801
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3976.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 40.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 132.0
+	},
+	"pinned_build_system": "",
+	"project": "compendium.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 256.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
