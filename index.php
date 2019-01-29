@@ -13,6 +13,8 @@ $PAGE = null;
 
 $DOM = new MyDOM(file_get_contents(__DIR__."/def_index.html"));
 
+$CONTEXT = (isset($_GET['context'])) ? $_GET['context'] : 'home';
+
 /* --------------------------------------------------
  * --------------------------------------------------
  * STRUCTURAL MANAGEMENT ----------------------------
@@ -27,7 +29,7 @@ function set_content($content_html) {
 }
 
 function create_screens(){
-	global $DOM;
+	global $DOM, $CONTEXT;
 
 	$DOM->goto("screens");
 
@@ -40,6 +42,11 @@ function create_screens(){
 	}
 
 	$DOM->create("div", ["class"=>"clearer"], "");
+
+	if ($CONTEXT == 'create' || $CONTEXT == 'edit') {
+		$DOM->goto("screens");
+		$DOM->append_html(file_get_contents(__DIR__."/pages/add_image_screen.html"));
+	}
 }
 
 function handle_error($file, $title="Something Went Wrong", $description="The Compendium Has Encountered an Error") {
@@ -388,13 +395,15 @@ if (!$LOGGED_IN) unset($_SESSION['user']);
 create_navbar();
 create_screens();
 
-$context = (isset($_GET['context'])) ? $_GET['context'] : 'home';
-switch($context) {
+switch($CONTEXT) {
 	case 'view': 
 		if (isset($_GET['page_id'])) view_page($_GET['page_id']);
 		else if (isset($_GET['user_id'])) view_user_pages($_GET['user_id']);
 		else if ($LOGGED_IN) view_user_pages($USER);
-		else home_display();
+		else {
+			$CONTEXT = 'home';
+			home_display();
+		}
 		break;
 	case 'edit':
 		edit_page();
@@ -403,6 +412,7 @@ switch($context) {
 		create_page();
 		break;
 	default:
+		$CONTEXT = 'home';
 		home_display();
 }
 
