@@ -1,0 +1,102 @@
+{% set has_sidebar = false %}
+
+{% macro sidebar_item(si_obj) %}
+<li id="{{si_obj.id}}" class="{{si_obj.classname}}">
+	<a href="{{si_obj.link}}">{{ si_obj.text }}</a>
+	{% if si_obj.children %}
+	<ul>
+		{% for child in si_obj.children %}
+			{{ sidebar_item(child) }}
+		{% endfor %}
+	</ul>
+	{% endif %}
+</li>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>The Compendium</title>
+
+	<link rel="shortcut icon" type="image/png" href="./res/icons/favicon.png"/>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" type="text/css" href="./css/consts/default_colors.css"/>
+	<link rel="stylesheet" type="text/css" href="./css/consts/default_fonts.css"/>
+	<link rel="stylesheet" type="text/css" href="./css/consts/sizes.css"/>
+	<link rel="stylesheet" type="text/css" href="./css/main.css"/>
+	<!--<link type="text/css" href="/css/consts/default_colors.css"/>
+	<link type="text/css" href="/css/consts/default_fonts.css"/>
+	<link type="text/css" href="/css/consts/sizes.css"/>
+	<link type="text/css" href="/css/main.css"/>-->
+	<!--<link type="text/css" href="/css/consts/default_colors.css"/>
+	<link type="text/css" href="/css/consts/default_fonts.css"/>
+	<link type="text/css" href="/css/consts/sizes.css"/>
+	<link type="text/css" href="/css/main.css"/>-->
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+	<script crossorigin src="https://unpkg.com/immutable@4.0.0-rc.9/dist/immutable.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom-server.browser.development.js"></script>
+	<!--<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom-server.browser.production.min.js"></script>-->
+	<script src="https://unpkg.com/slate/dist/slate.min.js"></script>
+	<script src="https://unpkg.com/slate-react/dist/slate-react.min.js"></script>
+	<script src="https://unpkg.com/slate-html-serializer/dist/slate-html-serializer.min.js"></script>
+
+	<!--<script src="util/global_util.js"></script>
+	<script type="module" src="def.js"></script>-->
+	<script type="module" src="./js/rendering.js"></script>
+	<script type="module" src="./js/login.js"></script>
+</head>
+<body>
+	<div id="header">
+		<h1>The Compendium</h1>
+	</div>
+	<div id="navbar">
+		{% block navbars %}{% endblock %}
+		<div id="navbar_clearer" class="clearer"></div>
+	</div>
+	<div class="clearer"></div>
+	<div id="main">
+
+		{% if sidebar_items %}
+		<div id="sidebar">
+			<div id="sidebar_items">
+				<ul id="sidebar_list">
+					{% block sidebar_list %}
+						{% for item in sidebar_items %}
+							{{ sidebar_item(item) }}
+						{% endfor %}
+					{% endblock %}
+					<li id="sidebar_footer"></li>
+				</ul>
+			</div>
+			<div id="sidebar_adjust">
+			</div>
+			<div id="sidebar_clearer" class="clearer"></div>
+		</div>
+		{% endif %}
+
+		<div id="display">
+			<div id="heading">
+				<h1 id="display_title">{% block display_title %}{% endblock %}</h1>
+				<h2 id="display_subtitle">{% block display_subtitle %}{% endblock %}</h2>
+			</div>
+			<div id="content">
+				{% block content %}{% endblock %}
+			</div>
+		</div>
+
+		<div id="main_clearer" class="clearer"></div>
+	</div>
+	<div id="screens">
+		{% block screens %}{% endblock %}
+	</div>
+</body>
+</html>

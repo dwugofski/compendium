@@ -1,0 +1,23 @@
+{% extends "base.njk" %}
+
+{% block display_title %}
+	The Compendium
+{% endblock %}
+
+{% block display_subtitle %}
+	A place where worlds meet
+	{{ name }}
+{% endblock %}
+
+{% block content %}
+	{% include 'content/home.html' %}
+{% endblock %}
+
+{% block navbars %}
+	{% include "navopts/navopt_home.njk" %}
+	{% include "navopts/navopt_sign_in.njk" %}
+{% endblock %}
+
+{% block screens %}
+	{% include "screens/login_screen.njk" %}
+{% endblock %}
