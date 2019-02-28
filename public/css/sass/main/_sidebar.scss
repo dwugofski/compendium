@@ -5,203 +5,214 @@ body #sidebar {
 	float: left;
 	overflow-y: auto;
 	position: fixed;
-	width: var(--sidebar-width);
+	max-width: 1000px;
 
 	#sidebar_items {
-		float: left;
+		float: right;
 		width: calc(100% - 10px);
 
 		ul {
 			direction: ltr;
 			margin: 0;
-			margin-right: 0.3em;
+			list-style: none;
 			padding: 0;
+			white-space: nowrap;
 
 			li {
-				background-color: var(--accent);
-				border-right: 0.1em solid var(--accent-dark);
-				color: var(--fg-light);
-				cursor: pointer;
-				display: block;
-				font-size: 100%;
-				font-weight: normal;
-				margin: 0;
-				padding: 0.2em;
+				padding: 0;
 				padding-left: 2em;
-				text-indent: -1.5em;
 
-				@include transition(background-color, 0.4s);
-				@include transition(margin-right, 0.1s);
-			}
-			li.first {
-				padding-top: 1em;
-			}
-			li.parent {
-				border-bottom: 0.1em solid var(--accent-dark);
-			}
-			li.restart {
-				border-top: 0.1em solid var(--accent-dark);
-			}
-			li.last {
-				//border-bottom: 0.1em solid var(--accent-dark);
-			}
-			li:hover {
-				background-color: var(--accent-dark);
-				margin-right: -0.3em;
-			}
-			#sidebar_footer {
-				cursor: default;
-				margin: 0 0 0 0;
-				padding: 0 0 0 0;
-			}
-			#sidebar_footer:hover {
-				background-color: var(--accent);
-				margin-right: 0em;
-			}
-
-			ul {
-				margin-right: 0.7em;
-
-				li {
-					background-color: var(--bg);
-					border-right: 0.1em solid var(--accent);
-					box-sizing: border-box;
-					color: var(--accent);
+				> a {
+					background-color: var(--accent);
+					border-left: 0.1em solid var(--accent-dark);
+					color: var(--fg-light);
 					cursor: pointer;
+					display: block;
 					font-size: 100%;
 					font-weight: normal;
 					margin: 0;
-					padding: 0.2em;
-					padding-left: 2em;
-					text-indent: -1.5em;
+					padding: 0.5em;
 				}
-				li.first {
-					padding-top: 0.2em;
-				}
-				li.parent {
-					border-bottom: 0.2em solid var(--accent);
-				}
-				li.restart {
-					border-top: 0.1em solid var(--accent);
-				}
-				li.last {
-					border-bottom: none;
-				}
-				li:hover {
-					background-color: var(--bg);
-					border-top: 0.1em solid var(--accent);
-					border-bottom: 0.1em solid var(--accent);
-					margin-right: -0.3em;
-					padding-top: 0.1em;
-					padding-bottom: 0.1em;
-					font-weight: bold;
-				}
-				li.first:hover {
-					border-top: none;
-					padding-top: 0.2em;
-				}
-				li.parent:hover {
-					padding-bottom: 0.2em;
-					border-bottom: 0.2em solid var(--accent);
-				}
-				li.restart:hover {
-					padding-top: 0.2em;
-				}
-				li.last:hover {
-					padding-bottom: 0.2em;
-					border-bottom: none;
-				}
+
+				@include transition(background-color, 0.4s);
+				@include transition(margin-right, 0.1s);
 
 				ul {
-					background-color: var(--accent-light);
-					border-right: 0.2em solid var(--accent);
-					cursor: pointer;
-					font-size: 90%;
-					font-weight: normal;
 					margin: 0;
-					margin-right: 1em;
-					padding: 0.1em 0.2em 0.1em 1em;
+					box-sizing: border-box;
+					//margin-: 0.7em;
 
 					li {
-						background-color: transparent;
-						border: 0 none black;
-						font-size: 100%;
-						padding: 0.2em 0.5em 0.2em 1em;
-						text-indent: -1em;
+						> a {
+							background-color: var(--bg);
+							border-left: 0.1em solid var(--accent);
+							box-sizing: border-box;
+							color: var(--accent);
+							cursor: pointer;
+							font-size: 100%;
+							font-weight: normal;
+							margin: 0;
+							padding: 0.5em;
+							overflow: visible;
+							//padding-right: 2em;
+						}
+
+						ul {
+							background-color: var(--accent-light);
+							border-left: 0.2em solid var(--accent);
+							border-bottom: 0.1em solid var(--accent);
+							cursor: pointer;
+							font-size: 90%;
+							font-weight: normal;
+							margin: 0;
+							margin-left: 1em;
+							padding: 0.1em 0em 0.1em 1em;
+
+							li {
+								padding: 0;
+
+								a {
+									background-color: transparent;
+									//border-right: 0.1em solid transparent;
+									font-size: 100%;
+									padding: 0.2em 1em 0.2em 0.5em;
+									white-space: nowrap;
+								}
+
+								ul {
+									font-size: 100%;
+									padding: 0;
+									overflow: visible;
+
+									li > a {
+										margin: 0;
+										padding: 0;
+										margin-right: 0.2em;
+										text-indent: 0;
+										overflow: visible;
+									}
+									li > a:hover {
+										//margin-right: 0;
+										padding: 0;
+										padding-right: 0.2em;
+									}
+									li.parent > a:hover, li.last > a:hover {
+										padding: 0;
+										padding-right: 0.2em;
+									}
+									border: none;
+								}
+							}
+							li.last > a {
+								border: none;
+							}
+							li.parent > a {
+								border: none;
+							}
+							li.restart > a {
+								border: none;
+							}
+							/*li > a::before {
+								content: "\2013\00a0";
+							}*/
+							li > a:hover {
+								background-color: var(--accent-light);
+								border-bottom: none;
+								border-top: none;
+								font-weight: bold;
+								//margin-right: 1.5em;
+								padding: 0.2em 1em 0.2em 0em;
+							}
+							li.parent > a:hover {
+								border-bottom: none;
+								padding: 0.2em 1em 0.2em 0em;
+							}
+							li.last > a:hover {
+								padding: 0.2em 1em 0.2em 0em;
+								border-bottom: none;
+							}
+						}
 					}
-					li.parent {
-						border: none;
+					li.first > a {
+						padding-top: 0.5em;
 					}
-					li.restart {
-						border: none;
+					li.last > a {
+						border-bottom: 0.1em solid var(--accent);
 					}
-					li::before {
-						content: "\2013\00a0";
+					li.parent > a {
+						border-bottom: 0.2em solid var(--accent);
 					}
-					li:hover {
-						background-color: var(--accent-light);
-						border-bottom: none;
-						border-top: none;
+					li.restart > a {
+						border-top: 0.1em solid var(--accent);
+					}
+					li > a:hover {
+						background-color: var(--bg);
+						border-top: 0.1em solid var(--accent);
+						border-bottom: 0.1em solid var(--accent);
+						margin-left: -0.3em;
+						padding-top: 0.4em;
+						padding-bottom: 0.4em;
 						font-weight: bold;
-						margin-right: 1.5em;
-						padding: 0.2em 0em 0.2em 1em;
 					}
-					li.parent:hover{
+					li.first > a:hover {
+						border-top: none;
+						padding-top: 0.5em;
+					}
+					li.last > a:hover {
+						padding-bottom: 0.6em;
 						border-bottom: none;
-						padding: 0.2em 0em 0.2em 1em;
 					}
-					li.last:hover {
-						padding: 0.2em 0em 0.2em 1em;
+					li.parent > a:hover {
+						padding-bottom: 0.5em;
+						border-bottom: 0.2em solid var(--accent);
 					}
-
-					ul {
-						background-color: transparent;
-						border: 0 none black;
-						cursor: pointer;
-						font-size: 100%;
-						font-weight: normal;
-						margin: 0 0 0 1em;
-						padding-left: 1em;
-
-						li {
-							padding: 0.2em 0 0.2em 0;
-						}
-						li:hover {
-							//margin-right: 1em;
-							padding: 0.2em 0 0.2em 0;
-						}
-						li.parent:hover{
-							border-bottom: none;
-							padding: 0.2em 0 0.2em 0;
-						}
-						li.last:hover {
-							padding: 0.2em 0 0.2em 0;
-						}
+					li.restart > a:hover {
+						padding-top: 0.5em;
+						padding-bottom: 0.4em;
 					}
 				}
+			}
+			li.first > a {
+				//padding-top: 1em;
+			}
+			li.parent > a {
+				border-bottom: 0.1em solid var(--accent-dark);
+			}
+			li.restart > a {
+				border-top: 0.1em solid var(--accent-dark);
+			}
+			li.last > a {
+				border-bottom: 0.1em solid var(--accent-dark);
+			}
+			li > a:hover {
+				background-color: var(--accent);
+				margin-left: -0.3em;
+				text-decoration: none;
 			}
 		}
 	}
 
+	/*
 	#sidebar_adjust {
 		//background-color: var(--accent);
-		/*background-image: url('../../res/icons/adjust_slider.png');
-		background-position: center; 
-		background-repeat: no-repeat;*/
-		/*border-left: 1px solid var(--accent-dark);
-		border-right: 1px solid var(--accent-dark);*/
+		//background-image: url('../../res/icons/adjust_slider.png');
+		//background-position: center; 
+		//background-repeat: no-repeat;
+		//border-left: 1px solid var(--accent-dark);
+		//border-right: 1px solid var(--accent-dark);
 		cursor: col-resize;
 		float: right;
 		height: 100%;
 		//opacity: 0;
 		width: 10px;
-	}
+	}*/
 }
 body #sidebar::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
+    width: 0px;  // remove scrollbar space
+    background: transparent;  // optional: just make scrollbar invisible
     display: none;
 }
+/*
 body #sidebar:hover, body #sidebar.hover {
 	background-color: var(--accent-screen);
 
@@ -209,6 +220,7 @@ body #sidebar:hover, body #sidebar.hover {
 		opacity: 1;
 	}
 }
+*/
 
 body #main.no-sidebar #sidebar {
 	display: none;

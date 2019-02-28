@@ -1,5 +1,5 @@
 
-body #main #display #heading {
+body #main #heading {
 	/*background-color: black;
 	background-image: url("../../res/backgrounds/imperial_city.png");
 	background-repeat: no-repeat;
@@ -7,6 +7,7 @@ body #main #display #heading {
 	background-position: 50% 0;*/
 	height: var(--heading-height);
 	min-width: var(--min-width);
+	position: relative;
 	width: 100%;
 	//box-shadow: inset 0 0 10px #000000;
 

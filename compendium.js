@@ -41,7 +41,24 @@ compendium.get('/', (req, res) => {
 	var locals = {};
 	//locals.user = req.session.user;
 
-	res.render('home.njk');
+	res.render('home.njk', {sidebar_items: [
+			{id: "siitem0", classname: "first", link: "./", text: "Foobar"},
+			{id: "siitem1", classname: "", link: "./", text: "Foobar"},
+			{id: "siitem2", classname: "first parent", link: "./", text: "Foobar", children: [
+				{id: "siitem3", classname: "first", link: "./", text: "Foobar"},
+				{id: "siitem4", classname: "parent", link: "./", text: "Foobar", children: [
+					{id: "siitem2", classname: "first", link: "./", text: "Foobarrrr"},
+					{id: "siitem2", classname: "parent", link: "./", text: "Foobarrrr", children: [
+						{id: "siitem2", classname: "first last", link: "./", text: "Foobarrrr"}
+					]},
+					{id: "siitem2", classname: "restart last", link: "./", text: "Foobarrrr"}
+				]},
+				{id: "siitem3", classname: "restart", link: "./", text: "Foobar"},
+				{id: "siitem3", classname: "last", link: "./", text: "Foobar"}
+			]},
+			{id: "siitem1", classname: "restart", link: "./", text: "Foobar"},
+			{id: "siitem1", classname: "last", link: "./", text: "Foobar"},
+		]});
 });
 
 compendium.post('/signup', user.signup);

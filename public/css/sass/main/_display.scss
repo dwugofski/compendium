@@ -4,4 +4,6 @@ body #main #display {
 	overflow-x: auto;
 	position: relative;
 	//width: calc(100% - var(--sidebar-width));
+	//width: calc(var(--content-width) + var(--sidebar-width));
+	//margin: 0 auto;
 }

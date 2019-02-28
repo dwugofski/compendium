@@ -64,33 +64,32 @@
 	</div>
 	<div class="clearer"></div>
 	<div id="main">
-
-		{% if sidebar_items %}
-		<div id="sidebar">
-			<div id="sidebar_items">
-				<ul id="sidebar_list">
-					{% block sidebar_list %}
-						{% for item in sidebar_items %}
-							{{ sidebar_item(item) }}
-						{% endfor %}
-					{% endblock %}
-					<li id="sidebar_footer"></li>
-				</ul>
-			</div>
-			<div id="sidebar_adjust">
-			</div>
-			<div id="sidebar_clearer" class="clearer"></div>
+		<div id="heading">
+			<h1 id="display_title">{% block display_title %}{% endblock %}</h1>
+			<h2 id="display_subtitle">{% block display_subtitle %}{% endblock %}</h2>
 		</div>
-		{% endif %}
 
 		<div id="display">
-			<div id="heading">
-				<h1 id="display_title">{% block display_title %}{% endblock %}</h1>
-				<h2 id="display_subtitle">{% block display_subtitle %}{% endblock %}</h2>
+			{% if sidebar_items %}
+			<div id="sidebar">
+				<div id="sidebar_items">
+					<ul id="sidebar_list">
+						{% block sidebar_list %}
+							{% for item in sidebar_items %}
+								{{ sidebar_item(item) }}
+							{% endfor %}
+						{% endblock %}
+						<li id="sidebar_footer"></li>
+					</ul>
+				</div>
+				<div id="sidebar_adjust">
+				</div>
 			</div>
+			{% endif %}
 			<div id="content">
 				{% block content %}{% endblock %}
 			</div>
+			<div id="sidebar_clearer" class="clearer"></div>
 		</div>
 
 		<div id="main_clearer" class="clearer"></div>

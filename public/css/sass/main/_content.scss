@@ -4,13 +4,14 @@ body #main #display #content {
 	box-sizing: border-box;
 	box-shadow: 0 0 10px #000000;
 	color: var(--fg);
+	float: right;
 	//margin: 0 auto;
 	margin-bottom: 5em;
 	// min-width: var(--content-width);
 	padding: 3em;
 	position: relative;
 	top: var(--content-adjust);
-	//width: var(--content-width);
+	width: var(--content-width);
 
 	h1 {
 		border-bottom: 0.09em solid var(--accent);

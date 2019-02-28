@@ -52,6 +52,7 @@ export function init() {
 
 function scroll_adjust() {
 	const window_height = $(window).height();
+	const window_width = $(window).width();
 	const scrolled_distance = $(window).scrollTop();
 	const header_height = header.outerHeight();
 	const navbar_height = navbar.outerHeight();
@@ -63,12 +64,25 @@ function scroll_adjust() {
 		navbar.css("position", "fixed");
 		navbar.css("top", 0);
 		main.css("margin-top", navbar_height + "px");
-		sidebar.css("height", window_height - navbar_height);
+		main.css("height", window_height - navbar_height);
 	} else {
 		navbar.css("position", "relative");
 		main.css("margin-top", 0);
-		sidebar.css("height", window_height - header_height - navbar_height + scrolled_distance);
+		main.css("height", window_height - header_height - navbar_height + scrolled_distance);
 	}
+
+	display.css("width", (sidebar.outerWidth() + content.outerWidth()));
+
+	const disp_width = display.outerWidth();
+
+	display.css("margin-left", (window_width - disp_width) / 2);
+	display.css("margin-right", (window_width - disp_width) / 2);
+	console.log(disp_width);
+	console.log(window_width);
+
+	const disp_height = display.outerHeight();
+
+	return;
 
 	if (content_height + DEFAULT_CONTENT_MARGIN < window_height - content_drop) {
 		content.css("margin-bottom", window_height - content_drop - content_height);
@@ -109,6 +123,7 @@ function resize_display() {
 }
 
 function resize_main() {
+	return scroll_adjust();
 	const main_width = main.width();
 	const sidebar_width = (sidebar.css("display") && sidebar.css("display") != "none") ? sidebar_width = sidebar.width() : 0;
 
