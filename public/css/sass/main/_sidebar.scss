@@ -13,10 +13,9 @@ body #sidebar {
 
 		ul {
 			direction: ltr;
-			margin: 0;
 			list-style: none;
+			margin: 0;
 			padding: 0;
-			white-space: nowrap;
 
 			li {
 				padding: 0;
@@ -32,144 +31,9 @@ body #sidebar {
 					font-weight: normal;
 					margin: 0;
 					padding: 0.5em;
-				}
 
-				@include transition(background-color, 0.4s);
-				@include transition(margin-right, 0.1s);
-
-				ul {
-					margin: 0;
-					box-sizing: border-box;
-					//margin-: 0.7em;
-
-					li {
-						> a {
-							background-color: var(--bg);
-							border-left: 0.1em solid var(--accent);
-							box-sizing: border-box;
-							color: var(--accent);
-							cursor: pointer;
-							font-size: 100%;
-							font-weight: normal;
-							margin: 0;
-							padding: 0.5em;
-							overflow: visible;
-							//padding-right: 2em;
-						}
-
-						ul {
-							background-color: var(--accent-light);
-							border-left: 0.2em solid var(--accent);
-							border-bottom: 0.1em solid var(--accent);
-							cursor: pointer;
-							font-size: 90%;
-							font-weight: normal;
-							margin: 0;
-							margin-left: 1em;
-							padding: 0.1em 0em 0.1em 1em;
-
-							li {
-								padding: 0;
-
-								a {
-									background-color: transparent;
-									//border-right: 0.1em solid transparent;
-									font-size: 100%;
-									padding: 0.2em 1em 0.2em 0.5em;
-									white-space: nowrap;
-								}
-
-								ul {
-									font-size: 100%;
-									padding: 0;
-									overflow: visible;
-
-									li > a {
-										margin: 0;
-										padding: 0;
-										margin-right: 0.2em;
-										text-indent: 0;
-										overflow: visible;
-									}
-									li > a:hover {
-										//margin-right: 0;
-										padding: 0;
-										padding-right: 0.2em;
-									}
-									li.parent > a:hover, li.last > a:hover {
-										padding: 0;
-										padding-right: 0.2em;
-									}
-									border: none;
-								}
-							}
-							li.last > a {
-								border: none;
-							}
-							li.parent > a {
-								border: none;
-							}
-							li.restart > a {
-								border: none;
-							}
-							/*li > a::before {
-								content: "\2013\00a0";
-							}*/
-							li > a:hover {
-								background-color: var(--accent-light);
-								border-bottom: none;
-								border-top: none;
-								font-weight: bold;
-								//margin-right: 1.5em;
-								padding: 0.2em 1em 0.2em 0em;
-							}
-							li.parent > a:hover {
-								border-bottom: none;
-								padding: 0.2em 1em 0.2em 0em;
-							}
-							li.last > a:hover {
-								padding: 0.2em 1em 0.2em 0em;
-								border-bottom: none;
-							}
-						}
-					}
-					li.first > a {
-						padding-top: 0.5em;
-					}
-					li.last > a {
-						border-bottom: 0.1em solid var(--accent);
-					}
-					li.parent > a {
-						border-bottom: 0.2em solid var(--accent);
-					}
-					li.restart > a {
-						border-top: 0.1em solid var(--accent);
-					}
-					li > a:hover {
-						background-color: var(--bg);
-						border-top: 0.1em solid var(--accent);
-						border-bottom: 0.1em solid var(--accent);
-						margin-left: -0.3em;
-						padding-top: 0.4em;
-						padding-bottom: 0.4em;
-						font-weight: bold;
-					}
-					li.first > a:hover {
-						border-top: none;
-						padding-top: 0.5em;
-					}
-					li.last > a:hover {
-						padding-bottom: 0.6em;
-						border-bottom: none;
-					}
-					li.parent > a:hover {
-						padding-bottom: 0.5em;
-						border-bottom: 0.2em solid var(--accent);
-					}
-					li.restart > a:hover {
-						padding-top: 0.5em;
-						padding-bottom: 0.4em;
-					}
+					@include transition(background-color, 0.4s);
+					@include transition(margin-right, 0.1s);
 				}
 			}
 			li.first > a {
@@ -188,6 +52,127 @@ body #sidebar {
 				background-color: var(--accent);
 				margin-left: -0.3em;
 				text-decoration: none;
+			}
+
+			ul {
+				box-sizing: border-box;
+
+				li {
+					> a {
+						background-color: var(--bg);
+						border-left: 0.1em solid var(--accent);
+						color: var(--accent);
+						font-size: 100%;
+						//padding-right: 2em;
+					}					
+				}
+				li.first > a {
+					padding-top: 0.5em;
+				}
+				li.last > a {
+					border-bottom: 0.1em solid var(--accent);
+				}
+				li.parent > a {
+					border-bottom: 0.2em solid var(--accent);
+				}
+				li.restart > a {
+					border-top: 0.1em solid var(--accent);
+				}
+				li > a:hover {
+					background-color: var(--bg);
+					border-top: 0.1em solid var(--accent);
+					border-bottom: 0.1em solid var(--accent);
+					margin-left: -0.3em;
+					padding-top: 0.4em;
+					padding-bottom: 0.4em;
+					font-weight: bold;
+				}
+				li.first > a:hover {
+					border-top: none;
+					padding-top: 0.5em;
+				}
+				li.last > a:hover {
+					padding-bottom: 0.6em;
+					border-bottom: none;
+				}
+				li.parent > a:hover {
+					padding-bottom: 0.5em;
+					border-bottom: 0.2em solid var(--accent);
+				}
+				li.restart > a:hover {
+					padding-top: 0.5em;
+					padding-bottom: 0.4em;
+				}
+
+				ul {
+					background-color: var(--accent-light);
+					border-left: 0.2em solid var(--accent);
+					border-bottom: 0.1em solid var(--accent);
+					cursor: pointer;
+					font-size: 90%;
+					font-weight: normal;
+					padding: 0.1em 0em 0.1em 1em;
+
+					li {
+						padding: 0;
+
+						> a {
+							background-color: transparent;
+							font-size: 100%;
+							padding: 0.2em 1em 0.2em 0em;
+						}
+					}
+					li.last > a {
+						border: none;
+					}
+					li.parent > a {
+						border: none;
+					}
+					li.restart > a {
+						border: none;
+					}
+					li > a:hover {
+						background-color: var(--accent-light);
+						border-bottom: none;
+						border-top: none;
+						color: var(--accent-dark);
+						font-weight: bold;
+						//margin-right: 1.5em;
+						padding: 0.2em 1em 0.2em 0em;
+					}
+					li.parent > a:hover {
+						border-bottom: none;
+						padding: 0.2em 1em 0.2em 0em;
+					}
+					li.last > a:hover {
+						padding: 0.2em 1em 0.2em 0em;
+						border-bottom: none;
+					}
+
+					ul {
+						font-size: 100%;
+						padding: 0;
+						overflow: visible;
+
+						li > a {
+							margin: 0;
+							padding: 0;
+							margin-right: 0.2em;
+							text-indent: 0;
+							overflow: visible;
+						}
+						li > a:hover {
+							//margin-right: 0;
+							padding: 0;
+							padding-right: 0.2em;
+						}
+						li.parent > a:hover, li.last > a:hover {
+							padding: 0;
+							padding-right: 0.2em;
+						}
+						border: none;
+					}
+				}
 			}
 		}
 	}
