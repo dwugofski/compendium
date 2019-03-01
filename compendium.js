@@ -44,20 +44,20 @@ compendium.get('/', (req, res) => {
 	res.render('home.njk', {sidebar_items: [
 			{id: "siitem0", classname: "first", link: "./", text: "Foobar"},
 			{id: "siitem1", classname: "", link: "./", text: "Foobar"},
-			{id: "siitem2", classname: "first parent", link: "./", text: "Foobar", children: [
+			{id: "siitem2", classname: "parent", link: "./", text: "Foobar", children: [
 				{id: "siitem3", classname: "first", link: "./", text: "Foobar"},
 				{id: "siitem4", classname: "parent", link: "./", text: "Foobar", children: [
-					{id: "siitem2", classname: "first", link: "./", text: "Foobarrrr"},
-					{id: "siitem2", classname: "parent", link: "./", text: "Foobarrrr", children: [
-						{id: "siitem2", classname: "first last", link: "./", text: "Foobarrrr"}
+					{id: "siitem5", classname: "first", link: "./", text: "Foobarrrr"},
+					{id: "siitem6", classname: "parent", link: "./", text: "Foobarrrr", children: [
+						{id: "siitem7", classname: "first last", link: "./", text: "Foobarrrr"}
 					]},
-					{id: "siitem2", classname: "restart last", link: "./", text: "Foobarrrr"}
+					{id: "siitem8", classname: "restart last", link: "./", text: "Foobarrrr"}
 				]},
-				{id: "siitem3", classname: "restart", link: "./", text: "Foobar"},
-				{id: "siitem3", classname: "last", link: "./", text: "Foobar"}
+				{id: "siitem9", classname: "restart", link: "./", text: "Foobar"},
+				{id: "siitem10", classname: "last", link: "./", text: "Foobar"}
 			]},
-			{id: "siitem1", classname: "restart", link: "./", text: "Foobar"},
-			{id: "siitem1", classname: "last", link: "./", text: "Foobar"},
+			{id: "siitem11", classname: "restart", link: "./", text: "Foobar"},
+			{id: "siitem12", classname: "last", link: "./", text: "Foobar"},
 		]});
 });
 

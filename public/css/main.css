@@ -180,7 +180,7 @@ body #sidebar {
   float: left;
   overflow-y: auto;
   position: fixed;
-  max-width: 1000px;
+  width: var(--sidebar-width);
   /*
   #sidebar_adjust {
   	//background-color: var(--accent);
@@ -200,19 +200,12 @@ body #sidebar {
     width: calc(100% - 10px); }
     body #sidebar #sidebar_items ul {
       direction: ltr;
-      margin: 0;
       list-style: none;
-      padding: 0;
-      white-space: nowrap; }
+      margin: 0;
+      padding: 0; }
       body #sidebar #sidebar_items ul li {
         padding: 0;
-        padding-left: 2em;
-        -moz-transition: background-color 0.4s;
-        -webkit-transition: background-color 0.4s;
-        transition: background-color 0.4s;
-        -moz-transition: margin-right 0.1s;
-        -webkit-transition: margin-right 0.1s;
-        transition: margin-right 0.1s; }
+        padding-left: 0.5em; }
         body #sidebar #sidebar_items ul li > a {
           background-color: var(--accent);
           border-left: 0.1em solid var(--accent-dark);
@@ -222,104 +215,15 @@ body #sidebar {
           font-size: 100%;
           font-weight: normal;
           margin: 0;
-          padding: 0.5em; }
-        body #sidebar #sidebar_items ul li ul {
-          margin: 0;
-          box-sizing: border-box; }
-          body #sidebar #sidebar_items ul li ul li > a {
-            background-color: var(--bg);
-            border-left: 0.1em solid var(--accent);
-            box-sizing: border-box;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 100%;
-            font-weight: normal;
-            margin: 0;
-            padding: 0.5em;
-            overflow: visible; }
-          body #sidebar #sidebar_items ul li ul li ul {
-            background-color: var(--accent-light);
-            border-left: 0.2em solid var(--accent);
-            border-bottom: 0.1em solid var(--accent);
-            cursor: pointer;
-            font-size: 90%;
-            font-weight: normal;
-            margin: 0;
-            margin-left: 1em;
-            padding: 0.1em 0em 0.1em 1em;
-            /*li > a::before {
-            	content: "\2013\00a0";
-            }*/ }
-            body #sidebar #sidebar_items ul li ul li ul li {
-              padding: 0; }
-              body #sidebar #sidebar_items ul li ul li ul li a {
-                background-color: transparent;
-                font-size: 100%;
-                padding: 0.2em 1em 0.2em 0.5em;
-                white-space: nowrap; }
-              body #sidebar #sidebar_items ul li ul li ul li ul {
-                font-size: 100%;
-                padding: 0;
-                overflow: visible;
-                border: none; }
-                body #sidebar #sidebar_items ul li ul li ul li ul li > a {
-                  margin: 0;
-                  padding: 0;
-                  margin-right: 0.2em;
-                  text-indent: 0;
-                  overflow: visible; }
-                body #sidebar #sidebar_items ul li ul li ul li ul li > a:hover {
-                  padding: 0;
-                  padding-right: 0.2em; }
-                body #sidebar #sidebar_items ul li ul li ul li ul li.parent > a:hover, body #sidebar #sidebar_items ul li ul li ul li ul li.last > a:hover {
-                  padding: 0;
-                  padding-right: 0.2em; }
-            body #sidebar #sidebar_items ul li ul li ul li.last > a {
-              border: none; }
-            body #sidebar #sidebar_items ul li ul li ul li.parent > a {
-              border: none; }
-            body #sidebar #sidebar_items ul li ul li ul li.restart > a {
-              border: none; }
-            body #sidebar #sidebar_items ul li ul li ul li > a:hover {
-              background-color: var(--accent-light);
-              border-bottom: none;
-              border-top: none;
-              font-weight: bold;
-              padding: 0.2em 1em 0.2em 0em; }
-            body #sidebar #sidebar_items ul li ul li ul li.parent > a:hover {
-              border-bottom: none;
-              padding: 0.2em 1em 0.2em 0em; }
-            body #sidebar #sidebar_items ul li ul li ul li.last > a:hover {
-              padding: 0.2em 1em 0.2em 0em;
-              border-bottom: none; }
-          body #sidebar #sidebar_items ul li ul li.first > a {
-            padding-top: 0.5em; }
-          body #sidebar #sidebar_items ul li ul li.last > a {
-            border-bottom: 0.1em solid var(--accent); }
-          body #sidebar #sidebar_items ul li ul li.parent > a {
-            border-bottom: 0.2em solid var(--accent); }
-          body #sidebar #sidebar_items ul li ul li.restart > a {
-            border-top: 0.1em solid var(--accent); }
-          body #sidebar #sidebar_items ul li ul li > a:hover {
-            background-color: var(--bg);
-            border-top: 0.1em solid var(--accent);
-            border-bottom: 0.1em solid var(--accent);
-            margin-left: -0.3em;
-            padding-top: 0.4em;
-            padding-bottom: 0.4em;
-            font-weight: bold; }
-          body #sidebar #sidebar_items ul li ul li.first > a:hover {
-            border-top: none;
-            padding-top: 0.5em; }
-          body #sidebar #sidebar_items ul li ul li.last > a:hover {
-            padding-bottom: 0.6em;
-            border-bottom: none; }
-          body #sidebar #sidebar_items ul li ul li.parent > a:hover {
-            padding-bottom: 0.5em;
-            border-bottom: 0.2em solid var(--accent); }
-          body #sidebar #sidebar_items ul li ul li.restart > a:hover {
-            padding-top: 0.5em;
-            padding-bottom: 0.4em; }
+          padding: 0.5em;
+          -moz-transition: background-color 0.4s;
+          -webkit-transition: background-color 0.4s;
+          transition: background-color 0.4s;
+          -moz-transition: margin-right 0.1s;
+          -webkit-transition: margin-right 0.1s;
+          transition: margin-right 0.1s; }
+      body #sidebar #sidebar_items ul li.first > a {
+        border-top: 0.1em solid var(--accent-dark); }
       body #sidebar #sidebar_items ul li.parent > a {
         border-bottom: 0.1em solid var(--accent-dark); }
       body #sidebar #sidebar_items ul li.restart > a {
@@ -327,9 +231,109 @@ body #sidebar {
       body #sidebar #sidebar_items ul li.last > a {
         border-bottom: 0.1em solid var(--accent-dark); }
       body #sidebar #sidebar_items ul li > a:hover {
+        border-top: 0.1em solid var(--accent-dark);
+        border-bottom: 0.1em solid var(--accent-dark);
         background-color: var(--accent);
         margin-left: -0.3em;
+        padding-top: 0.4em;
+        padding-bottom: 0.4em;
         text-decoration: none; }
+      body #sidebar #sidebar_items ul li.first > a:hover, body #sidebar #sidebar_items ul li.restart > a:hover {
+        padding-top: 0.5em; }
+      body #sidebar #sidebar_items ul li.parent > a:hover {
+        padding-bottom: 0.5em; }
+      body #sidebar #sidebar_items ul ul {
+        box-sizing: border-box; }
+        body #sidebar #sidebar_items ul ul li > a {
+          background-color: var(--bg);
+          border-left: 0.1em solid var(--accent);
+          color: var(--accent);
+          font-size: 100%; }
+        body #sidebar #sidebar_items ul ul li.first > a {
+          padding-top: 0.5em; }
+        body #sidebar #sidebar_items ul ul li.last > a {
+          border-bottom: 0.1em solid var(--accent); }
+        body #sidebar #sidebar_items ul ul li.parent > a {
+          border-bottom: 0.2em solid var(--accent); }
+        body #sidebar #sidebar_items ul ul li.restart > a {
+          border-top: 0.1em solid var(--accent); }
+        body #sidebar #sidebar_items ul ul li > a:hover {
+          background-color: var(--bg);
+          border-top: 0.1em solid var(--accent);
+          border-bottom: 0.1em solid var(--accent);
+          margin-left: -0.3em;
+          padding-top: 0.4em;
+          padding-bottom: 0.4em;
+          font-weight: bold; }
+        body #sidebar #sidebar_items ul ul li.first > a:hover {
+          border-top: none;
+          padding-top: 0.5em; }
+        body #sidebar #sidebar_items ul ul li.last > a:hover {
+          padding-bottom: 0.6em;
+          border-bottom: none; }
+        body #sidebar #sidebar_items ul ul li.parent > a:hover {
+          padding-bottom: 0.5em;
+          border-bottom: 0.2em solid var(--accent); }
+        body #sidebar #sidebar_items ul ul li.restart > a:hover {
+          padding-top: 0.5em;
+          padding-bottom: 0.4em; }
+        body #sidebar #sidebar_items ul ul ul {
+          background-color: var(--accent-light);
+          border-left: 0.2em solid var(--accent);
+          border-bottom: 0.1em solid var(--accent);
+          cursor: pointer;
+          font-size: 90%;
+          font-weight: normal;
+          padding: 0.1em 0em 0.1em 0em; }
+          body #sidebar #sidebar_items ul ul ul li {
+            padding: 0.2em 0.5em; }
+            body #sidebar #sidebar_items ul ul ul li > a {
+              background-color: transparent;
+              font-size: 100%;
+              padding: 0; }
+          body #sidebar #sidebar_items ul ul ul li.first > a {
+            border: none; }
+          body #sidebar #sidebar_items ul ul ul li.last > a {
+            border: none; }
+          body #sidebar #sidebar_items ul ul ul li.parent > a {
+            border: none; }
+          body #sidebar #sidebar_items ul ul ul li.restart > a {
+            border: none; }
+          body #sidebar #sidebar_items ul ul ul li > a:hover {
+            background-color: var(--accent-light);
+            border-bottom: none;
+            border-top: none;
+            color: var(--accent-dark);
+            font-weight: bold;
+            margin-left: 0em;
+            padding: 0;
+            display: inline-block; }
+          body #sidebar #sidebar_items ul ul ul li.parent > a:hover {
+            border-bottom: none;
+            padding: 0; }
+          body #sidebar #sidebar_items ul ul ul li.last > a:hover {
+            padding: 0;
+            border-bottom: none; }
+          body #sidebar #sidebar_items ul ul ul ul {
+            border: none;
+            font-size: 100%;
+            padding: 0;
+            /*
+            li > a:hover {
+            	//margin-right: 0;
+            	padding: 0;
+            	//padding-right: 0.2em;
+            }
+            li.parent > a:hover, li.last > a:hover {
+            	padding: 0.1em;
+            	//padding-right: 0.2em;
+            }*/ }
+            body #sidebar #sidebar_items ul ul ul ul li > a {
+              margin: 0;
+              padding: 0.2em;
+              text-indent: 0;
+              overflow: hidden;
+              white-space: nowrap; }
 
 body #sidebar::-webkit-scrollbar {
   width: 0px;

@@ -5,7 +5,7 @@ body #sidebar {
 	float: left;
 	overflow-y: auto;
 	position: fixed;
-	max-width: 1000px;
+	width: var(--sidebar-width);
 
 	#sidebar_items {
 		float: right;
@@ -19,7 +19,7 @@ body #sidebar {
 
 			li {
 				padding: 0;
-				padding-left: 2em;
+				padding-left: 0.5em;
 
 				> a {
 					background-color: var(--accent);
@@ -37,7 +37,7 @@ body #sidebar {
 				}
 			}
 			li.first > a {
-				//padding-top: 1em;
+				border-top: 0.1em solid var(--accent-dark);
 			}
 			li.parent > a {
 				border-bottom: 0.1em solid var(--accent-dark);
@@ -49,9 +49,19 @@ body #sidebar {
 				border-bottom: 0.1em solid var(--accent-dark);
 			}
 			li > a:hover {
+				border-top: 0.1em solid var(--accent-dark);
+				border-bottom: 0.1em solid var(--accent-dark);
 				background-color: var(--accent);
 				margin-left: -0.3em;
+				padding-top: 0.4em;
+				padding-bottom: 0.4em;
 				text-decoration: none;
+			}
+			li.first > a:hover, li.restart > a:hover {
+				padding-top: 0.5em;
+			}
+			li.parent > a:hover {
+				padding-bottom: 0.5em;
 			}
 
 			ul {
@@ -111,16 +121,20 @@ body #sidebar {
 					cursor: pointer;
 					font-size: 90%;
 					font-weight: normal;
-					padding: 0.1em 0em 0.1em 1em;
+					//margin-left: 1em;
+					padding: 0.1em 0em 0.1em 0em;
 
 					li {
-						padding: 0;
+						padding: 0.2em 0.5em;
 
 						> a {
 							background-color: transparent;
 							font-size: 100%;
-							padding: 0.2em 1em 0.2em 0em;
+							padding: 0;
 						}
+					}
+					li.first > a {
+						border: none;
 					}
 					li.last > a {
 						border: none;
@@ -137,40 +151,43 @@ body #sidebar {
 						border-top: none;
 						color: var(--accent-dark);
 						font-weight: bold;
-						//margin-right: 1.5em;
-						padding: 0.2em 1em 0.2em 0em;
+						margin-left: 0em;
+							padding: 0;
+					display: inline-block;
 					}
 					li.parent > a:hover {
 						border-bottom: none;
-						padding: 0.2em 1em 0.2em 0em;
+						padding: 0;
 					}
 					li.last > a:hover {
-						padding: 0.2em 1em 0.2em 0em;
+						padding: 0;
 						border-bottom: none;
 					}
 
 					ul {
+						border: none;
 						font-size: 100%;
 						padding: 0;
-						overflow: visible;
 
 						li > a {
 							margin: 0;
-							padding: 0;
-							margin-right: 0.2em;
+							//margin-right: 1em;
+							//border-right: 1em solid transparent !important;
+							padding: 0.2em;
 							text-indent: 0;
-							overflow: visible;
+							overflow: hidden;
+    						white-space: nowrap;
 						}
+						/*
 						li > a:hover {
 							//margin-right: 0;
 							padding: 0;
-							padding-right: 0.2em;
+							//padding-right: 0.2em;
 						}
 						li.parent > a:hover, li.last > a:hover {
-							padding: 0;
-							padding-right: 0.2em;
-						}
-						border: none;
+							padding: 0.1em;
+							//padding-right: 0.2em;
+						}*/
 					}
 				}
 			}
@@ -210,3 +227,4 @@ body #sidebar:hover, body #sidebar.hover {
 body #main.no-sidebar #sidebar {
 	display: none;
 }
+
