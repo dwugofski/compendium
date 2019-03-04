@@ -109,37 +109,6 @@ body #navbar {
   padding: 0 1em;
   width: 100%;
   z-index: 4; }
-  body #navbar .dropdown .dropdown-menu {
-    background-color: var(--bg-light);
-    border: 2px solid var(--accent-dark);
-    border-radius: 0.2em;
-    box-shadow: 0px 2px 10px var(--accent-dark);
-    margin-top: 0;
-    min-width: 15em;
-    padding: 0.2em 0; }
-    body #navbar .dropdown .dropdown-menu li {
-      cursor: pointer;
-      color: var(--accent);
-      padding: 0.2em 0.7em;
-      -moz-transition: background-color 0.4s;
-      -webkit-transition: background-color 0.4s;
-      transition: background-color 0.4s; }
-      body #navbar .dropdown .dropdown-menu li a {
-        background-color: transparent;
-        color: inherit;
-        padding: 0; }
-    body #navbar .dropdown .dropdown-menu li:hover {
-      background-color: var(--accent-light); }
-      body #navbar .dropdown .dropdown-menu li:hover a {
-        background-color: transparent; }
-    body #navbar .dropdown .dropdown-menu li.spacer {
-      cursor: default;
-      border-bottom: 0.1em solid var(--bg-dark);
-      height: 0;
-      margin: 1px 0;
-      padding: 0; }
-    body #navbar .dropdown .dropdown-menu li.spacer:hover {
-      background-color: var(--bg-light); }
   body #navbar .navopt {
     color: var(--fg-light);
     cursor: pointer;
@@ -161,6 +130,41 @@ body #navbar {
   body #navbar .navopt.button:hover {
     background-color: var(--bg);
     color: var(--accent); }
+  body #navbar .dropdown {
+    padding: 0; }
+    body #navbar .dropdown .dropdown-toggle {
+      padding: 0.7em; }
+    body #navbar .dropdown .dropdown-menu {
+      background-color: var(--bg-light);
+      border: 2px solid var(--accent-dark);
+      border-radius: 0.2em;
+      box-shadow: 0px 2px 10px var(--accent-dark);
+      margin-top: 0;
+      min-width: 15em;
+      padding: 0.2em 0; }
+      body #navbar .dropdown .dropdown-menu li {
+        cursor: pointer;
+        color: var(--accent);
+        padding: 0.2em 0.7em;
+        -moz-transition: background-color 0.4s;
+        -webkit-transition: background-color 0.4s;
+        transition: background-color 0.4s; }
+        body #navbar .dropdown .dropdown-menu li a {
+          background-color: transparent;
+          color: inherit;
+          padding: 0; }
+      body #navbar .dropdown .dropdown-menu li:hover {
+        background-color: var(--accent-light); }
+        body #navbar .dropdown .dropdown-menu li:hover a {
+          background-color: transparent; }
+      body #navbar .dropdown .dropdown-menu li.spacer {
+        cursor: default;
+        border-bottom: 0.1em solid var(--bg-dark);
+        height: 0;
+        margin: 1px 0;
+        padding: 0; }
+      body #navbar .dropdown .dropdown-menu li.spacer:hover {
+        background-color: var(--bg-light); }
 
 body #main {
   background-color: black;
@@ -203,6 +207,14 @@ body #sidebar {
       list-style: none;
       margin: 0;
       padding: 0; }
+      body #sidebar #sidebar_items ul li#sidebar_list_header {
+        background-color: var(--accent-dark);
+        border-radius: 0.5em 0 0 0;
+        color: var(--fg-light);
+        font-size: 150%;
+        margin-top: 1em;
+        padding: 0.3em;
+        padding-left: 0.5em; }
       body #sidebar #sidebar_items ul li {
         padding: 0;
         padding-left: 0.5em; }
@@ -228,8 +240,10 @@ body #sidebar {
         border-bottom: 0.1em solid var(--accent-dark); }
       body #sidebar #sidebar_items ul li.restart > a {
         border-top: 0.1em solid var(--accent-dark); }
-      body #sidebar #sidebar_items ul li.last > a {
-        border-bottom: 0.1em solid var(--accent-dark); }
+      body #sidebar #sidebar_items ul li.last > a, body #sidebar #sidebar_items ul li.final > a {
+        border-bottom: 0.1em solid var(--accent-dark);
+        border-radius: 0 0 0 0.7em;
+        margin-bottom: 0.7em; }
       body #sidebar #sidebar_items ul li > a:hover {
         border-top: 0.1em solid var(--accent-dark);
         border-bottom: 0.1em solid var(--accent-dark);
@@ -240,19 +254,24 @@ body #sidebar {
         text-decoration: none; }
       body #sidebar #sidebar_items ul li.first > a:hover, body #sidebar #sidebar_items ul li.restart > a:hover {
         padding-top: 0.5em; }
-      body #sidebar #sidebar_items ul li.parent > a:hover {
+      body #sidebar #sidebar_items ul li.parent > a:hover, body #sidebar #sidebar_items ul li.last > a:hover, body #sidebar #sidebar_items ul li.final > a:hover {
         padding-bottom: 0.5em; }
       body #sidebar #sidebar_items ul ul {
         box-sizing: border-box; }
-        body #sidebar #sidebar_items ul ul li > a {
-          background-color: var(--bg);
-          border-left: 0.1em solid var(--accent);
-          color: var(--accent);
-          font-size: 100%; }
+        body #sidebar #sidebar_items ul ul li {
+          padding-left: 1em; }
+          body #sidebar #sidebar_items ul ul li > a {
+            background-color: var(--bg);
+            border-left: 0.1em solid var(--accent);
+            color: var(--accent);
+            font-size: 100%; }
         body #sidebar #sidebar_items ul ul li.first > a {
+          border-top: none;
           padding-top: 0.5em; }
         body #sidebar #sidebar_items ul ul li.last > a {
-          border-bottom: 0.1em solid var(--accent); }
+          border-bottom: none;
+          border-radius: 0;
+          margin-bottom: 0em; }
         body #sidebar #sidebar_items ul ul li.parent > a {
           border-bottom: 0.2em solid var(--accent); }
         body #sidebar #sidebar_items ul ul li.restart > a {
@@ -269,7 +288,7 @@ body #sidebar {
           border-top: none;
           padding-top: 0.5em; }
         body #sidebar #sidebar_items ul ul li.last > a:hover {
-          padding-bottom: 0.6em;
+          padding-bottom: 0.5em;
           border-bottom: none; }
         body #sidebar #sidebar_items ul ul li.parent > a:hover {
           padding-bottom: 0.5em;
@@ -280,10 +299,10 @@ body #sidebar {
         body #sidebar #sidebar_items ul ul ul {
           background-color: var(--accent-light);
           border-left: 0.2em solid var(--accent);
-          border-bottom: 0.1em solid var(--accent);
           cursor: pointer;
           font-size: 90%;
           font-weight: normal;
+          margin-left: 1em;
           padding: 0.1em 0em 0.1em 0em; }
           body #sidebar #sidebar_items ul ul ul li {
             padding: 0.2em 0.5em; }
@@ -306,8 +325,7 @@ body #sidebar {
             color: var(--accent-dark);
             font-weight: bold;
             margin-left: 0em;
-            padding: 0;
-            display: inline-block; }
+            padding: 0; }
           body #sidebar #sidebar_items ul ul ul li.parent > a:hover {
             border-bottom: none;
             padding: 0; }
@@ -317,23 +335,19 @@ body #sidebar {
           body #sidebar #sidebar_items ul ul ul ul {
             border: none;
             font-size: 100%;
-            padding: 0;
-            /*
-            li > a:hover {
-            	//margin-right: 0;
-            	padding: 0;
-            	//padding-right: 0.2em;
-            }
-            li.parent > a:hover, li.last > a:hover {
-            	padding: 0.1em;
-            	//padding-right: 0.2em;
-            }*/ }
+            padding: 0; }
             body #sidebar #sidebar_items ul ul ul ul li > a {
               margin: 0;
               padding: 0.2em;
               text-indent: 0;
               overflow: hidden;
               white-space: nowrap; }
+            body #sidebar #sidebar_items ul ul ul ul li.first > a, body #sidebar #sidebar_items ul ul ul ul li.parent > a, body #sidebar #sidebar_items ul ul ul ul li.last > a {
+              padding: 0.2em; }
+            body #sidebar #sidebar_items ul ul ul ul li > a:hover {
+              padding: 0.2em; }
+            body #sidebar #sidebar_items ul ul ul ul li.first > a:hover, body #sidebar #sidebar_items ul ul ul ul li.parent > a:hover, body #sidebar #sidebar_items ul ul ul ul li.last > a:hover {
+              padding: 0.2em; }
 
 body #sidebar::-webkit-scrollbar {
   width: 0px;

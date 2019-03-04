@@ -77,8 +77,11 @@ function scroll_adjust() {
 
 	display.css("margin-left", (window_width - disp_width) / 2);
 	display.css("margin-right", (window_width - disp_width) / 2);
-	console.log(disp_width);
-	console.log(window_width);
+	//console.log(disp_width);
+	//console.log(window_width);
+
+	const sidebar_height = sidebar.outerHeight();
+	if (sidebar_height > content.height()) content.css('height', sidebar_height);
 
 	const disp_height = display.outerHeight();
 

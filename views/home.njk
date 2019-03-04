@@ -15,7 +15,13 @@
 
 {% block navbars %}
 	{% include "navopts/navopt_home.njk" %}
-	{% include "navopts/navopt_sign_in.njk" %}
+	{% set dd_link_text = "Hello World!" %}
+	{% include "navopts/navopt_dropdown.njk" %}
+	{% if user %}
+		{% include "navopts/navopt_user.njk" %}
+	{% else %}
+		{% include "navopts/navopt_sign_in.njk" %}
+	{% endif %}
 {% endblock %}
 
 {% block screens %}

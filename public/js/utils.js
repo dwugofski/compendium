@@ -2,6 +2,44 @@
 import * as Verify from "./verification.js";
 import { Bindable } from "./jclasses.js";
 
+export class Cookies {
+	static set(name, value, expiry=30) {
+		var d = new Date();
+		var expiration_ms = 0;
+		if (typeof expiry == "obejct") {
+			if (expiry.years) expiration_ms += expiry.years * 365 * 24 * 60 * 60 * 1000;
+			if (expiry.months) expiration_ms += expiry.months * 30 * 24 * 60 * 60 * 1000;
+			if (expiry.days) expiration_ms += expiry.days * 24 * 60 * 60 * 1000;
+			if (expiry.hours) expiration_ms += expiry.hours * 60 * 60 * 1000;
+			if (expiry.minutes) expiration_ms += expiry.minutes * 60 * 1000;
+			if (expiry.seconds) expiration_ms += expiry.seconds * 1000;
+		} else expiration_ms = expiry * 24 * 60 * 60 * 1000;
+
+		const expires = d.toUTCString();
+		document.cookie = name + "=" + JSON.stringify(value) + ";" + expires + ";path=/";
+	}
+
+	static get(name) {
+		const search = name + "=";
+		const cookies = decodeURIComponent(document.cookie);
+		const cookie_arr = cookies.split(';');
+		for (var i = 0; i < cookie_arr.length; i++) {
+			let cookie = cookie_arr[i];
+			while (cookie.charAt(0) == ' ') {
+				cookie = cookie.substring(1);
+			}
+			if (cookie.indexOf(search) == 0) {
+				return JSON.parse(cookie.substring(name.length, cookie.length));
+			}
+		}
+		return undefined;
+	}
+
+	static delete(name) {
+		this.set(name, null, -1);
+	}
+}
+
 export class Screen {
 	constructor(screen_id) {
 		const screen = $('#'+screen_id);
@@ -99,11 +137,15 @@ export class Form extends Bindable(Object) {
 				if (key == '13') this.submit();
 			}).bind(this));
 		}
+
+		this.update_data();
 	}
 
 	add_submit(submitter_id) {
 		$('#'+submitter_id).click(this.submit.bind(this));
 		this.submitters.push(submitter_id);
+
+		this.update_data();
 	}
 
 	add_error_box(error_box_id) {
@@ -117,7 +159,7 @@ export class Form extends Bindable(Object) {
 			if (!str) ebox.slideUp();
 			else {
 				ebox.slideDown();
-				ebox.html(str);
+				ebox.html(str.responseText);
 			}
 		}
 	}
@@ -130,6 +172,7 @@ export class Form extends Bindable(Object) {
 				o[i.name] = i.value;
 				return o;
 			}, {});
+			console.log(form_data);
 			$.ajax({
 				url: this.url,
 				type: "POST",

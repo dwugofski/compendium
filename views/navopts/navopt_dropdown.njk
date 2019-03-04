@@ -1,0 +1,14 @@
+{% if fr %}
+<div id="{{id}}" class="navopt dropdown fr">
+{% else %}
+<div id="{{id}}" class="navopt dropdown fl">
+{% endif %}
+	<div id="dd_{{id}}" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+		{{ dd_link_text }}&nbsp;&nbsp;&nbsp;&nbsp;&#9660;
+	</div>
+	<ul class="dropdown-menu" aria-labelledby="dd_{{id}}">
+		{% block dd_menu_items %}
+		{% endblock %}
+	</ul>
+</div>
+

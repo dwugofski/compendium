@@ -554,20 +554,22 @@ class User extends Accessor {
 exports.User = User;
 
 exports.signup = (req, res, next) => {
-	const username = req.params.username;
-	const email = req.params.email;
-	const password = req.params.password1;
+	const username = req.body.username;
+	const email = req.body.email;
+	const password = req.body.password1;
+
+	console.log("Trying signup");
 
 	if (!User.validate_username(username)) throw new UserFieldError('Invalid username!');
 	else if (!User.validate_email(email)) throw new UserFieldError('Invalid email!');
-	else if (!User.validate_password(password1)) throw new UserFieldError('Invalid password!');
+	else if (!User.validate_password(password)) throw new UserFieldError('Invalid password!');
 	else {
-		User.find(username, 'user').then((user_exists) => {
+		User.is(username, 'user').then((user_exists) => {
 			if (user_exists) throw new UserExistsError('Username already in use!');
-			else return User.find(email, 'email');
+			else return User.is(email, 'email');
 		}).then((email_exists) => {
 			if (email_exists) throw new UserExistsError('Email already in use!');
-			else return User.create();
+			else return User.create(username, password, email);
 		}).then((new_user) => {
 			return new_user.username();
 		}).then((username) => {
@@ -581,8 +583,8 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-	const identity = req.params.user;
-	const password = req.params.password;
+	const identity = req.body.user;
+	const password = req.body.password;
 	var identifier = 'username';
 
 	if ( !User.validate_username(identity) && !User.validate_email(identity) ) throw new UserFieldError('Invalid username / email');
@@ -590,7 +592,7 @@ exports.login = (req, res, next) => {
 	else {
 		if ( !User.validate_username(identity) ) identifier = 'email';
 
-		User.find(identity, identifier).then((user_found) => {
+		User.is(identity, identifier).then((user_found) => {
 			if (!user_found) {
 				if (identifier == 'email') throw new UserNotFoundError('User email not found');
 				else if ( !User.validate_email(identity) ) throw new UserNotFoundError('Username not found');
@@ -604,10 +606,21 @@ exports.login = (req, res, next) => {
 			} else return User.build(identity, identifier);
 		}).then((user) => {
 			req.session.user = user;
-			console.log(`User '${user.username}' logged on`);
-			res.status(200).location('/user/'+user.username).send(`Successfully logged on as '${user.username}'`);
+			return user.generate_token();
+		}).then((token) => {
+			console.log(token);
+			let user = req.session.user;
+			req.session.user_token = token;
+			let response = {
+				message: `Successfully logged on as ${user.props.username}`,
+				token: token
+			};
+			res.status(200).location('/user/'+user.props.username).send(JSON.stringify(response));
 		}).catch((err) => {
-			if (err instanceof UserNotFoundError) res.status(400).send(err.message);
+			console.log(`Caught`);
+			console.log(err);
+			if (err instanceof UserNotFoundError) res.status(404).send(err.message);
+			else if (err instanceof UserFieldError) res.status(400).send(err.message);
 			else next(err);
 		});
 	}

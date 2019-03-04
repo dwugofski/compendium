@@ -17,6 +17,17 @@ body #sidebar {
 			margin: 0;
 			padding: 0;
 
+			li#sidebar_list_header {
+				background-color: var(--accent-dark);
+				border-radius: 0.5em 0 0 0;
+				//border: 0.1em solid var(--fg-light);
+				color: var(--fg-light);
+				font-size: 150%;
+				margin-top: 1em;
+				padding: 0.3em;
+				padding-left: 0.5em;
+			}
+
 			li {
 				padding: 0;
 				padding-left: 0.5em;
@@ -45,8 +56,10 @@ body #sidebar {
 			li.restart > a {
 				border-top: 0.1em solid var(--accent-dark);
 			}
-			li.last > a {
+			li.last > a, li.final > a {
 				border-bottom: 0.1em solid var(--accent-dark);
+				border-radius: 0 0 0 0.7em;
+				margin-bottom: 0.7em;
 			}
 			li > a:hover {
 				border-top: 0.1em solid var(--accent-dark);
@@ -60,7 +73,7 @@ body #sidebar {
 			li.first > a:hover, li.restart > a:hover {
 				padding-top: 0.5em;
 			}
-			li.parent > a:hover {
+			li.parent > a:hover, li.last > a:hover, li.final > a:hover {
 				padding-bottom: 0.5em;
 			}
 
@@ -68,6 +81,8 @@ body #sidebar {
 				box-sizing: border-box;
 
 				li {
+					padding-left: 1em;
+
 					> a {
 						background-color: var(--bg);
 						border-left: 0.1em solid var(--accent);
@@ -77,10 +92,13 @@ body #sidebar {
 					}					
 				}
 				li.first > a {
+					border-top: none;
 					padding-top: 0.5em;
 				}
 				li.last > a {
-					border-bottom: 0.1em solid var(--accent);
+					border-bottom: none;
+					border-radius: 0;
+					margin-bottom: 0em;
 				}
 				li.parent > a {
 					border-bottom: 0.2em solid var(--accent);
@@ -102,7 +120,7 @@ body #sidebar {
 					padding-top: 0.5em;
 				}
 				li.last > a:hover {
-					padding-bottom: 0.6em;
+					padding-bottom: 0.5em;
 					border-bottom: none;
 				}
 				li.parent > a:hover {
@@ -117,11 +135,10 @@ body #sidebar {
 				ul {
 					background-color: var(--accent-light);
 					border-left: 0.2em solid var(--accent);
-					border-bottom: 0.1em solid var(--accent);
 					cursor: pointer;
 					font-size: 90%;
 					font-weight: normal;
-					//margin-left: 1em;
+					margin-left: 1em;
 					padding: 0.1em 0em 0.1em 0em;
 
 					li {
@@ -152,8 +169,7 @@ body #sidebar {
 						color: var(--accent-dark);
 						font-weight: bold;
 						margin-left: 0em;
-							padding: 0;
-					display: inline-block;
+						padding: 0;
 					}
 					li.parent > a:hover {
 						border-bottom: none;
@@ -178,16 +194,19 @@ body #sidebar {
 							overflow: hidden;
     						white-space: nowrap;
 						}
-						/*
-						li > a:hover {
-							//margin-right: 0;
-							padding: 0;
+						li.first > a, li.parent > a, li.last > a {
+							padding: 0.2em;
 							//padding-right: 0.2em;
 						}
-						li.parent > a:hover, li.last > a:hover {
-							padding: 0.1em;
+						li > a:hover {
+							//margin-right: 0;
+							padding: 0.2em;
 							//padding-right: 0.2em;
-						}*/
+						}
+						li.first > a:hover, li.parent > a:hover, li.last > a:hover {
+							padding: 0.2em;
+							//padding-right: 0.2em;
+						}
 					}
 				}
 			}
