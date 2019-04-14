@@ -12,33 +12,41 @@ class EditorBridge extends Classable(Object) {
 	}
 
 	_track_generic(type, base) {
+		// Track changes to a 'base' (e.g. 'mark'/'block') called 'type' (e.g. 'bold'/'paragraph')
 		if (typeof type == 'string' && type.length > 0 && this.has_class_toggle(type)) return;
 
 		this.add_class_toggle(type);
 
+		// Since each mark/block is uniquely named and is a class option for the bridge, we can use the 
+		// this[type] property of the Classable interface to determine if that type is active
 		Object.defineProperty(this[base+"s"], [type], {
 			configurable: true,
 			get: () => { return this[type]; },
-			set: (value) => { this[type] = value; }
+			set: (value) => { if (this[type] !== undefined) this[type] = value; }
 		});
 
-		this['bind_make_'+type]((() => { this["on_"+base+"_change"](type); }).bind(this));
-		this['bind_un_'+type]((() => { this["on_"+base+"_change"](type); }).bind(this));
+		this['bind_make_'+type]((() => { this[base+"_change"](type); }).bind(this));
+		this['bind_un_'+type]((() => { this[base+"_change"](type); }).bind(this));
 	}
 
 	_untrack_generic(type, base) {
+		// Untrack changes to a 'base' (e.g. 'mark'/'block') called 'type' (e.g. 'bold'/'paragraph')
 		if (typeof type == 'string' && type.length > 0 && !this.has_class_toggle(type)) return;
 
 		delete this[base+"s"][type];
 		this.remove_class_toggle(type);
 	}
 
+	// Linkers to generic functions
 	track_mark(type) { this._track_generic(type, "mark") }
 	untrack_mark(type) { this._untrack_generic(type, "mark") }
 	track_block(type) { this._track_generic(type, "block") }
 	untrack_block(type) { this._untrack_generic(type, "block") }
 
+	// Determines whether this block type is being tracked
 	tracking_block(type) { return this.blocks[type] !== undefined; }
+	// Determines whether this block type is active; uses the this.blocks property
+	// if the block is being tracked, otherwise defaults to false
 	has_block(type) { return (this.tracking_block(type)) ? this.blocks[type] : false; }
 	get active_blocks() {
 		var block_list = [];

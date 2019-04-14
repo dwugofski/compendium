@@ -78,7 +78,7 @@ export class Form extends Bindable(Object) {
 		this._create_binding("error");
 		this._create_binding("success");
 
-		this.bind_error(this.show_error.bind(this));
+		this.on_error(this.show_error.bind(this));
 	}
 
 	update_data(e) {
@@ -177,8 +177,8 @@ export class Form extends Bindable(Object) {
 				url: this.url,
 				type: "POST",
 				data: form_data,
-				success: this.on_success.bind(this),
-				error: this.on_error.bind(this)
+				success: this.success.bind(this),
+				error: this.error.bind(this)
 			});
 		}
 	}
